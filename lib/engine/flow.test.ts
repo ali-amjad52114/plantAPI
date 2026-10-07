@@ -147,3 +147,13 @@ describe("no-ack follow-up", () => {
     delete process.env.PLANTAPI_NOTICE_EMAIL;
   });
 });
+
+describe("dispatch on a conditional plan", () => {
+  it("still books + notifies and @-mentions the stand-in", () => {
+    process.env.PLANTAPI_NOTICE_EMAIL = "me@example.com";
+    const t = buildTaskText("dispatch", { id: "i" } as unknown as Incident);
+    expect(t).toContain("is still an approved plan");
+    expect(t).toContain("me@example.com");
+    delete process.env.PLANTAPI_NOTICE_EMAIL;
+  });
+});

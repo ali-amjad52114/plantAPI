@@ -87,6 +87,14 @@ export function roleOverrides(role: AgentRole): string {
   if (role === "production" && sheet) {
     return head + `Read the schedule ONLY from Google Sheet id \`${sheet}\`; no seed fallback — if it cannot be read, report BLOCKED with the exact error. \`source\` = \`sheets:${sheet}\`.`;
   }
+  if (role === "dispatch") {
+    const email = process.env.PLANTAPI_NOTICE_EMAIL;
+    return (
+      head +
+      "A plan marked \"conditional on part arrival\" is still an approved plan: book the calendar event for `plan.window_start`–`plan.window_end` and post the Slack notice as usual, and state the condition in both (e.g. \"conditional on LC1D09BD arriving before 18:00\"). Report a notice as blocked ONLY if the window timestamps are actually missing or the system returns an error — never because the plan is conditional." +
+      (email ? ` In Slack, @-mention the workspace user with email ${email} (look them up by email; they stand in for the technician) and name the technician in the text.` : "")
+    );
+  }
   if (role === "risk") {
     return (
       head +
