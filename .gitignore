@@ -22,3 +22,6 @@ node_modules/
 # all local env files
 .env.*
 !.env.example
+.next/
+next-env.d.ts
+*.tsbuildinfo
