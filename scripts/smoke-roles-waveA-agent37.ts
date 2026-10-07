@@ -124,8 +124,8 @@ async function main() {
 
   const [reliability] = await Promise.all([
     want("reliability") ? turn("reliability", task("reliability", { incident_id: id, triage }, "Fiix: run only `login` and `history` (read). If another agent holds the browser and it fails twice, report BLOCKED as the role says.")) : prev(OUT, "reliability"),
-    want("production") ? turn("production", task("production", { incident_id: id, triage, allow_seed_fallback: true })) : null,
-    want("workforce") ? turn("workforce", task("workforce", { incident_id: id, triage, allow_seed_fallback: true })) : null,
+    want("production") ? turn("production", task("production", { incident_id: id, triage, allow_seed_fallback: false })) : null,
+    want("workforce") ? turn("workforce", task("workforce", { incident_id: id, triage, allow_seed_fallback: false })) : null,
   ]);
   if (want("risk")) await turn("risk", task("risk", { incident_id: id, plan, reliability }));
   const approval = { decision: "approve", decided_by: "smoke", note: "dry run" };
