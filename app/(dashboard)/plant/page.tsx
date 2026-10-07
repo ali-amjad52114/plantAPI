@@ -96,7 +96,7 @@ export default async function PlantPage() {
           </div>
 
           <div className="pane"><h2>Workspace files <span>~/plantapi on the instance</span></h2>
-            {fl.ok ? <ul className="list">{fl.data.slice(0, 12).map(f => <li key={f.path}><Ln k={<span className="m" style={{ fontSize: 11 }}>{f.path}</span>} v={kb(f.bytes)} /></li>)}</ul> : <Err e={fl.error} />}
+            {fl.ok ? <ul className="list">{fl.data.slice(0, 12).map(f => <li key={f.path}><Ln k={<span className="m" style={{ fontSize: 11, textTransform: "none" }}>{f.path}</span>} v={kb(f.bytes)} /></li>)}</ul> : <Err e={fl.error} />}
           </div>
 
           <div className="pane"><h2>Agent health <span>instance metrics + log</span></h2>

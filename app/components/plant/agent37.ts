@@ -40,7 +40,7 @@ export async function files(): Promise<Res<{ path: string; bytes: number; mtime:
     const r = await fetch(`${BASE()}/instances/${INSTANCE()}/exec`, {
       method: "POST", cache: "no-store", signal: AbortSignal.timeout(20000),
       headers: { Authorization: `Bearer ${KEY()}`, "content-type": "application/json" },
-      body: JSON.stringify({ command: "find ~/plantapi -type f -printf '%T@\\t%s\\t%p\\n' 2>/dev/null | sort -rn | head -40" }),
+      body: JSON.stringify({ command: "find ~/plantapi -type f ! -name '*.env' ! -name '.env*' -printf '%T@\\t%s\\t%p\\n' 2>/dev/null | sort -rn | head -40" }),
     });
     if (!r.ok) return { ok: false, error: `${r.status} ${(await r.text()).slice(0, 160)}` };
     const j = (await r.json()) as { stdout?: string; exit_code?: number };
