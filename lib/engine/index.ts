@@ -23,6 +23,7 @@ import { beginTurn, endTurn } from "./cost";
 import { checkAckFollowUps, depthEnabled, ensureCheckpoint, scheduleAckFollowUp } from "./depth";
 import { buildTaskText, outputSchemaText } from "./prompts";
 import { deepFixText, fixMojibake } from "./text.pure";
+import { verifyErpBlock, verifyUnblocked } from "./odoo-check";
 
 const db = () => supabaseAdmin();
 
@@ -235,6 +236,18 @@ ${outputSchemaText(role)}`,
     const output = parsed.data;
     const problem = checkOutput(role as Slice1Role, output, incident);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
+    if (role === "erp" && incident.plan) {
+      const o = output as { odoo_block_ref: string | null };
+      const v = await verifyErpBlock(o.odoo_block_ref, incident.plan);
+      if (v.problem) throw new Error(`erp output rejected: ${v.problem}`);
+      if (v.adopted) await emit({ incident_id: incidentId, agent: role, kind: "log", system: "odoo", message: `Odoo block verified: ${v.ref} on Crushing Line 2 for the plan window (agent left the ref empty)` });
+      else await emit({ incident_id: incidentId, agent: role, kind: "tool", system: "odoo", message: `Odoo block verified: ${v.ref} matches the plan window` });
+      o.odoo_block_ref = v.ref;
+    }
+    if (role === "verification" && (output as { verdict?: string }).verdict === "accept") {
+      const unblockProblem = await verifyUnblocked(incident.erp?.odoo_block_ref ?? null);
+      if (unblockProblem) throw new Error(`verification output rejected: ${unblockProblem}`);
+    }
     must(
       await db()
         .from("agent_tasks")

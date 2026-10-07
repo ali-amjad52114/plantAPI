@@ -34,7 +34,6 @@ describe("real-only guards", () => {
   });
   it("rejects ERP without a Fiix WO and accept without close", () => {
     expect(checkOutput("erp", { fiix_wo_code: "" }, { materials: null })).toMatch(/no Fiix/);
-    expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: null }, { materials: null })).toMatch(/not blocked/);
     expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: "42" }, { materials: null })).toBeNull();
     expect(checkOutput("verification", { verdict: "accept", fiix_closed: false }, { materials: null })).toMatch(/not closed/);
     expect(checkOutput("verification", { verdict: "reject", fiix_closed: false }, { materials: null })).toBeNull();
@@ -170,5 +169,19 @@ describe("mojibake repair", () => {
     expect(fixMojibake("Sarah Chen â€” reminder")).toBe("Sarah Chen — reminder");
     expect(fixMojibake("18:00–19:00 café")).toBe("18:00–19:00 café");
     expect(deepFixText({ notices: [{ detail: "18:47â€“19:32" }] })).toEqual({ notices: [{ detail: "18:47–19:32" }] });
+  });
+});
+
+describe("odoo block check", () => {
+  it("accepts a future-window record and checks bounds in UTC", async () => {
+    const { checkBlockRecord, parseBlockRef } = await import("./odoo-check.pure");
+    const plan = { window_start: "2026-10-07T18:47:00-04:00", window_end: "2026-10-07T19:32:00-04:00" };
+    const rec = { id: 6, workcenter_id: [3, "Crushing Line 2"] as [number, string], date_start: "2026-10-07 22:47:00", date_end: "2026-10-07 23:32:00" };
+    const before = Date.parse("2026-10-07T19:53:00Z"); // 15:53 -04:00: window not started, line still "normal"
+    expect(checkBlockRecord(rec, plan, before, "Crushing Line 2")).toBeNull();
+    expect(checkBlockRecord({ ...rec, date_start: "2026-10-07 21:00:00" }, plan, before, "Crushing Line 2")).toMatch(/starts/);
+    expect(checkBlockRecord({ ...rec, workcenter_id: [9, "Line 1"] }, plan, before, "Crushing Line 2")).toMatch(/not Crushing Line 2/);
+    expect(parseBlockRef("mrp.workcenter.productivity:6")).toBe(6);
+    expect(parseBlockRef(null)).toBeNull();
   });
 });
