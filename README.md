@@ -62,6 +62,11 @@ flowchart LR
 
 **OpenAI.** OpenAI does the reasoning and the photo checks. On the real run (incident `dd94429f-3066-4b38-9cc0-391aaf6a24c4`), Verification rejected the wrong-part photo, reading "CHINT NCH8-63 63 A; expected LC1D09BD 9 A, 24 V DC". It then accepted the correct part with 6/6 checks, and the incident reached CLOSED.
 
+**The full 11-agent run also reached CLOSED on real data** (incident `ed54ca93-9b88-4c09-b0cf-72c7d1940d88`, 15:34 upload → 15:44:57 CLOSED, Agent37 cost $0.13):
+- **Planners:** the four ran in parallel. Production read the live sheet, Workforce the live "PlantAPI Technicians" calendar, Reliability the real Fiix WOs 1, 2, 6 and 8, and Materials found RS - America at $152.64 through Monid.
+- **Execution:** ERP, Procurement and Dispatch ran in parallel. ERP created Fiix WO 9 and Odoo block `mrp.workcenter.productivity:5`. Procurement sent a real AgentMail email (`<010001a11885342a-…>`).
+- **Close:** the correct-part photo was accepted, the Fiix WO was closed, Odoo was unblocked, and the incident reached CLOSED.
+
 **Supabase.** Supabase is the referee between the UI, the worker and the agents. Project `npbcyyudbftyklenxycr` holds incidents, agent_tasks, agent_events, approvals and audit_logs, with Realtime feeding the live activity view, plus the `evidence` storage bucket. The governance decisions are stored too, in `infra_actions`: ALLOW `e8a4477b-…`, APPROVE `d804ba6d-…` and DENY `08ec0f21-…`.
 
 **Monid.** Monid gives the agents tools they don't have built in:
@@ -87,13 +92,24 @@ Every action an agent proposes carries an authority rule:
 
 The same model applies to the infrastructure through InstaCloud agent policy, with ALLOW, APPROVE and DENY as above. The AI cannot change its own policy, and the DENY step returned HTTP 403.
 
-**TODO (lead):** add the exact output of the AI lead being refused with 403 "requires a human request" when it tried to act on an approval. I haven't found that output in the repo evidence yet, so it isn't quoted here.
+The AI lead session tried to act on the approvals itself, using the user's InstaCloud login. InstaCloud refused it. This is the real output, verbatim:
+
+```
+$ insta agent approvals deny 05f384af-2ced-4f15-9d7c-f905469cc00a
+error: this operation requires a human request (HTTP 403)
+$ insta agent approvals approve 9d6f239c-d666-48fd-acbd-3f77ff73b329
+error: this operation requires a human request (HTTP 403)
+$ insta agent policy protect-branch main
+error: agent_policy.update, branch.protection.update denied by agent policy (HTTP 403)
+```
+
+The user then ran the same three commands in their own terminal. `insta agent approvals list` and `insta agent policy get` confirmed the results: `05f384af` (service.scale) **denied**, `9d6f239c` (branch.delete of the analysis branch) **granted**, and branch `main` is **protected**.
 
 ## How to run
 
 ```bash
 npm ci
-# create .env + .env.local with the keys listed in docs/CONTRACTS.md "Environment" (never committed)
+cp .env.example .env.local   # names only; fill in values (never committed)
 npx tsx supabase/apply.ts     # migrations + seed
 npm run dev                   # app on :3000
 npm run worker                # engine (separate terminal)
@@ -114,7 +130,7 @@ npx tsx --env-file=.env --env-file=.env.local scripts/smoke-roles-waveA-agent37.
 ## Honest status
 
 - **The RS product page isn't confirmed in the browser.** RS blocks the instance's datacenter IP with a DataDome CAPTCHA and Akamai "Access Denied" (screenshot `evidence/rs-LC1D09BD-1791412430802.png`). We don't try to get around bot walls. The Monid search result is the supplier evidence.
-- **The part's lead time isn't confirmed.** None of the 20 shopping results gives a delivery date, so `lead_time` is "unknown" and the repair window is conditional on the part arriving.
+- **The part's lead time isn't confirmed.** None of the 20 shopping results gives a delivery date, so `lead_time` is "unknown" and the repair window is conditional on the part arriving. In the 11-agent run `ed54ca93`, the coordinator left the window blank for this reason, so Dispatch's calendar booking and Slack notice were blocked. The fix (a conditional window) is in progress in the core engine.
 - **Phone calls are not used.** The follow-up call when the technician doesn't acknowledge was dropped by decision.
 - **Fiix work orders are assigned to the owner account** ("ali amjad"), with "Technician: Sarah Chen (Electrical)" in the work order text. There is no separate Fiix user for the technician.
 - **There is one plant instance** (`pfd5d7eukw`). "Add plant" has been proven, but the demo runs one plant.
