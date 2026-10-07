@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { afterApproval, afterTask, checkOutput } from "./flow";
+import { afterApproval, afterTask, checkOutput, nextSteps, plannerFailureIsFatal } from "./flow";
+import { RiskOutput } from "./wave-a-schemas";
 import { buildTaskText } from "./prompts";
 import type { Incident } from "../contracts/types";
 
@@ -37,5 +38,34 @@ describe("real-only guards", () => {
     expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: "42" }, { materials: null })).toBeNull();
     expect(checkOutput("verification", { verdict: "accept", fiix_closed: false }, { materials: null })).toMatch(/not closed/);
     expect(checkOutput("verification", { verdict: "reject", fiix_closed: false }, { materials: null })).toBeNull();
+  });
+});
+
+describe("wave A full team", () => {
+  it("triage fans out to four planners in parallel", () => {
+    expect(nextSteps("triage", {}, true)).toEqual({ status: "PLANNING", next: ["reliability", "materials", "production", "workforce"] });
+  });
+  it("coordinator starts only when all four planners settled", () => {
+    expect(nextSteps("production", {}, true, ["reliability", "production"]).next).toEqual([]);
+    expect(nextSteps("workforce", {}, true, ["reliability", "materials", "production", "workforce"]).next).toEqual(["coordinator"]);
+  });
+  it("coordinator → risk → approval, DENY rejects", () => {
+    expect(nextSteps("coordinator", {}, true)).toEqual({ status: "PLANNING", next: ["risk"] });
+    expect(nextSteps("risk", { decision: "APPROVAL" }, true)).toEqual({ status: "WAITING_APPROVAL", next: [] });
+    expect(nextSteps("risk", { decision: "DENY" }, true)).toEqual({ status: "REJECTED", next: [] });
+  });
+  it("slice path unchanged when the flag is off", () => {
+    expect(nextSteps("triage", {}, false)).toEqual({ status: "PLANNING", next: ["materials"] });
+    expect(nextSteps("coordinator", {}, false)).toEqual({ status: "WAITING_APPROVAL", next: [] });
+  });
+  it("only a failed Materials planner is fatal", () => {
+    expect(plannerFailureIsFatal("reliability", true)).toBe(false);
+    expect(plannerFailureIsFatal("materials", true)).toBe(true);
+    expect(plannerFailureIsFatal("reliability", false)).toBe(true);
+  });
+  it("wave A schemas parse a realistic risk output", () => {
+    const r = RiskOutput.safeParse({ decision: "APPROVAL", loto_required: true, hazards: ["480 V"], actions: [{ action: "Block Line 2", system: "odoo", rule: "APPROVAL", reason: "production block" }], summary: "ok" });
+    expect(r.success).toBe(true);
+    expect(buildTaskText("risk", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("loto_required");
   });
 });
