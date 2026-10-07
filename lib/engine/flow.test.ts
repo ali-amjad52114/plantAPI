@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { afterApproval, afterTask, checkOutput, nextSteps, plannerFailureIsFatal } from "./flow";
-import { RiskOutput } from "./wave-a-schemas";
+import { afterApproval, afterTask, approvalSteps, checkOutput, nextSteps, plannerFailureIsFatal } from "./flow";
+import { ProcurementOutput, RiskOutput } from "./wave-a-schemas";
 import { buildTaskText } from "./prompts";
 import type { Incident } from "../contracts/types";
 
@@ -67,5 +67,26 @@ describe("wave A full team", () => {
     const r = RiskOutput.safeParse({ decision: "APPROVAL", loto_required: true, hazards: ["480 V"], actions: [{ action: "Block Line 2", system: "odoo", rule: "APPROVAL", reason: "production block" }], summary: "ok" });
     expect(r.success).toBe(true);
     expect(buildTaskText("risk", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("loto_required");
+  });
+});
+
+describe("wave A execution", () => {
+  it("approval runs erp ∥ procurement ∥ dispatch with the flag, erp alone without", () => {
+    expect(approvalSteps("approve", true)).toEqual({ status: "EXECUTING", next: ["erp", "procurement", "dispatch"] });
+    expect(approvalSteps("approve", false)).toEqual({ status: "EXECUTING", next: ["erp"] });
+    expect(approvalSteps("reject", true)).toEqual({ status: "REJECTED", next: [] });
+  });
+  it("waits for all three executors before WAITING_REPAIR", () => {
+    expect(nextSteps("erp", {}, true, ["erp"]).status).toBe("EXECUTING");
+    expect(nextSteps("dispatch", {}, true, ["erp", "procurement", "dispatch"]).status).toBe("WAITING_REPAIR");
+    expect(nextSteps("erp", {}, false).status).toBe("WAITING_REPAIR");
+  });
+  it("only a failed ERP executor is fatal", () => {
+    expect(plannerFailureIsFatal("procurement", true)).toBe(false);
+    expect(plannerFailureIsFatal("dispatch", true)).toBe(false);
+    expect(plannerFailureIsFatal("erp", true)).toBe(true);
+  });
+  it("procurement can never report a purchase", () => {
+    expect(ProcurementOutput.safeParse({ supplier: "RS", part: "LC1D09BD", price: 1, currency: "USD", supplier_record_ref: null, expedite_email: null, purchased: true, blocked: [], summary: "" }).success).toBe(false);
   });
 });

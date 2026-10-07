@@ -55,11 +55,47 @@ export const RiskOutput = z.object({
 });
 export type RiskOutput = z.infer<typeof RiskOutput>;
 
+export const ProcurementOutput = z.object({
+  supplier: z.string(),
+  part: z.string(),
+  price: z.number(),
+  currency: z.string(),
+  supplier_record_ref: z.string().nullable(), // Odoo record id actually created (vendor/procurement note)
+  expedite_email: z
+    .object({ to: z.string(), subject: z.string(), message_id: z.string().nullable(), sent: z.boolean() })
+    .nullable(), // Monid AgentMail
+  purchased: z.literal(false), // never buys
+  blocked: z.array(z.string()), // steps that could not run for real, with the reason
+  summary: z.string(),
+});
+export type ProcurementOutput = z.infer<typeof ProcurementOutput>;
+
+export const Notice = z.object({
+  channel: z.enum(["slack", "gmail", "calendar", "phone", "agent37_cron"]),
+  to: z.string(),
+  ref: z.string().nullable(), // message id / event id / call id actually returned
+  status: z.enum(["sent", "booked", "scheduled", "blocked", "failed"]),
+  detail: z.string(),
+});
+
+export const DispatchOutput = z.object({
+  technician: z.string(),
+  booked_start: z.string(), // ISO 8601
+  booked_end: z.string(),
+  notices: z.array(Notice),
+  ack_received: z.boolean(),
+  follow_up: z.string().nullable(), // Agent37 cron id that calls (Monid) if no ack
+  summary: z.string(),
+});
+export type DispatchOutput = z.infer<typeof DispatchOutput>;
+
 export const WAVE_A_OUTPUT = {
   reliability: ReliabilityOutput,
   production: ProductionOutput,
   workforce: WorkforceOutput,
   risk: RiskOutput,
+  procurement: ProcurementOutput,
+  dispatch: DispatchOutput,
 } as const;
 export type WaveARole = keyof typeof WAVE_A_OUTPUT;
 export const WAVE_A_ROLES = Object.keys(WAVE_A_OUTPUT) as WaveARole[];

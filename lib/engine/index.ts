@@ -16,7 +16,7 @@ import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
 import { FLAGS } from "@/lib/contracts/flags";
 import { extractLastJson } from "@/lib/ai";
-import { afterApproval, checkOutput, CAN_APPROVE, CAN_COMPLETE, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
+import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
 import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
 import { buildTaskText } from "./prompts";
@@ -52,8 +52,9 @@ async function enqueue(incidentId: string, role: AgentRole, input: Record<string
 /** Wave A full team: lead flips FLAGS.fullTeam; PLANTAPI_FULL_TEAM=1 enables it for local runs. */
 export const fullTeam = () => FLAGS.fullTeam || process.env.PLANTAPI_FULL_TEAM === "1";
 
-async function settledPlanners(incidentId: string): Promise<AgentRole[]> {
-  const res = await db().from("agent_tasks").select("role,status").eq("incident_id", incidentId).in("role", PLANNERS).in("status", ["COMPLETE", "FAILED"]);
+/** Planner/executor roles whose task for this incident is COMPLETE or FAILED (fan-in check). */
+async function settledRoles(incidentId: string): Promise<AgentRole[]> {
+  const res = await db().from("agent_tasks").select("role,status").eq("incident_id", incidentId).in("role", [...PLANNERS, ...EXECUTORS]).in("status", ["COMPLETE", "FAILED"]);
   return [...new Set((res.data ?? []).map((r) => r.role as AgentRole))];
 }
 
@@ -166,8 +167,12 @@ export async function runTask(task: AgentTask): Promise<void> {
     await audit(incidentId, role, `${role}.complete`, "agent37", { response_id: turn.responseId, cost_usd: turn.costUsd, duration_ms: turn.durationMs });
 
     incident = await getIncident(incidentId);
-    const t = nextSteps(role, output, team, team ? await settledPlanners(incidentId) : []);
+    const t = nextSteps(role, output, team, team ? await settledRoles(incidentId) : []);
     const patch: Record<string, unknown> = { agent37_session_ids: { ...incident.agent37_session_ids, [role]: turn.sessionId } };
+    const src = (output as { source?: unknown }).source;
+    if (typeof src === "string" && /seed/i.test(src)) {
+      await emit({ incident_id: incidentId, agent: role, kind: "log", system: "google", message: `source: seed file (${src}) — ${role === "workforce" ? "Calendar" : "Sheets"} not connected yet` });
+    }
     const column = (OUTPUT_COLUMN as Partial<Record<AgentRole, string>>)[role];
     if (column) patch[column] = output;
     if (role === "triage") {
@@ -198,7 +203,9 @@ export async function runTask(task: AgentTask): Promise<void> {
       await setStatus(incidentId, "FAILED").catch(() => {});
     } else {
       // allSettled: the team goes on without this planner; coordinator starts once all four settled.
-      const t = nextSteps(role, null, team, await settledPlanners(incidentId).catch(() => []));
+      const t = nextSteps(role, null, team, await settledRoles(incidentId).catch(() => []));
+      const cur = await getIncident(incidentId).catch(() => null);
+      if (cur && cur.status !== t.status && cur.status !== "FAILED") await setStatus(incidentId, t.status).catch(() => {});
       for (const next of t.next) await enqueue(incidentId, next).catch(() => {});
     }
   }
@@ -218,10 +225,11 @@ export const engine: Engine = {
     must(await db().from("approvals").insert({ incident_id: incidentId, decision, decided_by: by, note: note ?? null }).select("id"), "insert approval");
     await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: `${by} ${decision === "approve" ? "approved" : "rejected"} the plan` });
     await audit(incidentId, by, `plan.${decision}`, "supabase", { note });
-    const t = afterApproval(decision);
+    const t = approvalSteps(decision, fullTeam());
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() } });
+    const approval = { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() };
+    for (const next of t.next) await enqueue(incidentId, next, { approval });
   },
 
   async complete(incidentId, input) {

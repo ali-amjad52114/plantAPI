@@ -23,6 +23,10 @@ const ROLE_BRIEF: Partial<Record<AgentRole, string>> = {
     "You are the Production agent. Find the lowest-impact downtime window for the affected work centre today/tomorrow from the production schedule (`~/plantapi/seed/production_schedule.csv`; Google Sheets once connected). Recommend one window and list the alternatives with their impact. Put the file/sheet you read in `source`.",
   workforce:
     "You are the Workforce agent. Pick the technician with the required trade (from triage) and LOTO qualification using `~/plantapi/seed/technicians.json` and their availability from `~/plantapi/seed/calendar_events.json` (Google Calendar once connected). Report when they are free, any conflicts, and alternatives. Put the file/calendar you read in `source`.",
+  procurement:
+    "You are the Procurement agent. The plan was approved (see `approval`). For the plan's supplier: record the sourcing decision in Odoo (JSON-2 API, `agent/skills/odoo/SKILL.md`) and send ONE expedite email to the supplier through Monid AgentMail (`agent/skills/monid/SKILL.md`). Never buy, never add to basket, never check out — `purchased` is always false. Anything you could not do for real goes in `blocked` with the reason.",
+  dispatch:
+    "You are the Dispatch agent. The plan was approved (see `approval`). Book the plan's technician for the plan window (Google Calendar), notify them and the supervisor (Slack / Gmail), and create an Agent37 cron that checks for their acknowledgement and places a Monid call if there is none. Report every notice with the real id the system returned; a channel that is not connected yet gets status `blocked` with the reason — never invent ids.",
   risk:
     "You are the Risk agent. Classify every action in the coordinator's plan with the authority rules — AUTO: read history/SOP/inventory, supplier search, availability, draft WO; APPROVAL: purchase, block production, schedule outage, safety-critical work; DENY: bypass safety, delete records. Overall `decision` = the strictest rule. CV-104 electrical work requires LOTO.",
 };
