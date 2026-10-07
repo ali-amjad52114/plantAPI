@@ -104,6 +104,12 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   // the graph earns its place when the full team runs (more than the 5 slice agents)
   const showGraph = (Object.keys(tasks) as AgentRole[]).some(r => !["triage", "materials", "coordinator", "erp", "verification"].includes(r));
   const pos = positions(inc, tasks);
+  // Agent37 depth: backup checkpoint before execution, cron that checks the technician's ack
+  const cpEv = [...events].reverse().find(e => e.agent === "system" && /^Checkpoint/.test(e.message));
+  const checkpoint = cpEv ? { id: (cpEv.data as { id?: string } | undefined)?.id ?? null, status: String((cpEv.data as { status?: string } | undefined)?.status ?? ""), msg: cpEv.message } : null;
+  const cronEv = [...events].reverse().find(e => (e.data as { cron_id?: string } | undefined)?.cron_id);
+  const cron = cronEv ? { id: String((cronEv.data as { cron_id: string }).cron_id), fires: (cronEv.data as { fires_at?: string }).fires_at ?? null } : null;
+  const fu = view?.followUp;
   const riskOut = tasks.risk?.output as { decision?: string; loto_required?: boolean; hazards?: string[]; summary?: string } | null | undefined;
   const ctx = { triaged: !!tri, wo: !!mockFlags?.wo || !!inc.erp, closed: closed || !!mockFlags?.closed, basket: 0 };
   const asset104 = tri?.asset_id ?? "ASSET";
@@ -126,7 +132,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
   /* ----- banner ----- */
   let bpri: Pri = 1, bmsg = `${hhmm(inc.created_at)} · ${inc.alarm_text.replace(/^\d\d:\d\d:\d\d\s*/, "")} · ${tri?.asset_id ?? "ASSET"} DOWN`;
-  if (closed) { bpri = 0; bmsg = `${hhmm(inc.updated_at)} · INCIDENT CLOSED · ${asset104} RUNNING · LINE RELEASED`; }
+  const failedTasks = (Object.values(tasks) as AgentTask[]).filter(t => t.status === "FAILED");
+  if (status === "FAILED") { bpri = 1; const f = failedTasks[0]; bmsg = `INCIDENT FAILED${f ? ` · ${ROLE_LABEL[f.role].toUpperCase()} · ${(f.error ?? "no error recorded").slice(0, 140)}` : ""}`; }
+  else if (closed) { bpri = 0; bmsg = `${hhmm(inc.updated_at)} · INCIDENT CLOSED · ${asset104} RUNNING · LINE RELEASED`; }
   else if (gateApproval) { bpri = "a"; bmsg = `ACTION · APPROVE REPAIR PLAN FOR ${asset104}`; }
   else if (gateRepair) { bpri = "a"; bmsg = rejected ? "ACTION · EVIDENCE REJECTED · SEND PHOTO OF INSTALLED PART" : `ACTION · TECHNICIAN TO REPORT REPAIR${inc.erp?.fiix_wo_code ? " ON " + inc.erp.fiix_wo_code : ""}`; }
   else if (manual) { bpri = "a"; bmsg = `MANUAL · YOU HAVE THE ${ROLE_LABEL[manual.role].toUpperCase()} BROWSER · OTHER SESSIONS RUNNING`; }
@@ -185,6 +193,14 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                 <Ln k="Trade" v={tri ? tri.required_trade : "—"} />
                 <Ln k="Line" v={closed ? "RUNNING" : "STOPPED"} cls={closed ? "" : "c-warn"} />
               </div>
+              {(status === "FAILED" || failedTasks.length > 0) && (
+                <div className="sec"><div className="cap"><span className="c-warn">{status === "FAILED" ? "Incident failed" : "Agent failure"}</span><span>{failedTasks.length} task{failedTasks.length === 1 ? "" : "s"}</span></div>
+                  {failedTasks.map(t => (<div key={t.id}>
+                    <Ln k={ROLE_LABEL[t.role]} v={`FAILED ${hhmm(t.finished_at)}`} cls="c-warn" />
+                    <p className="note warn" style={{ margin: "4px 0 8px", whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{t.error ?? "No error recorded."}</p>
+                  </div>))}
+                  {status === "FAILED" && failedTasks.length === 0 && <p className="note warn">The engine marked this incident FAILED without a failing task. Check the event journal.</p>}
+                </div>)}
               {status === "NEW" && mock && !mock.started && <div className="sec"><p className="note act">Press <b>Run agents</b>. Eleven agents take this failure from the photo to a closed work order. You make one decision.</p></div>}
 
               {(status === "PLANNING" || gateApproval) && (
@@ -279,6 +295,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
                   {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={`${inc.erp.odoo_block_ref}${ver?.odoo_unblocked ? " · RELEASED" : ""}`} cls={ver?.odoo_unblocked ? "c-ok" : ""} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
+                  {checkpoint && <Ln k="Agent37 checkpoint" v={checkpoint.id ? `backup ${checkpoint.id}` : checkpoint.status} cls={checkpoint.status === "completed" ? "c-ok" : "c-caut"} why={checkpoint.msg} />}
+                  {cron && <Ln k="Ack follow-up" v={`cron ${cron.id}${cron.fires ? " · " + hhmm(cron.fires) : ""}`} cls={fu?.status === "COMPLETE" ? ((fu.output as { ack_received?: boolean } | null)?.ack_received ? "c-ok" : "c-caut") : ""}
+                    why={fu?.status === "COMPLETE" ? `Ack ${(fu.output as { ack_received?: boolean } | null)?.ack_received ? "received" : "not received"}: ${String((fu.output as { evidence?: string } | null)?.evidence ?? "")}` : "Agent37 cron checks Slack for the technician's ack"} />}
                   {!(status === "APPROVED" || status === "EXECUTING") && <ExecDetails tasks={tasks} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
                 </div>)}
@@ -395,7 +414,9 @@ function ExecDetails({ tasks }: { tasks: Partial<Record<AgentRole, AgentTask>> }
   const dp = tasks.dispatch?.output as { technician?: string; booked_start?: string; notices?: { channel: string; to: string; ref: string | null; status: string }[]; ack_received?: boolean; follow_up?: string | null } | null | undefined;
   return (<>
     {pr?.supplier_record_ref && <Ln k="Supplier record" v={pr.supplier_record_ref} />}
-    {pr?.expedite_email && <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />}
+    {pr && (pr.expedite_email
+      ? <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />
+      : tasks.procurement?.status === "COMPLETE" && <Ln k="Expedite email" v="NOT SENT" cls="c-warn" why={(pr as { summary?: string }).summary} />)}
     {pr?.blocked?.map(b => <Ln key={b} k="Procurement" v="BLOCKED" cls="c-caut" why={b} />)}
     {dp?.booked_start && <Ln k="Booked" v={`${dp.technician ?? ""} ${wall(dp.booked_start) ?? ""}`} />}
     {dp?.notices?.map((n, i) => <Ln key={i} k={`${n.channel} → ${n.to}`} v={`${n.status.toUpperCase()}${n.ref ? " · " + n.ref : ""}`} cls={n.status === "failed" ? "c-warn" : n.status === "blocked" ? "c-caut" : ""} />)}

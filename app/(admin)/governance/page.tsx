@@ -33,17 +33,20 @@ export default async function GovernancePage() {
           {missing ? <p className="note act" style={{ margin: 10 }}>The <code>infra_actions</code> table doesn&apos;t exist yet. It appears here as soon as the platform session creates it.</p>
             : res?.error ? <p className="note warn" style={{ margin: 10 }}>{res.error.message}</p>
             : rows.length === 0 ? <p className="dim" style={{ padding: 10, margin: 0 }}>No infrastructure actions recorded yet.</p>
-            : <div className="jwrap" style={{ maxHeight: "none" }}><table className="j"><thead><tr><th>TIME</th><th>VERDICT</th><th>ACTION</th><th>APPROVAL ID</th><th>EXPECTED</th><th>DETAIL</th></tr></thead>
+            : <div className="jwrap" style={{ maxHeight: "none" }}><table className="j"><thead><tr><th>TIME</th><th>VERDICT</th><th>WHO</th><th>ACTION</th><th>APPROVAL ID</th><th>EXPECTED</th><th>DETAIL</th></tr></thead>
               <tbody>{rows.map((r, i) => {
                 const v = pick(r, "outcome", "decision", "verdict", "platform_returned").toUpperCase();
                 const t = pick(r, "created_at");
+                const d = pick(r, "detail");
+                const who = /^Lead AI/i.test(d) ? "LEAD AI" : /^Human/i.test(d) ? "HUMAN" : /^Agent/i.test(d) || pick(r, "run_id") ? "AGENT" : "—";
                 return (<tr key={pick(r, "id") || i}>
                   <td>{t ? new Date(t).toTimeString().slice(0, 5) : ""}</td>
                   <td><span className={"verdict " + v}>{v || "—"}</span></td>
+                  <td className={"m " + (who === "LEAD AI" && v === "DENY" ? "c-warn" : "")}>{who}</td>
                   <td>{pick(r, "action", "operation", "command")}</td>
                   <td className="m">{pick(r, "approval_id", "approval")}</td>
-                  <td className="m">{pick(r, "policy_expected").toUpperCase()}{pick(r, "platform_returned") && pick(r, "policy_expected") !== pick(r, "platform_returned") ? <span className="c-warn"> ≠ {pick(r, "platform_returned").toUpperCase()}</span> : null}</td>
-                  <td>{pick(r, "detail", "reason", "message")}</td>
+                  <td className="m">{pick(r, "policy_expected").toUpperCase()}{/^(allow|approve|deny)$/i.test(pick(r, "platform_returned")) && pick(r, "policy_expected").toLowerCase() !== pick(r, "platform_returned").toLowerCase() ? <span className="c-warn"> ≠ {pick(r, "platform_returned").toUpperCase()}</span> : null}</td>
+                  <td>{pick(r, "detail", "reason", "message")}{pick(r, "platform_returned") && !/^(allow|approve|deny)$/i.test(pick(r, "platform_returned")) && <div className="dim" style={{ fontSize: 11 }}>platform: {pick(r, "platform_returned")}</div>}</td>
                 </tr>); })}</tbody></table></div>}
         </div>
       </main>
