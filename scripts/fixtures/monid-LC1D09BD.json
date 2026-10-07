@@ -1,0 +1,860 @@
+{
+  "search_metadata": {
+    "id": "984d7434676f471f1381539a",
+    "status": "Success",
+    "created_at": "2026-10-07 21:50:15 UTC",
+    "processed_at": "2026-10-07 21:50:15 UTC",
+    "total_time_taken": 1.888,
+    "google_shopping_url": "https://www.google.com/search?q=LC1D09BD+RS+Components&udm=28&hl=en&gl=us&num=40",
+    "transport_time_taken": 1.846
+  },
+  "search_parameters": {
+    "q": "LC1D09BD RS Components",
+    "google_domain": "google.com",
+    "gl": "us",
+    "hl": "en",
+    "device": "desktop",
+    "num": 20
+  },
+  "search_information": {
+    "query_displayed": "LC1D09BD RS Components",
+    "shopping_results_state": "Results for exact spelling"
+  },
+  "shopping_results": [
+    {
+      "title": "Schneider Electric IEC Magnetic Contactor lc1d09bd",
+      "extracted_price": 152.64,
+      "price": "$152.64",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "rating": 4.4,
+      "reviews": 55,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQTGd8h7OL7E7Czj1F7NVpdQ-fWWtV0ahUT9rgvAsGN23MBpnYGHdK7x1N1__8zsySmpf6b-v5Waa30k_edt1ehtUVtoHCBziFB69Zhar8xJvrMDoxv8Xot",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 1,
+      "gpcid": "10337607505885677452",
+      "headline_offer_docid": "10893295119540387792",
+      "image_docid": "14204202699493392627",
+      "product_id": "965429514906163431",
+      "catalog_id": "2630580477269995972",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A10337607505885677452%2CheadlineOfferDocid%3A10893295119540387792%2CimageDocid%3A14204202699493392627%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "10337607505885677452",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "10893295119540387792",
+          "image_docid": "14204202699493392627"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09b7 IEC Contactor",
+      "extracted_price": 156.81,
+      "price": "$156.81",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "rating": 4.9,
+      "reviews": 18,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQu5gQdBgKztgs4S2MFBM4nQVcrpARbt35cxMF1UsbMGTf2-misl_WcZxEiMLichHpfJmx677iKcBJvvacNsgcCuUbJhywyZxqzWGCfVsIVaK44xbjg8-hZTA",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 2,
+      "gpcid": "7532895887145591508",
+      "headline_offer_docid": "16018122645535558638",
+      "image_docid": "5126547315957936964",
+      "product_id": "9243178945293926809",
+      "catalog_id": "1233953311040636369",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A7532895887145591508%2CheadlineOfferDocid%3A16018122645535558638%2CimageDocid%3A5126547315957936964%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "7532895887145591508",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "16018122645535558638",
+          "image_docid": "5126547315957936964"
+        }
+      }
+    },
+    {
+      "title": "Set Of Power Connections Parallel Busbar For 3P Reversing Contactors Assembly",
+      "extracted_price": 12.19,
+      "price": "$12.19",
+      "extracted_old_price": 11,
+      "old_price": "(€11)",
+      "source": "rsdelivers.com",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTzNkwvCKKWqYsQZET-JdD82xuqAkq21vxtrCHW_q1ohez_uYs",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADUElEQVRYhe2WPWgUQRTHfzO795FDCURPRDklfoGBaCEpggj2CgeCkCpgIUjAzia1NoKNIkSQaBU8ENKIH2UKsbBRUEwjfkQ05ohcEpJLdvdmxmLusrfe3bqmOYv8YYuZnf97/3nvzZsRFajRRbiA000BspvOtwX8FwLcyEgIcN0OS+vQGpSKsehaO+1gjOUa016AMzREdnw8XsT6OurtW/xSCf3pU53o4A4Pk7pwAdnf354vBKZcZn18HLOwEM5XwDS+1fPnjfF9kwS116/NyvHjljcyYnS5/FeOmpszy/39ptnnlmvAGRoiPTaG2LOH7LVriHx+S3ZiE24WFtCLizanxiCyWeSBA5BKWRGnTuGcPIk8ciTkrK6iv32L5BmwKZifhyBILsC7dw/v9m2bU2MQO3eSm5rCHR62NnM5RF8fpNObHH9yko0bN9oXotaYpaV/iMDaGqZSCcfLy5hfvyK7En840t+/YxYX48wmF7AViL4+RE9PJALG8zoe3UQCnIEBRD6P6O1FHj4c/jAGU63avPb0AJC5fBn3zBnbLxprfv4kePKEYHrark8sQGvSo6Nkb95E9PYipIRMJvRfqaA+fEB//YozOGgjsGsX7unTLaZSxSIbR4+ycf061MIXQOwxFLkcqZER5N69NqxNzgkCgulp9MePeLduRWujHTIZMleubAptID4CtVpL1ZqlJdT79wSPH+M/eACAPzWFnpsjVSwi9+8HGe7LGRxEHjtmN5TP4wwMoN68SSbAeB5BqUSqWETkcgDoL1+ojo6iP38OFypFbWaG2syMdd4oQKVIX7pEbnLSzgkBO3ZEfMR3QikJnj+n9uxZuKMTJ0hdvNiZ07is6lVv1tZam1IT4lMgBAQB3p07uGfPInbvBinJjI2hXr5Ezc5Gwt0CpVpS8qeYRMew9uoV/qNHZK5eBUAePEiuVLJNqtPVW4fcty8caA0rK/8uAKXwJyZInTuHPHTIGi4UoFBIRN/0Pz+PevcuKjApWc3O4t+/H5vPOJhqFf/uXZu2JkQioMtlghcvwHURUoYPjjq8hw8RhYKNQlIhWmN+/CB4+tTabnTIOkQFQktSRl8zTdW8CcexX1IYYztfB8FRAV1A11/F2wK2BfwGXcihoH68lpEAAAAASUVORK5CYII=",
+      "position": 3,
+      "gpcid": "11538278061643142815",
+      "headline_offer_docid": "8230941060375964906",
+      "image_docid": "12706196977864702002",
+      "product_id": "14130981342685855540",
+      "catalog_id": "10161884268596131474",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A11538278061643142815%2CheadlineOfferDocid%3A8230941060375964906%2CimageDocid%3A12706196977864702002%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "11538278061643142815",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "8230941060375964906",
+          "image_docid": "12706196977864702002"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09r7 Iec Contactor",
+      "extracted_price": 175.86,
+      "price": "$175.86",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "rating": 4.5,
+      "reviews": 30,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTeV69q1MsLQ-3WhmVotkM5f0_udLJtAn1g3Bthj4Qu8Hlh6k5jvgtMSS7wb8aWiH2y4QV2RrKG-yVwLhAdO1NfXRp6fj5tr7OCLmNGwaxI7kn8_V4QP2x6LQ",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 4,
+      "gpcid": "12417239136808999296",
+      "headline_offer_docid": "745189851347816815",
+      "image_docid": "3473377524474427645",
+      "product_id": "11546042873020981753",
+      "catalog_id": "3754437098575785714",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A12417239136808999296%2CheadlineOfferDocid%3A745189851347816815%2CimageDocid%3A3473377524474427645%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "12417239136808999296",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "745189851347816815",
+          "image_docid": "3473377524474427645"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09p7 Contactor",
+      "extracted_price": 55.33,
+      "price": "$55.33",
+      "extracted_old_price": 49,
+      "old_price": "(€49)",
+      "source": "rsdelivers.com",
+      "multiple_sources": true,
+      "rating": 4.8,
+      "reviews": 167,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://res.cloudinary.com/rsc/image/upload/b_rgb:FFFFFF,c_pad,dpr_1.0,f_auto,q_auto,w_700/c_pad,w_700/PIMG26204049.jpg",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADUElEQVRYhe2WPWgUQRTHfzO795FDCURPRDklfoGBaCEpggj2CgeCkCpgIUjAzia1NoKNIkSQaBU8ENKIH2UKsbBRUEwjfkQ05ohcEpJLdvdmxmLusrfe3bqmOYv8YYuZnf97/3nvzZsRFajRRbiA000BspvOtwX8FwLcyEgIcN0OS+vQGpSKsehaO+1gjOUa016AMzREdnw8XsT6OurtW/xSCf3pU53o4A4Pk7pwAdnf354vBKZcZn18HLOwEM5XwDS+1fPnjfF9kwS116/NyvHjljcyYnS5/FeOmpszy/39ptnnlmvAGRoiPTaG2LOH7LVriHx+S3ZiE24WFtCLizanxiCyWeSBA5BKWRGnTuGcPIk8ciTkrK6iv32L5BmwKZifhyBILsC7dw/v9m2bU2MQO3eSm5rCHR62NnM5RF8fpNObHH9yko0bN9oXotaYpaV/iMDaGqZSCcfLy5hfvyK7En840t+/YxYX48wmF7AViL4+RE9PJALG8zoe3UQCnIEBRD6P6O1FHj4c/jAGU63avPb0AJC5fBn3zBnbLxprfv4kePKEYHrark8sQGvSo6Nkb95E9PYipIRMJvRfqaA+fEB//YozOGgjsGsX7unTLaZSxSIbR4+ycf061MIXQOwxFLkcqZER5N69NqxNzgkCgulp9MePeLduRWujHTIZMleubAptID4CtVpL1ZqlJdT79wSPH+M/eACAPzWFnpsjVSwi9+8HGe7LGRxEHjtmN5TP4wwMoN68SSbAeB5BqUSqWETkcgDoL1+ojo6iP38OFypFbWaG2syMdd4oQKVIX7pEbnLSzgkBO3ZEfMR3QikJnj+n9uxZuKMTJ0hdvNiZ07is6lVv1tZam1IT4lMgBAQB3p07uGfPInbvBinJjI2hXr5Ezc5Gwt0CpVpS8qeYRMew9uoV/qNHZK5eBUAePEiuVLJNqtPVW4fcty8caA0rK/8uAKXwJyZInTuHPHTIGi4UoFBIRN/0Pz+PevcuKjApWc3O4t+/H5vPOJhqFf/uXZu2JkQioMtlghcvwHURUoYPjjq8hw8RhYKNQlIhWmN+/CB4+tTabnTIOkQFQktSRl8zTdW8CcexX1IYYztfB8FRAV1A11/F2wK2BfwGXcihoH68lpEAAAAASUVORK5CYII=",
+      "position": 5,
+      "gpcid": "14789879185688476774",
+      "headline_offer_docid": "11138836220621372086",
+      "image_docid": "1274102959911872365",
+      "product_id": "12671099818467905729",
+      "catalog_id": "2921272830952582900",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A14789879185688476774%2CheadlineOfferDocid%3A11138836220621372086%2CimageDocid%3A1274102959911872365%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "14789879185688476774",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "11138836220621372086",
+          "image_docid": "1274102959911872365"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09k7 TeSys D IEC Contactor",
+      "extracted_price": 161.49,
+      "price": "$161.49",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "rating": 4.6,
+      "reviews": 11,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSRPvbzyF04kS4eWjCTUfF1XGo3Qb_UZT1AYg_1CaGDLsFEAnyBcF3HCKTU-VOSX0z6x9m3bdCLJm3qv_T2jHv-yU7eQsdKeUbBOj6Tgsk45CTURVEHT3ljZw",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 6,
+      "gpcid": "10342944206026654006",
+      "headline_offer_docid": "8641415489667438430",
+      "image_docid": "11354569935833323888",
+      "product_id": "2591519801975465630",
+      "catalog_id": "17935001312605496288",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A10342944206026654006%2CheadlineOfferDocid%3A8641415489667438430%2CimageDocid%3A11354569935833323888%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "10342944206026654006",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "8641415489667438430",
+          "image_docid": "11354569935833323888"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d096bd",
+      "extracted_price": 182.54,
+      "price": "$182.54",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ81ZOYwqeDOVG8xM-wqoFFSYBgBXnEzHvAEoR7r0vTxbULyd0YoYO3GK6t40XW11mVcmHf4zRVI4cFR-c_pWmwRx3EPfPnR3Cdq2lf94e_8v89G6KwfDO-",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 7,
+      "gpcid": "17167913260934371977",
+      "headline_offer_docid": "14448304742586576435",
+      "image_docid": "13313918622765397064",
+      "product_id": "18118809162787253036",
+      "catalog_id": "3756832162259365386",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A17167913260934371977%2CheadlineOfferDocid%3A14448304742586576435%2CimageDocid%3A13313918622765397064%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "17167913260934371977",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "14448304742586576435",
+          "image_docid": "13313918622765397064"
+        }
+      }
+    },
+    {
+      "title": "LC1D093M7 Schneider Electric",
+      "extracted_price": 92.34,
+      "price": "$92.34",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQVW3OQby83BRftqHIxZXVADqVMsIMQg24hWY0yY-AOBYf9mNLhDFUIsVNLneCX37g5X4FliECC-umnluzy4tNYBWtNANIltYZeE-5WZvQFdn8yD39WcXeC",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 8,
+      "gpcid": "4270737172227244047",
+      "headline_offer_docid": "16519383496990348237",
+      "image_docid": "11383754710701919487",
+      "product_id": "5958129624242306669",
+      "catalog_id": "2639691771074525038",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A4270737172227244047%2CheadlineOfferDocid%3A16519383496990348237%2CimageDocid%3A11383754710701919487%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "4270737172227244047",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "16519383496990348237",
+          "image_docid": "11383754710701919487"
+        }
+      }
+    },
+    {
+      "title": "Lc1D09Bl Tesys D Contactor",
+      "extracted_price": 171.12,
+      "price": "$171.12",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "rating": 5,
+      "reviews": 2,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcRTtOHUmtAztE5MuGbNk8ww8dRNcPmhdWNdUsqqPFuW7X2GwKrb",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 9,
+      "gpcid": "5629945662772636705",
+      "headline_offer_docid": "6225430083180184852",
+      "image_docid": "14529235497306768484",
+      "product_id": "3914215584374820307",
+      "catalog_id": "12875232271874940583",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A5629945662772636705%2CheadlineOfferDocid%3A6225430083180184852%2CimageDocid%3A14529235497306768484%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "5629945662772636705",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "6225430083180184852",
+          "image_docid": "14529235497306768484"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09fd IEC Contactor",
+      "extracted_price": 185.59,
+      "price": "$185.59",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSo-cT90soDx-xlLAYYE_AzGaD42kuIqusmTRokUz_NqbhQZZHr5uW5a5xIIcaVvIpxN6ocHhr2BvpXhhYF1O0h9qU-ixRikQtpip25NMVlu0h1WOEteqoH",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 10,
+      "gpcid": "11128323308400166485",
+      "headline_offer_docid": "3765633493813777338",
+      "image_docid": "1281686522484228024",
+      "product_id": "16700099055806905877",
+      "catalog_id": "9766819676095484214",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A11128323308400166485%2CheadlineOfferDocid%3A3765633493813777338%2CimageDocid%3A1281686522484228024%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "11128323308400166485",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "3765633493813777338",
+          "image_docid": "1281686522484228024"
+        }
+      }
+    },
+    {
+      "title": "lc1d096b7 Schneider Electric",
+      "extracted_price": 175.86,
+      "price": "$175.86",
+      "source": "RS - America",
+      "multiple_sources": true,
+      "extensions": [
+        "10-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcQ31qzcrRqaWBwGHCGJhWJJ8uYEW0h6z-Q4yM6AFA1rfZ5jBGK4OyYjq5faL-4JToPrb4d1t-lnvULBNKLpP8YR_0eOapZqw4vVI010SnVr5NB2bOwECC3F",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAUVBMVEXxHCTsHCPsHCTtHyTsHSTuHSXsHSTtHCTtHSTsHCXuHCPtHCbtHCT//v7wNz3vKTD94OHtExz4o6b5s7X7zs/+6uv1foP/9PXyV1z3kZX0b3Q+g4NJAAAADHRSTlMH3cFFUuy1+nUCNx+VUKyhAAABKElEQVQ4ja2TbbuCIAxAu1lZJhuy8TL+/w+9Q7wadu1TB/UBOcImcHo8Th/Q3sdwuR8z6Ofd7Vro357K+aKjXM79eED/c/+eMFXq+7WxCQgLqP241lcBxFY4AIJwbQhuAplKVCPYWBvuRXDGWGb2UQ2qdWZphEgSAnljhY13oZAawZfZAxvr9E44MzZChmnMf8KSTztCyoHsPEUk55xk2AmaXdQ0MumzwLmNQbSjpImJrGajDQftCJpCpAQj6lwhuGgotUKgGEUjrQsBdi/kJN5whpohJP8mQNIomMjNhdspqAiQNQq/sAtSrA4+Ai3rOC8s5e0/YHaScMQsbqW8eNkwiPNewhf+35NTuWr56q6+9kfMwnC/HdPp+X0O3SHDU0/3h/Nfen8B1DAs9eMlO+4AAAAASUVORK5CYII=",
+      "position": 11,
+      "gpcid": "8664136209797057877",
+      "headline_offer_docid": "4830631739027539884",
+      "image_docid": "874997731297337454",
+      "product_id": "10914463846569333654",
+      "catalog_id": "4690913832668821055",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A8664136209797057877%2CheadlineOfferDocid%3A4830631739027539884%2CimageDocid%3A874997731297337454%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "8664136209797057877",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "4830631739027539884",
+          "image_docid": "874997731297337454"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric lc1d09bd Contactor",
+      "extracted_price": 89.49,
+      "price": "$89.49",
+      "source": "NSX Breakers",
+      "multiple_sources": true,
+      "rating": 4.6,
+      "reviews": 39,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSm6QBVjrtdqO4qmvrk9FzUK_evGPrCR-NITaBm7jNIgYV6tBOLhIxU_O_ijszMFX3OOd0UzY4uHnFH5IwivpZoKYsSwivmGYcGj_aTg1wCgLjhgKDYBYa_wpI",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAllBMVEX////+/v7+/v3///7+/vvZ5aNhYWTP5I37/fTI34q512i61Wze6ri61mnT5Z/7/fKhyTbD3Hrw9d/v9NrR0c3CxLzz9+nY5Z2Hh4jr8NH19vDY2NmkpKSwsqS+wazy9eOysq2y1VScyijQ45Pp8Mvf4Nm3t7ewsLeho53M26BvbnLU2MKlrrV5eHzV46mUlJba4rKx10sKOiJzAAAAtElEQVQYlXVP7Q6CMAxsuzFggk4nuAmofIifCL7/yznExB/GS9rkLpf2DuAPEAkZuv3hjEbyFRgGoZxFcTwnePsIF1KpuVJLDrjSOkDi6yTZpmlAgN7GSzmiEeJ9BFBbvc2yvNjtUmv3COQchRCHsqrqqpIcyDb22J7Ol7pufD/iwK5C3Ly77YR4TF96Y4ph0LkxjcvhBJek7bpEPkuvLH3uUjLM+j4JpYykrPlUbJwJ9FP7BTDyC7udZtl2AAAAAElFTkSuQmCC",
+      "position": 12,
+      "gpcid": "6223933511300051337",
+      "headline_offer_docid": "6091459653408697682",
+      "image_docid": "15754049875005877561",
+      "product_id": "10599242461341628844",
+      "catalog_id": "15536877525102883253",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A6223933511300051337%2CheadlineOfferDocid%3A6091459653408697682%2CimageDocid%3A15754049875005877561%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "6223933511300051337",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "6091459653408697682",
+          "image_docid": "15754049875005877561"
+        }
+      }
+    },
+    {
+      "title": "LC1D09BD contactor hot selling 1pcs sufficient stock Fast delivery",
+      "extracted_price": 53.52,
+      "price": "$53.52",
+      "source": "Newegg.com - SiYiQi Tech Shop",
+      "delivery": "Free delivery",
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTcnOMgvvptxz-lRlWVvNsxXTMtRnxivbTqstOCZtdBSAIyvxAG12ycUHottpIUdUMgQgp-RBPQ-0K8GxRtjIHwSv42CyVJIPE9JVMHX7v90X7osBAIYqln7Q",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFbElEQVRYhdXXX4icVxnH8c+ZPzu73W2iG7SJaYwxIYnR2NLgjQi5shQERW0vVIpKtSLqTbywN3rRikULQfFPqFaKIGgRKQqi6I2CNwoBQRAWtIWAJrRJ9s/8eWfmnfc9XpwzmZ3NpkYtiC887Lwz857f9zy/5zzPDv/jK7wai8TvWcEJ3ItVHMsfXcEf8fvwSZuvKkB82hIewMN4wJ6VJXuWaTdYalGXDAs2C9bHPVzA4+FTev8VQLxgL76ERx04sOKNb2L/G2gGVMQx9ZC6oOpT9ulu8bcNXh6v4f7waZf+bYD4bU08ii87cXLVW8/QXqbRystE4iQDFNR9qh7VFsUW3U1e2ODl8iLeGT5jDK3bEv+m02o/9uYjpxx/G6uHaC7R6KBNCMSIknqUATqENhq0IwsVd1V0N84Y1B/Dd28LIH7Dg2rPuu/tK07eR3MvrTtp3PEKAAOqNpppkcmE5pjWkD0desVnbwsgnveY/atPOn6cu4/T2kvzNTSnAIuEVtqlOlkQhoSFmbiK5ojGgNCh06Eeno7n48Fwzt9vCRCf8ozD+x5x+gR7D9FcScLTaCynDIS2WQ2USTxsE48lYUBYzGC5Zqp4ilsAxK96zOE9j3jHUdqvzX4v5V3fkcWnFmyr47At7TGfiFDkTGXx2CQGaqu7WhC/4kF3dZ70ltfRXKCxkB5udHIszl7fdIhCfr8iLhI76fnYJraoGkwCNSorsnkz8SccVHnW0WXuXEy7Cc3scztFaG1L+25XSJ9Pn4ktYoMKE5SRElXqjHMAKl9zsr1i/2KqbCF/JaT7sO1+7ipvhpguHSOTOgmP6xRlpPLinAXxi95lrw871SZETKNOf2OO6f3c1d5xn79X10yqdAzHJaMJo4qyrrA2n4HKOUfQiISamIxKxTTJuyxztyt3gdgmHss0C+oRk4JRQTGiGNMdU/lLeCLNhAbEL1hVea9DknDMhsUyVXIc5wYzyn0+v74JIqb3qyFVQVkw6jMcUAwYjKYAv5g+kSyYOOuAZrI277ge58iDpS5Sh9t5znf2gXqU5sCkx2iLokuvS7dPf0S/pPLcPEDllOWp7dVs5zfE+6m3VzvP+S6dsCqS+HCdwXV66/Q26Q1YLxjHi+Hr/rQT4KAFub5i8q8xIuahUi3MN5np2I07ZkEcJ8/HXQZX6V1ja53NLt2CjRGV89tNmwIs5OaQolGm3Yd2jmZqIjfESxrF/DCq62RZOUjjt3eNzatsrLPZ4+qAQb3GLP3bAa7rY5zW04xpsVCYO/exzuKj1JrDQrIgykdulAqut5mE16+zsUl3wPqYyufD06rdANasYzgFQJigmImLs/7eyP3dQgKsA1XJcMSgn1K+nmNzwD8Kivjz8Mys+ncC/MYllXs0p8MqaZbEQcqIelbljSJZE9tJfBJTkylG2etBjiGXh2zUV/CJneK2SYkf9Vv3OOsoVrCUN9hCq5WGSqOTZrqFlKq6mfr7ODKc0CvpjlKxbY15qeRyNcb94Qd+txvAbBpWnvKCs/aZDY7FbElrQqhScYZReqzOhTkODCODit6E7oRuxfWKazWVj4cf7i4+lwGIH/Jrd3u3k1jeloUbdSHN8tiYjdaRVCqDSL+mF7kauRwrfC78yIVbic9nAGofcckfREccyQCdHQAidZWGzFgCGGaIAi/hqh4eCs/51SuJ35QBiA85hl96vWMO75KBBJpnuwQxRg/XsOWv+ED4iT//K/FdASB+0Aq+Y9HDVrEvQ+SWL5rVSQ9b2LCJx/Gt8NP0P/9/DHAD5P3uxTm8R8fq9Ngj7brExEU8j++H5125XeHbApiDeZ8z0g/QlfzWGl4MP5v9zPq/vP4JBfOtkOL0ECoAAAAASUVORK5CYII=",
+      "position": 13,
+      "headline_offer_docid": "8734933254629187951",
+      "image_docid": "18071613735483624682",
+      "product_id": "8734933254629187951"
+    },
+    {
+      "title": "LC1D09BD Schneider Electric | PLC Direct | Programmable Logic Controllers and Industrial Automation Products",
+      "extracted_price": 153.35,
+      "price": "$153.35",
+      "source": "PLC Direct",
+      "delivery": "Free delivery",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcT-4Lg-RPOseN8UA4RVr0Thl5KluXJ-khJuJ3zGO1Nni5yt7lQ",
+      "position": 14,
+      "headline_offer_docid": "17065448714822082437",
+      "image_docid": "5495175413412694657",
+      "product_id": "17065448714822082437"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD + Ladatbdl",
+      "extracted_price": 11.14,
+      "price": "$11.14",
+      "extracted_old_price": 10,
+      "old_price": "(€10)",
+      "source": "PLC2day",
+      "extensions": [
+        "7-day returns"
+      ],
+      "thumbnail": "https://www.plc2day.com/media/catalog/product/cache/adade2d2c48195b43650497b004a3d56/2/5/2508080027a.jpg",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAclBMVEUCNoH///8DNn8CNn8AHHfn6O0ALH3d4OgAMH8AKnzu7vEAM4AAEHQALn6DjrAAKHwXPIIAJXuOmLaUnrosSIgAE3Wdpb97iKxSZZcAIXk/VY7Q1OAAAGz4+frCx9YAHnirssdqeaK0us1gcZ9KX5Q1T4w8ejR5AAAAzElEQVQ4jdWRRxLCMAxFI7Adl1QC6T1w/ysSyzOE9HX+wm/x30gzsnU7iXWzDnO/pMDYseB7nn8kqAAgUAeCYwPYzr4QPmBM5O8J6qn7+YiZ8KIo8CjcFrIY+ySFONsSeI59UVYAOd8QiETBqcdH+muhabHvOkQqloKbYlGXiD4Y+EJoKl1UZaEhS7vK5gLpzeQEkY8Hq8m/wAYzOUS0gX4HNglKgVlgmwXmYEr9BBFJSql8J4iPp0FlLKYVguhw14AhiFj9xVauIpzkCxrFCiOIzRddAAAAAElFTkSuQmCC",
+      "position": 15,
+      "headline_offer_docid": "7051231527153276286",
+      "image_docid": "4344100848091051095",
+      "product_id": "7051231527153276286"
+    },
+    {
+      "title": "Schneider Contactor Lc1d09bdc",
+      "extracted_price": 65,
+      "price": "$65.00",
+      "source": "Walmart - Edisa Corp",
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSbwtsG6ltPMz9OlfTCVHuXCPBEYB0j76z75tJmXdQRFdkjhaV7",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADqUlEQVRYhe2XT0xcVRTGf+e+GRRkoYCo0HmPaIwuiHWhC1sZwNI0aUyrVevKpJJgu7dJXVjFuOjCP2vbhXVpqKE2RheVOMyQ2mgw0YaFLmr6BhiHv5q0gDDMOy5m6PDmvUF8abqxZ/Vy7ne+73v3vnvufXAnIoaO2a9ppmNG086cpp3+qDwSSfz7HU2sx3LAXeVUgbXlhPTNzvxXLhPFAOvmwU3iAHHi9W1RqKIZWPt7IZgszN8+A4uz86gWKwlVlnKzt8yAjrQ36wR1tYrkMEVgs+Ci7Ge1Fl7HiWuq495/NaApYppxzlEXm2PRyeuoPbCF+elNlqZrgXQs8TrLTh5LFzVjf65DWDUNgP0CyMsgAnIfxpzRtH1BU20tIdyTFRWdCgiPtDdr2hlGrU9Bmkqc5lXanIO1DRgaAjJiDmDFr2jG3lM18nsFw1Wf+KjTSzz2CyIvBvhUG2sb8FaGgSuBIuQhkIuadt5XLdd43meo5oFZlLMAOojRMftdDN8i0h4iPoEsn/cxBzAT1DFvH8GY48CjISQfSbd7vPRYqhdBATRtn0LMW8EX0KvgfciNybPVH2tgF0gna9KTPcN31x5H9SXQS1WIJ24+CbohXj1WFr4M3ivk3cckOflJ2E7ZVivW0cTTiDkGdOB5J6R3cjwUl2p/Eiv2ATDJevG0PDf1w3b4/9+xvSVIJZ7CmGMIHYiekK7sT+G48hIIWbR4WpJTP0Y2oIMY9jgHUd4EdpUaCYCOSNLdG1qTdr5GZH8loZfx9GN6ssMieGE1gV2gQ9Rpxh6gt+NXVIZBdlfEgU19QhXZ2IrljL+HiDyDZc4x5vymafuofuM7wksQn3jq/kZMwyWkejsBqIdyiqT7jgiephKdWOYiiIVV2Ce7p38uzZp9EpWTIFaQQiewlnbJs/PXw2fA1B+qIf4Hovuk23375lQac6TUIWmlGOsHkEE86cq+h8deVIMHlEgn2uBrz6YKsBTy4l/B6k7pyo5UjTxcwfCIj6bHTVFY34nqeapD/Rp+A0X3AugXoIrqX+C9Id3ZA5LMzwWIILHJ+I7qQembXpBu9xBS7AddLHF6Q+TdL324EGI01dbCSu76lpeMjJMrLwGoLki3G3Zkl4bHiZO3G+X57J8Bo7WKtgodwuIBZxXZ+NBUueHWb2W4VkS7Eza1tlTEAUS4p601ClU0A3V3NweT8ZpLcOsNrBVnwDfdBQorudtmQPqmF/C8AWAWdB7haJS/ojsB8A+C3mktDFwh6gAAAABJRU5ErkJggg==",
+      "position": 16,
+      "gpcid": "10359860852635215402",
+      "headline_offer_docid": "7223082761731369169",
+      "image_docid": "10191974780818468611",
+      "product_id": "14987179683796081378",
+      "catalog_id": "8829849764052289414",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A10359860852635215402%2CheadlineOfferDocid%3A7223082761731369169%2CimageDocid%3A10191974780818468611%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "10359860852635215402",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "7223082761731369169",
+          "image_docid": "10191974780818468611"
+        }
+      }
+    },
+    {
+      "title": "LC1-D09-BD Schneider | PLC Direct | Programmable Logic Controllers and Industrial Automation Products",
+      "extracted_price": 99.09,
+      "price": "$99.09",
+      "extracted_old_price": 153,
+      "old_price": "Was $153",
+      "source": "PLC Direct",
+      "delivery": "Free delivery",
+      "tag": "35% OFF",
+      "extensions": [
+        "30-day returns",
+        "35% OFF"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQgw2i53edrmW1rDjriXoOU66sgZItRd399YT0oQuzjBtjqW-i1",
+      "position": 17,
+      "headline_offer_docid": "14015070641270659855",
+      "image_docid": "9706716045059205172",
+      "product_id": "14015070641270659855"
+    },
+    {
+      "title": "LC1D09BD-SUB RADWELL VERIFIED SUBSTITUTE - Contactors & Starters & Contactor Supplies",
+      "extracted_price": 40.29,
+      "price": "$40.29",
+      "source": "Radwell.com",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSoE0iQwppjZzq2zkD0B2WdojYdPTIU5iVAy67o-F1jrPugs8k",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAdVBMVEUAVbn///8AVLkBWrsJXr0AS7YATrehvuMAUbjj7PcAUrgAWbsATLb1+v0AT7cPYr5IfMeAo9dvmNJlkM93ndRvl9JUhMpdjc+1zOnr8/oAQrQxccSrxOW90+ze6vaRsd0ARrTN3fCvyOeJrNzI2u8na8GbuOCc0uGeAAAA8UlEQVQ4jcXTy3aDIBAGYIabiBCiGIVgYi5N3v8RO027aQV2OZ2VHr7zDwxKWLU6R+pF+RuANhLLyB3NA73vB++H8TA5QXNAzcECxGghNlznWqhjgDa5/QJw0jS3SdFA2yklUPhdCTBMShZCDVB+hqBqgJ1hlTXgIqRiAlH6coDFZEeNIPqUhnhVtATAWpzWJPKX9ZUwTT7CtSsmtEReRoCbKE6SfXe6mxLgGM4+AAaRA8sLEPWIEGe6BccTRGdwQc547/7vMnU9njD0eAIiPD5uwKNZ7+uzefWWfHxuOlD8Ho0x9Oel2+7hN3/Hf/EP4BMuqQxvo4gPRwAAAABJRU5ErkJggg==",
+      "position": 18,
+      "headline_offer_docid": "9568066308109998204",
+      "image_docid": "15557566635907210869",
+      "product_id": "9568066308109998204"
+    },
+    {
+      "title": "Schneider Electric lc1d09rd contactor",
+      "extracted_price": 140.7,
+      "price": "$140.70",
+      "source": "DigiKey",
+      "multiple_sources": true,
+      "rating": 4.1,
+      "reviews": 16,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTE7DrzC1MqDHHg_Dbo5SntyLlyAXmi81q_zb93p5UFEnBE_YftnlkQVPfzSAAqGVOqT-6INn4YEWVPbWWqROlAiXjq47wH9R8i0pDDvZ9bOiPg-ejOqKDI5A",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAJFBMVEX/////IQD/WD//Lg//q5//Zk//gm//8e//1c//nY//49//dF9RQkDcAAAATklEQVQ4je3TOQ4AIAgFUcBd739fTWxQiZho6VQUr/wAPIpwiKwCGgkKQKcBjBIw1DL99hKg+f7gg1PgJMAnlyTAywoYN7uCAluwvt5FFR6oAoLbkvrRAAAAAElFTkSuQmCC",
+      "position": 19,
+      "gpcid": "7383363412125905639",
+      "headline_offer_docid": "1497168059881040558",
+      "image_docid": "8905773984901805623",
+      "product_id": "16449463715883394939",
+      "catalog_id": "4645216058227267253",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A7383363412125905639%2CheadlineOfferDocid%3A1497168059881040558%2CimageDocid%3A8905773984901805623%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "7383363412125905639",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "1497168059881040558",
+          "image_docid": "8905773984901805623"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric IEC Contactor 3 Pole lc1d09bd",
+      "extracted_price": 99.95,
+      "price": "$99.95",
+      "source": "Trojan Supply",
+      "delivery": "Free delivery",
+      "multiple_sources": true,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQWUycSG2PF31D66FVPUEbTIVNo6wAHk96NjyJEcpMVlbeBMBUTDZEhoyzkXUgfS4TlsJUmFRyfZrTwW2amHU6IAps9L61qw4P1v820yxueQKgDwN6ukaoixvo",
+      "position": 20,
+      "gpcid": "13641589881513410777",
+      "headline_offer_docid": "15141513145436553320",
+      "image_docid": "7537990058550842501",
+      "product_id": "17882674946124005137",
+      "catalog_id": "17865964178705152055",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=LC1D09BD+RS+Components&prds=gpcid%3A13641589881513410777%2CheadlineOfferDocid%3A15141513145436553320%2CimageDocid%3A7537990058550842501%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "13641589881513410777",
+          "q": "LC1D09BD RS Components",
+          "headline_offer_docid": "15141513145436553320",
+          "image_docid": "7537990058550842501"
+        }
+      }
+    }
+  ],
+  "filters": [
+    {
+      "type": "On sale",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "On sale",
+          "shoprs": "CAESBEoCGAEYBioWbGMxZDA5YmQgcnMgY29tcG9uZW50czITCAYSB09uIHNhbGUYAiIESgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESBEoCGAEYBioWbGMxZDA5YmQgcnMgY29tcG9uZW50czITCAYSB09uIHNhbGUYAiIESgIYAVjmriFgAg",
+              "q": "LC1D09BD RS Components sale"
+            }
+          }
+        },
+        {
+          "text": "New",
+          "shoprs": "CAEYCioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIHCAoSA05ld1jmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIHCAoSA05ld1jmriFgAg",
+              "q": "new LC1D09BD RS Components"
+            }
+          }
+        },
+        {
+          "text": "Used",
+          "shoprs": "CAEYCioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIICAoSBFVzZWRY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIICAoSBFVzZWRY5q4hYAI",
+              "q": "used LC1D09BD RS Components"
+            }
+          }
+        },
+        {
+          "text": "Small business",
+          "shoprs": "CAESAmoAGBYqFmxjMWQwOWJkIHJzIGNvbXBvbmVudHMyHAgWEg5TbWFsbCBidXNpbmVzcyICagAqBBABGAFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESAmoAGBYqFmxjMWQwOWJkIHJzIGNvbXBvbmVudHMyHAgWEg5TbWFsbCBidXNpbmVzcyICagAqBBABGAFgAg",
+              "q": "lc1d09bd rs components"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Stores",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "eBay",
+          "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIICAISBGVCYXlY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIICAISBGVCYXlY5q4hYAI",
+              "q": "ebay lc1d09bd rs components"
+            }
+          }
+        },
+        {
+          "text": "RS - America",
+          "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIQCAISDFJTIC0gQW1lcmljYVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIQCAISDFJTIC0gQW1lcmljYVjmriFgAg",
+              "q": "rs - america lc1d09bd components"
+            }
+          }
+        },
+        {
+          "text": "Standard Electric Supply Co.",
+          "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIgCAISHFN0YW5kYXJkIEVsZWN0cmljIFN1cHBseSBDby5Y5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIgCAISHFN0YW5kYXJkIEVsZWN0cmljIFN1cHBseSBDby5Y5q4hYAI",
+              "q": "standard electric supply co. lc1d09bd rs components"
+            }
+          }
+        },
+        {
+          "text": "Radwell.com",
+          "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIPCAISC1JhZHdlbGwuY29tWOauIWAC",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAioWbGMxZDA5YmQgcnMgY29tcG9uZW50czIPCAISC1JhZHdlbGwuY29tWOauIWAC",
+              "q": "radwell.com lc1d09bd rs components"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Price",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Under $80",
+          "shoprs": "CAESDRILEQAAAADQEpNBGAEYBSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIiCAUSCVVuZGVyICQ4MBgCIg0SCxEAAAAA0BKTQRgBKgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESDRILEQAAAADQEpNBGAEYBSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIiCAUSCVVuZGVyICQ4MBgCIg0SCxEAAAAA0BKTQRgBKgIYAVjmriFgAg",
+              "q": "LC1D09BD RS Components under $80"
+            }
+          }
+        },
+        {
+          "text": "Over $80",
+          "shoprs": "CAESDRILCQAAAADQEpNBGAEYBSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIhCAUSCE92ZXIgJDgwGAIiDRILCQAAAADQEpNBGAEqAhgBWOauIWAC",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESDRILCQAAAADQEpNBGAEYBSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIhCAUSCE92ZXIgJDgwGAIiDRILCQAAAADQEpNBGAEqAhgBWOauIWAC",
+              "q": "LC1D09BD RS Components over $80"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Free shipping",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Free shipping",
+          "shoprs": "CAESBFICEAEYGSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIXCBkSDUZyZWUgc2hpcHBpbmciBFICEAFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESBFICEAEYGSoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIXCBkSDUZyZWUgc2hpcHBpbmciBFICEAFgAg",
+              "q": "LC1D09BD RS Components free shipping"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Brand",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Schneider Electric",
+          "shoprs": "CAEYASoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIiCAESElNjaG5laWRlciBFbGVjdHJpYzoKCIPzPBCS4z4wAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIiCAESElNjaG5laWRlciBFbGVjdHJpYzoKCIPzPBCS4z4wAVjmriFgAg",
+              "q": "schneider electric lc1d09bd rs components"
+            }
+          }
+        },
+        {
+          "text": "Schneider",
+          "shoprs": "CAEYASoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIaCAESCVNjaG5laWRlcjoLCIPzPBCytYcCMAFY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASoWbGMxZDA5YmQgcnMgY29tcG9uZW50czIaCAESCVNjaG5laWRlcjoLCIPzPBCytYcCMAFY5q4hYAI",
+              "q": "schneider lc1d09bd rs components"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "carousel_filters": [
+    {
+      "text": "Nearby",
+      "shoprs": "CAEYAyoWTEMxRDA5QkQgUlMgQ29tcG9uZW50czIOCAMSBk5lYXJieRgCSAE",
+      "input_type": "link",
+      "litescrape_link": {
+        "endpoint": "/google/shopping",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "shoprs": "CAEYAyoWTEMxRDA5QkQgUlMgQ29tcG9uZW50czIOCAMSBk5lYXJieRgCSAE",
+          "q": "LC1D09BD RS Components"
+        }
+      }
+    },
+    {
+      "text": "Deals",
+      "shoprs": "CAESBEoCGAEYBioWTEMxRDA5QkQgUlMgQ29tcG9uZW50czIVCAYSB09uIHNhbGUYAiIESgIYAUgB",
+      "input_type": "link",
+      "litescrape_link": {
+        "endpoint": "/google/shopping",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "shoprs": "CAESBEoCGAEYBioWTEMxRDA5QkQgUlMgQ29tcG9uZW50czIVCAYSB09uIHNhbGUYAiIESgIYAUgB",
+          "q": "LC1D09BD RS Components"
+        }
+      }
+    }
+  ]
+}

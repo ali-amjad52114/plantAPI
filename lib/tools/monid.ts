@@ -31,7 +31,7 @@ async function call(method: string, path: string, body?: unknown) {
 }
 
 /** One paid call (~$0.00015). Returns the raw provider output (shopping response). */
-export async function runShoppingSearch(part: string, q = `Schneider ${part} contactor`, timeoutMs = 90_000): Promise<{ raw: ShoppingResponse; runId: string; cost: number | null }> {
+export async function runShoppingSearch(part: string, q = `${part} RS Components`, timeoutMs = 90_000): Promise<{ raw: ShoppingResponse; runId: string; cost: number | null }> {
   let run = await call("POST", "/v1/run", {
     ...MONID_TOOL,
     input: { queryParams: { q, num: 20, gl: "us", hl: "en" } },

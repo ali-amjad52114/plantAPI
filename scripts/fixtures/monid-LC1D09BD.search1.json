@@ -1,0 +1,809 @@
+{
+  "search_metadata": {
+    "id": "6d03d12cec66a2bb91b6f02d",
+    "status": "Success",
+    "created_at": "2026-10-07 21:48:22 UTC",
+    "processed_at": "2026-10-07 21:48:22 UTC",
+    "total_time_taken": 0.877,
+    "google_shopping_url": "https://www.google.com/search?q=Schneider+LC1D09BD+contactor&udm=28&hl=en&gl=us&num=40",
+    "transport_time_taken": 0.833
+  },
+  "search_parameters": {
+    "q": "Schneider LC1D09BD contactor",
+    "google_domain": "google.com",
+    "gl": "us",
+    "hl": "en",
+    "device": "desktop",
+    "num": 20
+  },
+  "search_information": {
+    "query_displayed": "Schneider LC1D09BD contactor",
+    "shopping_results_state": "Results for exact spelling"
+  },
+  "shopping_results": [
+    {
+      "title": "Schneider Electric lc1d09bd Contactor",
+      "extracted_price": 142.75,
+      "price": "$142.75",
+      "source": "SupplyHouse.com",
+      "delivery": "Free delivery by Tue",
+      "multiple_sources": true,
+      "rating": 4.6,
+      "reviews": 39,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSm6QBVjrtdqO4qmvrk9FzUK_evGPrCR-NITaBm7jNIgYV6tBOLhIxU_O_ijszMFX3OOd0UzY4uHnFH5IwivpZoKYsSwivmGYcGj_aTg1wCgLjhgKDYBYa_wpI",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAA5FBMVEX////+/v7+//0pAAAdAAAsAAD//v3n5OPW09O9t7abkpCIe3lvXl1YSEVQPjtOPDhoWlWFeXSglo/Iw7/e3Nr49/aro6BnXVpGLicgAAApDQAyFgk4Gg09HxJBHws9Gwo3EgEuFxKJgYHy7ewxHRgvDgBGJx1aMSRiMyNYKyNtOylzPyNvOxtkMxZNHAAzAABhTks0GxmJWzimckO6e0e8fUHBjVfQqofcv6fp0r/fysBmOirElGYwGg9XKxriy7eca0XGjFLGmXh7UDFmMyr08+enkYx9YFivej746d7VsZrImW5FUPpTAAABIklEQVQ4je1R2XaCMBQMEQPW0k3QYtraqIVApYvGKI1b7abt//9Pb+LhRV78AOdw8pCZO8ydIHTEYbAABD5M9giM9S3eCTBcOG7tpH7qnZ17F5dXDT/YzRan02xdV2w7bNOb27vOfdVmXtcNwIVoAep1+/YDYzSKOSCJefo4yJ6eX2qahHG/H9JXRmOVxkmSDkdiLCfTPM/fmq4OiZw2m89ZpLhKsqGU49myh3CxAYRF9YrmU84XQIvZEusNgCXa3QhCyqjicbJ6l5v1FuYIMZRlHCACBIyA/5BCrANk6QIw0iJs1sTIDcPoUyUrKUdfML5fGKj8VnWRgUBI3V9ZAF7u948aSLHZWqXKTecwRZzG9PdvEpQcTJ3wGMW/SxmOOAz//GsdrEzAilUAAAAASUVORK5CYII=",
+      "position": 1,
+      "gpcid": "6223933511300051337",
+      "headline_offer_docid": "11112846498893759952",
+      "image_docid": "15754049875005877561",
+      "product_id": "10599242461341628844",
+      "catalog_id": "15536877525102883253",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=Schneider+LC1D09BD+contactor&prds=gpcid%3A6223933511300051337%2CheadlineOfferDocid%3A11112846498893759952%2CimageDocid%3A15754049875005877561%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "6223933511300051337",
+          "q": "Schneider LC1D09BD contactor",
+          "headline_offer_docid": "11112846498893759952",
+          "image_docid": "15754049875005877561"
+        }
+      }
+    },
+    {
+      "title": "Schneider Electric IEC Magnetic Contactor lc1d09bd",
+      "extracted_price": 94.57,
+      "price": "$94.57",
+      "source": "SuperBreakers.com",
+      "delivery": "Free delivery on $100+",
+      "multiple_sources": true,
+      "rating": 4.4,
+      "reviews": 55,
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSd02qcIqvDuYGiPKGcPdFYyMEf3anBPEPE9TpdSffWLlSp8HcWorGCtrC-8bBM2UxIFvAW4NbmEgARszsSBOj5x8VKCrNu5INyU3RD8QWgnG1loh8GFe5P",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAJFBMVEVHcEwsjak4i6VQhpc6i6Rbg5FFiJ0yjKZsf4WGeXGvbk0akLBGhVw0AAAAC3RSTlMA/M9mq0yE5jIeEfnIxKsAAAEoSURBVDiNfVILrsQgCJSvWO9/3wdaqXabN8lmKwww6JRyoJmQEFn5BNV+oxZqH4SV7lC0d77OrLAlQWX80dG+qyahwU3c6v2EqUCy1cpfXiKQ4aT2pSMi9EjIr84zb2f4aeD7ZINe+xdkXN9napuh/xBqEBiQWSmgyowVXoSxaLPW4jdPovUhNN5LXDlU79cuCu3ohLriE8lDJQ6RBqzSzGdIwJqZKOMgwthCFEdprYguMIBeI2ME+DPERNsf/zKKDsDknCLwbS/fxMVX3yIWI+a3gW4bjHuYD51Bdg1pJp1mCWSHsTZYEpYV76dfZ7CjIIAjlL5Z4h8j+cUjbpeOk7Dl0fqBqXQraQVORjs72K915OkA2NKd+1SnWDhJrvdOCz+Xq6cO/AMytxhjoC3hRgAAAABJRU5ErkJggg==",
+      "position": 2,
+      "gpcid": "10337607505885677452",
+      "headline_offer_docid": "5581680801412798393",
+      "image_docid": "4665844614940374268",
+      "product_id": "965429514906163431",
+      "catalog_id": "2630580477269995972",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=Schneider+LC1D09BD+contactor&prds=gpcid%3A10337607505885677452%2CheadlineOfferDocid%3A5581680801412798393%2CimageDocid%3A4665844614940374268%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "10337607505885677452",
+          "q": "Schneider LC1D09BD contactor",
+          "headline_offer_docid": "5581680801412798393",
+          "image_docid": "4665844614940374268"
+        }
+      }
+    },
+    {
+      "title": "SCHNEIDER, LC1D09BD, CONTACTOR, 3 POLES, 9A, 50/60 HZ, 0.7KG",
+      "extracted_price": 29.16,
+      "price": "$29.16",
+      "source": "SM America",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTa_kIZn9TyUi1S1PTTzb6kEdzl6vCuk_pjoPa8RV6R34OLlbM",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACQElEQVRYhe3SPW4TURSG4e+cuTOO/xLbIT/YQYoiRQIXgOiQKIAGVhBBQZUC0bCFKCUboaGAjgYJRWlBQIkUIoSIAwnYsR3DeO6d81GxAiLRzLOCt3iBQqFQKBT+MwGAXrtdKUnlisFaahoAQBk+5hpdFdgkcvmbuS8Lp6OVwWpmegnC8cLBp9dnEkBAxp21dQ95KuAhIBMSYwHfUfURSBPhE4H2jLwH4C6Bl3eWG48Hg0Glub//a9hqlff6/V/dblfTNC2bmYQQNEmSPMuyCACcc2ZmkmSJCzPBTyaTUCqVcum125WylDcIbBrkRIEVkLsUdEm+hcg1gZwj2Bdyh6IPp+TGdecPHfCAZs9F9baZvReRWUDXSdagGABIFdomeSrCGFAYrKdmXlRXwnT6zMWsXKTwlon8oCDKyTEj2VWTG1SuEtxR4hJFHE26AHZf+NEHl1Q3JWdN1N2kohlB70M4NAKRRk3AAoALJphV6h5gTQpcBN0ncI0itSiOnXztdOZL0czq18Xl1mC+tUDV8Zel9kn7+Ntaczj6frC0OGNRPqyPpo1S8HG/NvvzVWf+/fHh8eV0mlZySPD+97hRb5z35pln+UBEFqns12q1aZbls3Gs0xCYhBDqcZyMPn/eOzg6Opo653ryd4atra1akiRVAMgyF4Xgo3rdjdI0nQOQZlkckRJE6OI4mwCoeJ8IqkAYDk/L5fJckiTee5+TdN4nBIBqFZplMQFqCF5QBpz3P7e3t9OzmLhQKBQKhX/2B1rnLKKa+mHVAAAAAElFTkSuQmCC",
+      "position": 3,
+      "headline_offer_docid": "7188489811886725716",
+      "image_docid": "9411270180323429879",
+      "product_id": "7188489811886725716"
+    },
+    {
+      "title": "Non-Reversing Contactor, 5 HP, 480 VAC, 9 Amp, LC1D09BD",
+      "extracted_price": 109.17,
+      "price": "$109.17",
+      "source": "AceIndustries.com",
+      "delivery": "Free delivery on $500+",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcQLgj2IDfgRdj0C6blLYRDd-GDwEoSyPAx9SQQNzANdNxoxqOjr",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAdVBMVEXcSTn////aPCvjb2PaPy/cSjrrmZHgXE7bRDT99fTdTT3aPi3ld2v76uj87evbQjHngXbwsKnfVkftoJfxt7H53tvldGjohHnqkIbeUUL0xcD++vrjal3up5/2zsr42dXXLRriY1b0x8Pyvrjrlo3ZNiT43NiH1QZXAAABB0lEQVQ4je2Ry3KEIBBFBVEeojwURUQcg/r/nxgdTY012STr5Cygq7h1u/uSJP/8DAK/Q8RxolOAeZu+wbUf6zr34hQ0FLwR7HRchj0VhMnGlGV1UVY0LKbhaqIDX+EuyQgsmBzr/KJupQHjA7JWudxi8jQp5qb68o+dASAviCBpl1rVn5OKjI8f0xRCiLkBtBYkE2vPpbW3ZQseXWwOq0otycrsVlvn0SsQ0S/bcPWhug17Izm67iXIyCoUAIPZdzJhADQo6Td1D1V0FAyWaaz9nk1kUk7O39+5qUoLC4GgiGUZR+diD+8OeMaakOwoNcaz1/rM8jUEQijJTre9RHsWv/77v8sngDoR305PGBsAAAAASUVORK5CYII=",
+      "position": 4,
+      "headline_offer_docid": "11108312429921822231",
+      "image_docid": "1782550096999668001",
+      "product_id": "11108312429921822231"
+    },
+    {
+      "title": "SCHNEIDER ELECTRIC LC1D09BD TeSys D Contactor NEW",
+      "extracted_price": 22.5,
+      "price": "$22.50",
+      "extracted_old_price": 45,
+      "old_price": "$45",
+      "source": "iGAM Industrial Marketplace",
+      "tag": "50% OFF",
+      "extensions": [
+        "30-day returns",
+        "50% OFF"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTU5ugJ-DogfIgLKjaVkXxwMmmohYQLWx7jkzd6srpHDcKo-IoidOUMMldMwvOvzD2x1Skcu_7CvUW-dN4w9DuGIK2tjLnwC166v3bJmfOwPfPLXobhQhttdg",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAqFBMVEUAAAD///+kHSenHiiEFx+sHimpHiiTGiN8Fh6eAACmFCLw8PANAwNdEBY2Cg2hHSZrExlTDxQvCAsdBQcrCAqZGyRJDRFxFBsYBAY9Cw94FRxjERefAAiWFB6XUVXw293myMqzTVPQ0dHWpKfds7aCgoLIg4igABPm5uaoKTLExMTa2tq4WmCLi4v05eanp6czMzPFeHyDAA9ISEgdHR2rfH+zpKURERGiZITMAAABDklEQVQ4jZ2T6XaCMBBGmcEEE6rWDWul1bq0tu7dfP83MyQxJJHlHL8fnDD3MpnAIQjuy0Od0Krh7UaN0Hms5hHpVuFeJyT9cjxoEsRhGU1GQxIilu4QZRQxbJbwBkWsEp4I6tBiI6FXAcktHT9HOUeaeLivxzPCxBPQwWLMkctbojtPGecs5YXnmFD68joFkdlbKgXva/ZINtQ8M2DBCoRgLK+xNJasQFBZSQHePxxhbRlKgM/QFmCTr9UeMGOOAF9mvdEtttwRYHddz7WwZ0Y4yH2PXgc4fevKD0hhnXfTSc1Uqrizjylfhvq1DqAF+BV3Z7Dyl/EjGCEW28W2AP/iiTgXhAJ+VCW4qXu5AFYtDE8RL2psAAAAAElFTkSuQmCC",
+      "position": 5,
+      "headline_offer_docid": "7142804947628170766",
+      "image_docid": "4487321462118387549",
+      "product_id": "7142804947628170766"
+    },
+    {
+      "title": "LC1D09BD Schneider Electric / Telemecanique 9 AMP Contactor",
+      "extracted_price": 82.89,
+      "price": "$82.89",
+      "extracted_old_price": 119,
+      "old_price": "$119",
+      "source": "IMC-Direct",
+      "delivery": "Free delivery",
+      "tag": "30% OFF",
+      "rating": 4.4,
+      "reviews": 55,
+      "extensions": [
+        "30-day returns",
+        "30% OFF"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcS8-0jybLPHW3T7gg7CyFq7nVFjlHngtbhSAy4-UDTc9cErKxnF2mQDGPavLzTYRUOp0pboemVDUtP6df3J-A52h7LECmkJ",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAY1BMVEX////9+/rysLHdEBDukI7mY2LkS0vkUVDWAADhPj3hNjXunJ3mW1rcFRTeISH41dX97u7ytbXshYThQkHyvr32xMT3zs/odHPvlJT74eHxqajnbWzmWlLrenrfKSr85ubiOjotx+N+AAABKUlEQVQ4jeXR246EIAwG4CKIlYOI4AEdx3n/p9yiM3E02ftN9o8mNfmoTQH4N9ligt4dtevp9ZHSnmAYI0ziqIWA1JU5xQm8ncA0+wmmKpjtnsfZosAOJM67xQAjKkrTxBNwAQbLXI5YsYcV06QN1zeQ/8EUAdm4LbUrigt4cO4Besslq/ZxtJ0vQNa4AKxWBVY9Mxg6dwGhDIqxuqrCu0PbsitYBboWtfmA7+xgHHAq0MlfwQJNkIqFD0jpBkpYOO+grt/Ad9sdzIh9BvKZxyue/g6SbdgOqAMDfVsUAQgG4EXAzr6IC13QHQjaHXUwXFLU9yapW02nBxpc1dAhz1HnJqPSUK5HbQzEV75uNZ6bTLMD3x+199DOOmf42hRj+XnX+TMH/k5+AHPKEJLVzbprAAAAAElFTkSuQmCC",
+      "position": 6,
+      "headline_offer_docid": "9480480756084786601",
+      "image_docid": "534483738976950437",
+      "product_id": "9480480756084786601"
+    },
+    {
+      "title": "Schneider Electric lc1d09b7 Contactor",
+      "extracted_price": 34.53,
+      "price": "$34.53",
+      "extracted_old_price": 53,
+      "old_price": "$53",
+      "source": "Kempston Controls US",
+      "tag": "35% OFF",
+      "multiple_sources": true,
+      "rating": 4.6,
+      "reviews": 56,
+      "extensions": [
+        "30-day returns",
+        "35% OFF"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQ_WkOl3KvZ1-rkdsE5LOA2M_nY8eTX9lSxoElrjcyeKNsv2-7k0uNlIYcaAubXS5TB8FTaUGJjMX6j21rpion7GWO0pBtl3_iJgqjx3WXW-JwHEAUqzM2R1w",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAD6ElEQVRYhcWXP2gbVxzHf++9u5Psi3yupaC4tuEoCEGzdFXW0q3UdhbTBNRAFkEaBVGcLFZVIw1tRBBWPXgRNKKGeHNDttKlg71maUEYisCJHWEr9tk+Sb57714H+4QsWdKd7bTfTe/e774fnn5/3gH8z0JuA9RYNrRXa9y0AML22sfD134p5ROViwAITk2rtcZtg7LJLU0fNxmbsJ8hhOrv9vU/AaCiRNNTDcoeCwgVxv1Dr5xA9QQIx3PBrf2je1ua/qDVtJsos/wGZREDIFLe1dblu/N9QXC3B2osGyrvaAtHDeNHJ+btMiiL1Cn7ubyjLaixbMgVgBLNRLYP9OcGYzNujVvFOR8wGJvZPtCfd4PoAFBj2VCD0mcGZZHLmLfKoCzSDeIMQDieC25revoqzc9AaHq6J8DW/tG9yx57L5mW9ZV8d/7+uQBqLBs6NtmDD2UOcJITlPP74Xgu2AFQrTVu98p2kZBNWRIXZUlcRAjVm+sYv7wxLP8DAIAJDvSDMCiLvKkefNkBYFA22SsQAawd/fr9w7ERX0bAeBcAQBLI+qgiJ0v5REWJpqecniC1+BdnANRYNsQ5jDsJtiUSsukVhO/KS7MbSjQTqZss77RfcIBbdkVgAIC9WuMmtay+x2cLIXgjYjSvFefWw/FcsEHpMzfNilpWYK92HGgCUGb5OecDTl8gIFTQl1OFcDwXLO9oC27LlnM+QBn7FOB0FmCCA2A6Cz7t6wWAqynbrrOgl+wywgAlkZDNSwNYzNp1Y/72/eFcOJ4LasXkqojRfGtZOpVAcLUJIBBcdfMSg1mTb98fzgEA6MupguwRXUGc7EWVJsBHg96/7Np2Kt0wv/VF008AAA6LyZ8GRaHgNFbAeLfZvAAAykuzGwhgzQ0AAIB+bKbs3j424stIhKw4iUMAa/YlpZmEAka/9wriALc8X//woryjLdg9g3M+YFo8pUTTU6V8ojKqyMl+SYkQqntF8sL+3QQY9w+9kgSy3i3QZGzCYGzGYGymtWeYjE0wi3/ey7RVIsGvbwxfa/o0AUr5REVAqHCRjHYqhFDdK5CnrXfEM31AX04VRIxffiiAQVEoaMXkauta55XsuvKo119xUUmErIyN+DLt6x0ApXyiMjokf3OVEBIhK/bY7gsAcFKWakCZbr98uBVCqC5L4qJ6XXlUXprdOG9P1w+TU9qHSjT9R4OyxyazPnM6MRFCdZHg116BPNWKydVSj719h5FWTK6qAWXa5xHvSISsiIRsdjsVjyQcSAT/5vOId9SAMt2ecOfC9tvQrnA8F3y3r38CwIOUWX4AAIGQv7Xi3JUn7n+ifwHdgMnWjqjJEgAAAABJRU5ErkJggg==",
+      "position": 7,
+      "gpcid": "8713877533047653636",
+      "headline_offer_docid": "4815934079038135400",
+      "image_docid": "15689784785801253080",
+      "product_id": "12080671590047548136",
+      "catalog_id": "1992301401102451625",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=Schneider+LC1D09BD+contactor&prds=gpcid%3A8713877533047653636%2CheadlineOfferDocid%3A4815934079038135400%2CimageDocid%3A15689784785801253080%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "8713877533047653636",
+          "q": "Schneider LC1D09BD contactor",
+          "headline_offer_docid": "4815934079038135400",
+          "image_docid": "15689784785801253080"
+        }
+      }
+    },
+    {
+      "title": "SCHNEIDER, LC1D09BD-DC24V, CONTACTOR, TESYS D TYPE, NON-REVERSING, 9A~20A, DC24V, 600 VAC, 0.6KG",
+      "extracted_price": 23.68,
+      "price": "$23.68",
+      "source": "SM America",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcTWBb8MbnAXpXNRJkktwlNAosXQVCUgyv8IaIpalCpLkhnyKp4J",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACQElEQVRYhe3SPW4TURSG4e+cuTOO/xLbIT/YQYoiRQIXgOiQKIAGVhBBQZUC0bCFKCUboaGAjgYJRWlBQIkUIoSIAwnYsR3DeO6d81GxAiLRzLOCt3iBQqFQKBT+MwGAXrtdKUnlisFaahoAQBk+5hpdFdgkcvmbuS8Lp6OVwWpmegnC8cLBp9dnEkBAxp21dQ95KuAhIBMSYwHfUfURSBPhE4H2jLwH4C6Bl3eWG48Hg0Glub//a9hqlff6/V/dblfTNC2bmYQQNEmSPMuyCACcc2ZmkmSJCzPBTyaTUCqVcum125WylDcIbBrkRIEVkLsUdEm+hcg1gZwj2Bdyh6IPp+TGdecPHfCAZs9F9baZvReRWUDXSdagGABIFdomeSrCGFAYrKdmXlRXwnT6zMWsXKTwlon8oCDKyTEj2VWTG1SuEtxR4hJFHE26AHZf+NEHl1Q3JWdN1N2kohlB70M4NAKRRk3AAoALJphV6h5gTQpcBN0ncI0itSiOnXztdOZL0czq18Xl1mC+tUDV8Zel9kn7+Ntaczj6frC0OGNRPqyPpo1S8HG/NvvzVWf+/fHh8eV0mlZySPD+97hRb5z35pln+UBEFqns12q1aZbls3Gs0xCYhBDqcZyMPn/eOzg6Opo653ryd4atra1akiRVAMgyF4Xgo3rdjdI0nQOQZlkckRJE6OI4mwCoeJ8IqkAYDk/L5fJckiTee5+TdN4nBIBqFZplMQFqCF5QBpz3P7e3t9OzmLhQKBQKhX/2B1rnLKKa+mHVAAAAAElFTkSuQmCC",
+      "position": 8,
+      "headline_offer_docid": "4921261805164813839",
+      "image_docid": "18167151207155975601",
+      "product_id": "4921261805164813839"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD IEC Contactor, 24VDC, 9A, Open, 3P",
+      "extracted_price": 144.99,
+      "price": "$144.99",
+      "source": "Newegg.com - zoro",
+      "delivery": "Free delivery",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcT_WQqRnQm6SxZMICXxMtWBQeuAkLL1fjhvcYjLVen_0Yr3ocmXznVcnsZUrVUy-xYxPxRI_Vw_5pEdnZ7WJCGmJyYjcvAroyENusHAklaxE1DjT0RsIPCJJjs",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFbElEQVRYhdXXX4icVxnH8c+ZPzu73W2iG7SJaYwxIYnR2NLgjQi5shQERW0vVIpKtSLqTbywN3rRikULQfFPqFaKIGgRKQqi6I2CNwoBQRAWtIWAJrRJ9s/8eWfmnfc9XpwzmZ3NpkYtiC887Lwz857f9zy/5zzPDv/jK7wai8TvWcEJ3ItVHMsfXcEf8fvwSZuvKkB82hIewMN4wJ6VJXuWaTdYalGXDAs2C9bHPVzA4+FTev8VQLxgL76ERx04sOKNb2L/G2gGVMQx9ZC6oOpT9ulu8bcNXh6v4f7waZf+bYD4bU08ii87cXLVW8/QXqbRystE4iQDFNR9qh7VFsUW3U1e2ODl8iLeGT5jDK3bEv+m02o/9uYjpxx/G6uHaC7R6KBNCMSIknqUATqENhq0IwsVd1V0N84Y1B/Dd28LIH7Dg2rPuu/tK07eR3MvrTtp3PEKAAOqNpppkcmE5pjWkD0desVnbwsgnveY/atPOn6cu4/T2kvzNTSnAIuEVtqlOlkQhoSFmbiK5ojGgNCh06Eeno7n48Fwzt9vCRCf8ozD+x5x+gR7D9FcScLTaCynDIS2WQ2USTxsE48lYUBYzGC5Zqp4ilsAxK96zOE9j3jHUdqvzX4v5V3fkcWnFmyr47At7TGfiFDkTGXx2CQGaqu7WhC/4kF3dZ70ltfRXKCxkB5udHIszl7fdIhCfr8iLhI76fnYJraoGkwCNSorsnkz8SccVHnW0WXuXEy7Cc3scztFaG1L+25XSJ9Pn4ktYoMKE5SRElXqjHMAKl9zsr1i/2KqbCF/JaT7sO1+7ipvhpguHSOTOgmP6xRlpPLinAXxi95lrw871SZETKNOf2OO6f3c1d5xn79X10yqdAzHJaMJo4qyrrA2n4HKOUfQiISamIxKxTTJuyxztyt3gdgmHss0C+oRk4JRQTGiGNMdU/lLeCLNhAbEL1hVea9DknDMhsUyVXIc5wYzyn0+v74JIqb3qyFVQVkw6jMcUAwYjKYAv5g+kSyYOOuAZrI277ge58iDpS5Sh9t5znf2gXqU5sCkx2iLokuvS7dPf0S/pPLcPEDllOWp7dVs5zfE+6m3VzvP+S6dsCqS+HCdwXV66/Q26Q1YLxjHi+Hr/rQT4KAFub5i8q8xIuahUi3MN5np2I07ZkEcJ8/HXQZX6V1ja53NLt2CjRGV89tNmwIs5OaQolGm3Yd2jmZqIjfESxrF/DCq62RZOUjjt3eNzatsrLPZ4+qAQb3GLP3bAa7rY5zW04xpsVCYO/exzuKj1JrDQrIgykdulAqut5mE16+zsUl3wPqYyufD06rdANasYzgFQJigmImLs/7eyP3dQgKsA1XJcMSgn1K+nmNzwD8Kivjz8Mys+ncC/MYllXs0p8MqaZbEQcqIelbljSJZE9tJfBJTkylG2etBjiGXh2zUV/CJneK2SYkf9Vv3OOsoVrCUN9hCq5WGSqOTZrqFlKq6mfr7ODKc0CvpjlKxbY15qeRyNcb94Qd+txvAbBpWnvKCs/aZDY7FbElrQqhScYZReqzOhTkODCODit6E7oRuxfWKazWVj4cf7i4+lwGIH/Jrd3u3k1jeloUbdSHN8tiYjdaRVCqDSL+mF7kauRwrfC78yIVbic9nAGofcckfREccyQCdHQAidZWGzFgCGGaIAi/hqh4eCs/51SuJ35QBiA85hl96vWMO75KBBJpnuwQxRg/XsOWv+ED4iT//K/FdASB+0Aq+Y9HDVrEvQ+SWL5rVSQ9b2LCJx/Gt8NP0P/9/DHAD5P3uxTm8R8fq9Ngj7brExEU8j++H5125XeHbApiDeZ8z0g/QlfzWGl4MP5v9zPq/vP4JBfOtkOL0ECoAAAAASUVORK5CYII=",
+      "position": 9,
+      "headline_offer_docid": "16210197915714120227",
+      "image_docid": "2133376854060938320",
+      "product_id": "5380072975996492700",
+      "catalog_id": "17222988726984864698"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD + Ladatbdl",
+      "extracted_price": 11.14,
+      "price": "$11.14",
+      "extracted_old_price": 10,
+      "old_price": "(€10)",
+      "source": "PLC2day",
+      "extensions": [
+        "7-day returns"
+      ],
+      "thumbnail": "https://www.plc2day.com/media/catalog/product/cache/adade2d2c48195b43650497b004a3d56/2/5/2508080027a.jpg",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAclBMVEUCNoH///8DNn8CNn8AHHfn6O0ALH3d4OgAMH8AKnzu7vEAM4AAEHQALn6DjrAAKHwXPIIAJXuOmLaUnrosSIgAE3Wdpb97iKxSZZcAIXk/VY7Q1OAAAGz4+frCx9YAHnirssdqeaK0us1gcZ9KX5Q1T4w8ejR5AAAAzElEQVQ4jdWRRxLCMAxFI7Adl1QC6T1w/ysSyzOE9HX+wm/x30gzsnU7iXWzDnO/pMDYseB7nn8kqAAgUAeCYwPYzr4QPmBM5O8J6qn7+YiZ8KIo8CjcFrIY+ySFONsSeI59UVYAOd8QiETBqcdH+muhabHvOkQqloKbYlGXiD4Y+EJoKl1UZaEhS7vK5gLpzeQEkY8Hq8m/wAYzOUS0gX4HNglKgVlgmwXmYEr9BBFJSql8J4iPp0FlLKYVguhw14AhiFj9xVauIpzkCxrFCiOIzRddAAAAAElFTkSuQmCC",
+      "position": 10,
+      "headline_offer_docid": "7051231527153276286",
+      "image_docid": "4344100848091051095",
+      "product_id": "7051231527153276286"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD TeSys D Leistungsschütz 3-polig 9A 24V DC Contactor",
+      "extracted_price": 27,
+      "price": "$27.00",
+      "source": "megoha-army",
+      "extensions": [
+        "14-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcSfw6OlnjsPl4yLZxPMFFWCpFZWgZpDGqYmPU0E6GxUbkwuFZ3-WQyMJeWn1kcZoMwPeD4UoBCyOWLINwDmiEwoszZLBWagHsS_Mw1hb7E3KdMUUhRKNiVg",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAPFBMVEX///8nMy3KzcyFjIhcZWCip6SwtLJJU06Umpfn6Od3f3uNk5AzPzlncGy7v73DxsTc3t1+hYHx8vFvd3Op6dxjAAAAqElEQVQ4je1QSRLDIAyDeGGHLP//a+02nZJkmDwg1YWRLSxbxvxxRQBECOM+WBejszDsZ9KH8lGxTjvY0qdClr+1VbmzO5wxGMOpsv/xAreJAGehxSmnzqaiIBdjljSpICuvxw1jN1As4vUGWbL+lhyc+VZwHgdxE9R91GMsBLOfUyPW/xBiW8hzJ0Bp+Eq0MbQaoJUJOfVWiWUC64Qi+RVKnJjONs/GC4HwBQnOlM6wAAAAAElFTkSuQmCC",
+      "position": 11,
+      "headline_offer_docid": "17195058965903919631",
+      "image_docid": "11780040389364790844",
+      "product_id": "17195058965903919631"
+    },
+    {
+      "title": "LC1D09BD contactor hot selling 1pcs sufficient stock Fast delivery",
+      "extracted_price": 53.52,
+      "price": "$53.52",
+      "source": "Newegg.com - SiYiQi Tech Shop",
+      "delivery": "Free delivery",
+      "thumbnail": "https://encrypted-tbn2.gstatic.com/shopping?q=tbn:ANd9GcTcnOMgvvptxz-lRlWVvNsxXTMtRnxivbTqstOCZtdBSAIyvxAG12ycUHottpIUdUMgQgp-RBPQ-0K8GxRtjIHwSv42CyVJIPE9JVMHX7v90X7osBAIYqln7Q",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFbElEQVRYhdXXX4icVxnH8c+ZPzu73W2iG7SJaYwxIYnR2NLgjQi5shQERW0vVIpKtSLqTbywN3rRikULQfFPqFaKIGgRKQqi6I2CNwoBQRAWtIWAJrRJ9s/8eWfmnfc9XpwzmZ3NpkYtiC887Lwz857f9zy/5zzPDv/jK7wai8TvWcEJ3ItVHMsfXcEf8fvwSZuvKkB82hIewMN4wJ6VJXuWaTdYalGXDAs2C9bHPVzA4+FTev8VQLxgL76ERx04sOKNb2L/G2gGVMQx9ZC6oOpT9ulu8bcNXh6v4f7waZf+bYD4bU08ii87cXLVW8/QXqbRystE4iQDFNR9qh7VFsUW3U1e2ODl8iLeGT5jDK3bEv+m02o/9uYjpxx/G6uHaC7R6KBNCMSIknqUATqENhq0IwsVd1V0N84Y1B/Dd28LIH7Dg2rPuu/tK07eR3MvrTtp3PEKAAOqNpppkcmE5pjWkD0desVnbwsgnveY/atPOn6cu4/T2kvzNTSnAIuEVtqlOlkQhoSFmbiK5ojGgNCh06Eeno7n48Fwzt9vCRCf8ozD+x5x+gR7D9FcScLTaCynDIS2WQ2USTxsE48lYUBYzGC5Zqp4ilsAxK96zOE9j3jHUdqvzX4v5V3fkcWnFmyr47At7TGfiFDkTGXx2CQGaqu7WhC/4kF3dZ70ltfRXKCxkB5udHIszl7fdIhCfr8iLhI76fnYJraoGkwCNSorsnkz8SccVHnW0WXuXEy7Cc3scztFaG1L+25XSJ9Pn4ktYoMKE5SRElXqjHMAKl9zsr1i/2KqbCF/JaT7sO1+7ipvhpguHSOTOgmP6xRlpPLinAXxi95lrw871SZETKNOf2OO6f3c1d5xn79X10yqdAzHJaMJo4qyrrA2n4HKOUfQiISamIxKxTTJuyxztyt3gdgmHss0C+oRk4JRQTGiGNMdU/lLeCLNhAbEL1hVea9DknDMhsUyVXIc5wYzyn0+v74JIqb3qyFVQVkw6jMcUAwYjKYAv5g+kSyYOOuAZrI277ge58iDpS5Sh9t5znf2gXqU5sCkx2iLokuvS7dPf0S/pPLcPEDllOWp7dVs5zfE+6m3VzvP+S6dsCqS+HCdwXV66/Q26Q1YLxjHi+Hr/rQT4KAFub5i8q8xIuahUi3MN5np2I07ZkEcJ8/HXQZX6V1ja53NLt2CjRGV89tNmwIs5OaQolGm3Yd2jmZqIjfESxrF/DCq62RZOUjjt3eNzatsrLPZ4+qAQb3GLP3bAa7rY5zW04xpsVCYO/exzuKj1JrDQrIgykdulAqut5mE16+zsUl3wPqYyufD06rdANasYzgFQJigmImLs/7eyP3dQgKsA1XJcMSgn1K+nmNzwD8Kivjz8Mys+ncC/MYllXs0p8MqaZbEQcqIelbljSJZE9tJfBJTkylG2etBjiGXh2zUV/CJneK2SYkf9Vv3OOsoVrCUN9hCq5WGSqOTZrqFlKq6mfr7ODKc0CvpjlKxbY15qeRyNcb94Qd+txvAbBpWnvKCs/aZDY7FbElrQqhScYZReqzOhTkODCODit6E7oRuxfWKazWVj4cf7i4+lwGIH/Jrd3u3k1jeloUbdSHN8tiYjdaRVCqDSL+mF7kauRwrfC78yIVbic9nAGofcckfREccyQCdHQAidZWGzFgCGGaIAi/hqh4eCs/51SuJ35QBiA85hl96vWMO75KBBJpnuwQxRg/XsOWv+ED4iT//K/FdASB+0Aq+Y9HDVrEvQ+SWL5rVSQ9b2LCJx/Gt8NP0P/9/DHAD5P3uxTm8R8fq9Ngj7brExEU8j++H5125XeHbApiDeZ8z0g/QlfzWGl4MP5v9zPq/vP4JBfOtkOL0ECoAAAAASUVORK5CYII=",
+      "position": 12,
+      "headline_offer_docid": "8734933254629187951",
+      "image_docid": "18071613735483624682",
+      "product_id": "8734933254629187951"
+    },
+    {
+      "title": "Schneider Contactor Lc1d09bdc",
+      "extracted_price": 65,
+      "price": "$65.00",
+      "source": "Walmart - Edisa Corp",
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSbwtsG6ltPMz9OlfTCVHuXCPBEYB0j76z75tJmXdQRFdkjhaV7",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAADqUlEQVRYhe2XT0xcVRTGf+e+GRRkoYCo0HmPaIwuiHWhC1sZwNI0aUyrVevKpJJgu7dJXVjFuOjCP2vbhXVpqKE2RheVOMyQ2mgw0YaFLmr6BhiHv5q0gDDMOy5m6PDmvUF8abqxZ/Vy7ne+73v3vnvufXAnIoaO2a9ppmNG086cpp3+qDwSSfz7HU2sx3LAXeVUgbXlhPTNzvxXLhPFAOvmwU3iAHHi9W1RqKIZWPt7IZgszN8+A4uz86gWKwlVlnKzt8yAjrQ36wR1tYrkMEVgs+Ci7Ge1Fl7HiWuq495/NaApYppxzlEXm2PRyeuoPbCF+elNlqZrgXQs8TrLTh5LFzVjf65DWDUNgP0CyMsgAnIfxpzRtH1BU20tIdyTFRWdCgiPtDdr2hlGrU9Bmkqc5lXanIO1DRgaAjJiDmDFr2jG3lM18nsFw1Wf+KjTSzz2CyIvBvhUG2sb8FaGgSuBIuQhkIuadt5XLdd43meo5oFZlLMAOojRMftdDN8i0h4iPoEsn/cxBzAT1DFvH8GY48CjISQfSbd7vPRYqhdBATRtn0LMW8EX0KvgfciNybPVH2tgF0gna9KTPcN31x5H9SXQS1WIJ24+CbohXj1WFr4M3ivk3cckOflJ2E7ZVivW0cTTiDkGdOB5J6R3cjwUl2p/Eiv2ATDJevG0PDf1w3b4/9+xvSVIJZ7CmGMIHYiekK7sT+G48hIIWbR4WpJTP0Y2oIMY9jgHUd4EdpUaCYCOSNLdG1qTdr5GZH8loZfx9GN6ssMieGE1gV2gQ9Rpxh6gt+NXVIZBdlfEgU19QhXZ2IrljL+HiDyDZc4x5vymafuofuM7wksQn3jq/kZMwyWkejsBqIdyiqT7jgiephKdWOYiiIVV2Ce7p38uzZp9EpWTIFaQQiewlnbJs/PXw2fA1B+qIf4Hovuk23375lQac6TUIWmlGOsHkEE86cq+h8deVIMHlEgn2uBrz6YKsBTy4l/B6k7pyo5UjTxcwfCIj6bHTVFY34nqeapD/Rp+A0X3AugXoIrqX+C9Id3ZA5LMzwWIILHJ+I7qQembXpBu9xBS7AddLHF6Q+TdL324EGI01dbCSu76lpeMjJMrLwGoLki3G3Zkl4bHiZO3G+X57J8Bo7WKtgodwuIBZxXZ+NBUueHWb2W4VkS7Eza1tlTEAUS4p601ClU0A3V3NweT8ZpLcOsNrBVnwDfdBQorudtmQPqmF/C8AWAWdB7haJS/ojsB8A+C3mktDFwh6gAAAABJRU5ErkJggg==",
+      "position": 13,
+      "gpcid": "10359860852635215402",
+      "headline_offer_docid": "7223082761731369169",
+      "image_docid": "10191974780818468611",
+      "product_id": "14987179683796081378",
+      "catalog_id": "8829849764052289414",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=Schneider+LC1D09BD+contactor&prds=gpcid%3A10359860852635215402%2CheadlineOfferDocid%3A7223082761731369169%2CimageDocid%3A10191974780818468611%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "10359860852635215402",
+          "q": "Schneider LC1D09BD contactor",
+          "headline_offer_docid": "7223082761731369169",
+          "image_docid": "10191974780818468611"
+        }
+      }
+    },
+    {
+      "title": "LC1D09BD Schneider Electric | PLC Direct | Programmable Logic Controllers and Industrial Automation Products",
+      "extracted_price": 153.35,
+      "price": "$153.35",
+      "source": "PLC Direct",
+      "delivery": "Free delivery",
+      "extensions": [
+        "30-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcT-4Lg-RPOseN8UA4RVr0Thl5KluXJ-khJuJ3zGO1Nni5yt7lQ",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAMAAACsjQ8GAAAAllBMVEX///+3AAC4AADY2NjV1dWzAACbm5uYmJhQUFDHX16coaFXV1ftycnglJWgoKBGRkZLS0uKiorSeHj47u7mycnjwcFBQUGQkJBqampiYmJcXFw8PDzy2trQcHDVg4Pt09LZmprLZ2fDNTXHWVjfra3epaS7EA+8GhnMcG/KVFX26+vqvr7BODfHSkrWi4v++PisrKx1dXVk69DIAAABMUlEQVQokdWSy3KCMBSGOcEkaDQhiglIhKKxVrCA7/9yDeHiqrtu+m3OZb4/c5ghCP4J5rx3FGVQVh/jJqkul6tdhC0gAEC4PMLVL24YPu8AX2/h0dWHPSoStB7mDsClDWCzCEOwgXMCXmjgOZTi2SzCd7ndrlE7CTe0PL7cgDEGqI+zUPl99xae1tqmCyYhgftQ1sguwnh8cETX2hjTIVTUBwv4MAv4MQn+e3FTgme+MTDFbWranaM1QWd3rZ3znPPNhhJOCCUbj2uH4mbCnRDFqtdUCymp5pHWmgpNKX3Rnr7EyQksiokQnFEqJU+5lDLVIk4zxVUUZaPA46iPCMlYzzg7nVjvMpno41EQKncpprJMqTxNpdSCaZ3meaqUYk4Iw3C1WoUzvn/Pv/0if8kP+rUX/r/5yd0AAAAASUVORK5CYII=",
+      "position": 14,
+      "headline_offer_docid": "17065448714822082437",
+      "image_docid": "5495175413412694657",
+      "product_id": "17065448714822082437"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD TeSys D Schütz 24V DC 3-polig 9A 1S+1Ö Telemecanique",
+      "extracted_price": 12,
+      "price": "$12.00",
+      "source": "megoha-army",
+      "extensions": [
+        "14-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcRXnfIogi3TqIqMR9_FQnMDaamDp7vxX-pD9uirl6TOJ1C_WozH02el1-fPBz5lxURO7Mvz1r6wkCuJNRs3kIuf1EAzupN5qBgwEoFkwjfx",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAPFBMVEX///8nMy3KzcyFjIhcZWCip6SwtLJJU06Umpfn6Od3f3uNk5AzPzlncGy7v73DxsTc3t1+hYHx8vFvd3Op6dxjAAAAqElEQVQ4je1QSRLDIAyDeGGHLP//a+02nZJkmDwg1YWRLSxbxvxxRQBECOM+WBejszDsZ9KH8lGxTjvY0qdClr+1VbmzO5wxGMOpsv/xAreJAGehxSmnzqaiIBdjljSpICuvxw1jN1As4vUGWbL+lhyc+VZwHgdxE9R91GMsBLOfUyPW/xBiW8hzJ0Bp+Eq0MbQaoJUJOfVWiWUC64Qi+RVKnJjONs/GC4HwBQnOlM6wAAAAAElFTkSuQmCC",
+      "position": 15,
+      "headline_offer_docid": "18093506901657828897",
+      "image_docid": "17824312854019545625",
+      "product_id": "18093506901657828897"
+    },
+    {
+      "title": "Contactor LC1D09BD Schneider 24VDC 4kW 1NC 1NO *Used*",
+      "extracted_price": 20.48,
+      "price": "$20.48",
+      "source": "Axxa Automation",
+      "extensions": [
+        "30-day returns"
+      ],
+      "second_hand_condition": "used",
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcTFx7R3omolpnT1HB07IoOS3JuI7uKsK4OeoDLsWKOpIqQvctKmjjRe1JkoQA9ruV8WKzN9EmM2Tctazhm-CBFFdA8G4Xe6a7w2pMrEwyV_WWWAuP9NhmqMq3Q",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAtFBMVEVHcEwcHUkfIUkaHEogIkkgIkkgIkm5lCcfIkkgIkkgIkn3oA/6xA/8zxf7yxYgIkn3pREgIkn5rxIgIkn1mA74qRL7uRYgIkkgIkkgIkn8xBf6tBT5uxIgIkn0lA390xb73xf82Rf2ng8gIkkfIUn71Rf8vxfzkAv73hb82hf8wxj8yRjzkwwgIkn8vBf5rRP6sxX3pRH82hf8xRj6txX8yxf2nQ/8wRj70xf8yhj0lQ37zxfUEEsmAAAALXRSTlMAH0cRO+j3AVb9qksLwFG47YkxPsK/v16Z1K2OIqKpEqfDbzBrPdnmi9LA4/thjryRAAABN0lEQVQ4jXWR2XqCMBBGB9QMyiq41RWtW5exFrv3/d+rBAgJIT1Xkv98wEFACZRg8ygejUbj8WTy6PvbYnfry23q8YP1z8fry9vl9v6Vpfnl8pRfXi+f379ZdijvKIUsACz8UkirZ7pSOAOcauFhI15qLQR+5D4LIQABRpWwhHAPu0qYg2RXCmewieV6ITwtFQEWXPA9q0e0gjjiwkHd0eNCDAMi6tuwyAX1AZzgcluAQxyGEF2Pm+aOOD96nbtCoCG41wB0vBhCqnDAbe05idipZ5qBFwhWJmEld17SwiYVhvouCgRDXRiQhtPcu/qulagFgpkqzNo7scRYwJihRC2YhvJ3XaIUDAD7rZJ75dUtgL1eohbY2g2LEsuRlK9kLlGY/ve5KhBNJQ2jw/o1hj+eh3UFifUHeRpV5W2d0JEAAAAASUVORK5CYII=",
+      "position": 16,
+      "headline_offer_docid": "6978153607814278818",
+      "image_docid": "12854242658914638344",
+      "product_id": "6978153607814278818"
+    },
+    {
+      "title": "Schneider Electric LC1D09BD 9A 3-Pole Contactor",
+      "extracted_price": 50.76,
+      "price": "$50.76",
+      "extracted_old_price": 38,
+      "old_price": "(£38)",
+      "source": "EnrgTech",
+      "extensions": [
+        "14-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcQQCRKX7SHc7fuoPvEvsdARgyoEBTr26iASSe6dyHpdZQeZHF0X",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAe1BMVEVHcEz8oy75mST6mCX2TD//uD39pjD5lSH2STzRwJrzSDz+0Ev+5mH+rTb7nilQZXIAb336niz4TD9uhZX/cGdccoBXbHn3UEL6nShTZ3T8XlL8WEr3VUdVaXVSgJD6oyvxST5YbXtSZHH5kB/vQDVOYGz4jh3uPjNKXmuiPVSDAAAAI3RSTlMAkP3n2z94/u0G0CIPX7r+F6v3JyFSi6zQ0k1okLATxsl04DAgYEAAAAEkSURBVDiNjZHpgoIgFIVxS9HUNLPFtGZE4P2fMGSHrJnzC+75uBsAeNr7AVdlmO6+2EmE5xmHyQcbVsxehS/Flr9Lpc+INHh7nYTa5khYOn5xUTbWh8hqpZlV9TkwlXAlRy5N6MFCsNHXNIB2ezjlSfc2wP32Bqr1JjYUzLrbRrwHGYm7Iqqg2KRpUi8jQ4icxTCRyW6NyQBEYnZ4fFjUCqDc2oaezwfYb7F5nA35ABs5fP9uB9jS/4DnXwAa3OB07V2AELZxo35ZaH2Sl5YggeSdjJwWLno98usdSRHEN378XaRoPXGiy4lGBjAqe6l/dMkbUkh2oMofna7vAiGxBFR9I3gmFqAnsNXFRAH9hs1ygIEBE6Uj3PRFK+2h9ot7afzXLwicNAOrBZRjAAAAAElFTkSuQmCC",
+      "position": 17,
+      "headline_offer_docid": "3048160310488548522",
+      "image_docid": "15967142035738819499",
+      "product_id": "3048160310488548522"
+    },
+    {
+      "title": "LC1-D09-BD Schneider | PLC Direct | Programmable Logic Controllers and Industrial Automation Products",
+      "extracted_price": 99.09,
+      "price": "$99.09",
+      "extracted_old_price": 153,
+      "old_price": "Was $153",
+      "source": "PLC Direct",
+      "delivery": "Free delivery",
+      "tag": "35% OFF",
+      "extensions": [
+        "30-day returns",
+        "35% OFF"
+      ],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/shopping?q=tbn:ANd9GcQgw2i53edrmW1rDjriXoOU66sgZItRd399YT0oQuzjBtjqW-i1",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAYCAMAAACsjQ8GAAAAllBMVEX///+3AAC4AADY2NjV1dWzAACbm5uYmJhQUFDHX16coaFXV1ftycnglJWgoKBGRkZLS0uKiorSeHj47u7mycnjwcFBQUGQkJBqampiYmJcXFw8PDzy2trQcHDVg4Pt09LZmprLZ2fDNTXHWVjfra3epaS7EA+8GhnMcG/KVFX26+vqvr7BODfHSkrWi4v++PisrKx1dXVk69DIAAABMUlEQVQokdWSy3KCMBSGOcEkaDQhiglIhKKxVrCA7/9yDeHiqrtu+m3OZb4/c5ghCP4J5rx3FGVQVh/jJqkul6tdhC0gAEC4PMLVL24YPu8AX2/h0dWHPSoStB7mDsClDWCzCEOwgXMCXmjgOZTi2SzCd7ndrlE7CTe0PL7cgDEGqI+zUPl99xae1tqmCyYhgftQ1sguwnh8cETX2hjTIVTUBwv4MAv4MQn+e3FTgme+MTDFbWranaM1QWd3rZ3znPPNhhJOCCUbj2uH4mbCnRDFqtdUCymp5pHWmgpNKX3Rnr7EyQksiokQnFEqJU+5lDLVIk4zxVUUZaPA46iPCMlYzzg7nVjvMpno41EQKncpprJMqTxNpdSCaZ3meaqUYk4Iw3C1WoUzvn/Pv/0if8kP+rUX/r/5yd0AAAAASUVORK5CYII=",
+      "position": 18,
+      "headline_offer_docid": "14015070641270659855",
+      "image_docid": "9706716045059205172",
+      "product_id": "14015070641270659855"
+    },
+    {
+      "title": "FOR 1PCS 1PCS Contactor LC1D09BD LC1-D09BD DC24V Fast processing",
+      "extracted_price": 52.79,
+      "price": "$52.79",
+      "source": "Newegg.com - Fany",
+      "delivery": "Free delivery",
+      "thumbnail": "https://encrypted-tbn1.gstatic.com/shopping?q=tbn:ANd9GcSP6jequttR_RDAom_uO-q6Sq81AEc2R7QZjsGG_-PqM873CZ6O",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAFbElEQVRYhdXXX4icVxnH8c+ZPzu73W2iG7SJaYwxIYnR2NLgjQi5shQERW0vVIpKtSLqTbywN3rRikULQfFPqFaKIGgRKQqi6I2CNwoBQRAWtIWAJrRJ9s/8eWfmnfc9XpwzmZ3NpkYtiC887Lwz857f9zy/5zzPDv/jK7wai8TvWcEJ3ItVHMsfXcEf8fvwSZuvKkB82hIewMN4wJ6VJXuWaTdYalGXDAs2C9bHPVzA4+FTev8VQLxgL76ERx04sOKNb2L/G2gGVMQx9ZC6oOpT9ulu8bcNXh6v4f7waZf+bYD4bU08ii87cXLVW8/QXqbRystE4iQDFNR9qh7VFsUW3U1e2ODl8iLeGT5jDK3bEv+m02o/9uYjpxx/G6uHaC7R6KBNCMSIknqUATqENhq0IwsVd1V0N84Y1B/Dd28LIH7Dg2rPuu/tK07eR3MvrTtp3PEKAAOqNpppkcmE5pjWkD0desVnbwsgnveY/atPOn6cu4/T2kvzNTSnAIuEVtqlOlkQhoSFmbiK5ojGgNCh06Eeno7n48Fwzt9vCRCf8ozD+x5x+gR7D9FcScLTaCynDIS2WQ2USTxsE48lYUBYzGC5Zqp4ilsAxK96zOE9j3jHUdqvzX4v5V3fkcWnFmyr47At7TGfiFDkTGXx2CQGaqu7WhC/4kF3dZ70ltfRXKCxkB5udHIszl7fdIhCfr8iLhI76fnYJraoGkwCNSorsnkz8SccVHnW0WXuXEy7Cc3scztFaG1L+25XSJ9Pn4ktYoMKE5SRElXqjHMAKl9zsr1i/2KqbCF/JaT7sO1+7ipvhpguHSOTOgmP6xRlpPLinAXxi95lrw871SZETKNOf2OO6f3c1d5xn79X10yqdAzHJaMJo4qyrrA2n4HKOUfQiISamIxKxTTJuyxztyt3gdgmHss0C+oRk4JRQTGiGNMdU/lLeCLNhAbEL1hVea9DknDMhsUyVXIc5wYzyn0+v74JIqb3qyFVQVkw6jMcUAwYjKYAv5g+kSyYOOuAZrI277ge58iDpS5Sh9t5znf2gXqU5sCkx2iLokuvS7dPf0S/pPLcPEDllOWp7dVs5zfE+6m3VzvP+S6dsCqS+HCdwXV66/Q26Q1YLxjHi+Hr/rQT4KAFub5i8q8xIuahUi3MN5np2I07ZkEcJ8/HXQZX6V1ja53NLt2CjRGV89tNmwIs5OaQolGm3Yd2jmZqIjfESxrF/DCq62RZOUjjt3eNzatsrLPZ4+qAQb3GLP3bAa7rY5zW04xpsVCYO/exzuKj1JrDQrIgykdulAqut5mE16+zsUl3wPqYyufD06rdANasYzgFQJigmImLs/7eyP3dQgKsA1XJcMSgn1K+nmNzwD8Kivjz8Mys+ncC/MYllXs0p8MqaZbEQcqIelbljSJZE9tJfBJTkylG2etBjiGXh2zUV/CJneK2SYkf9Vv3OOsoVrCUN9hCq5WGSqOTZrqFlKq6mfr7ODKc0CvpjlKxbY15qeRyNcb94Qd+txvAbBpWnvKCs/aZDY7FbElrQqhScYZReqzOhTkODCODit6E7oRuxfWKazWVj4cf7i4+lwGIH/Jrd3u3k1jeloUbdSHN8tiYjdaRVCqDSL+mF7kauRwrfC78yIVbic9nAGofcckfREccyQCdHQAidZWGzFgCGGaIAi/hqh4eCs/51SuJ35QBiA85hl96vWMO75KBBJpnuwQxRg/XsOWv+ED4iT//K/FdASB+0Aq+Y9HDVrEvQ+SWL5rVSQ9b2LCJx/Gt8NP0P/9/DHAD5P3uxTm8R8fq9Ngj7brExEU8j++H5125XeHbApiDeZ8z0g/QlfzWGl4MP5v9zPq/vP4JBfOtkOL0ECoAAAAASUVORK5CYII=",
+      "position": 19,
+      "gpcid": "4572114342435946787",
+      "headline_offer_docid": "992871325503228094",
+      "image_docid": "18114900642268521693",
+      "product_id": "10039281909679970193",
+      "catalog_id": "11757948434994497657",
+      "product_link": "https://www.google.com/search?ibp=oshop&q=Schneider+LC1D09BD+contactor&prds=gpcid%3A4572114342435946787%2CheadlineOfferDocid%3A992871325503228094%2CimageDocid%3A18114900642268521693%2Cpvt%3Ahg%2Cpvo%3A3&hl=en&gl=us&udm=28",
+      "litescrape_product_link": {
+        "endpoint": "/google/shopping-product",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "gpcid": "4572114342435946787",
+          "q": "Schneider LC1D09BD contactor",
+          "headline_offer_docid": "992871325503228094",
+          "image_docid": "18114900642268521693"
+        }
+      }
+    },
+    {
+      "title": "Contactor Schneider TeSys LC1D 3P 9A AC3 24V AC LC1D09BD",
+      "extracted_price": 90.39,
+      "price": "$90.39",
+      "extracted_old_price": 81,
+      "old_price": "(€81)",
+      "source": "Matyco - Materiale Elettrico",
+      "extensions": [
+        "14-day returns"
+      ],
+      "thumbnail": "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcTnkEJUqaGCjwsVPhK40mqBo2ophv95Xc76DV7YL8uxUtob6xTl",
+      "source_icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAt1BMVEX///8AAAD8/PwEBATv7+8aGhrl5eUvLy/d3d3T09M5OTkcHBz6+voWFhZsbGzy8vLHx8dmZmYRERH1+Pva2tpGRkaxsbFRUVGcnJyCgoK6urorKyvOzs51dXWRkZEjIyNDQ0NLS0uoqKj99fLymmbwfybxiUD52sq1zuUedrkJbrZZmMn0sYvzjxX3pQT1nAsAg8kAjdCEsdb6sgHi7PQAouH2upnxkEktgL4Aic3ymlz76N11qNEucVFIAAABKUlEQVQ4jdWSaXLCMAyFbYeshCwGElIIS4FACIXQ0pYu9z9XJXtgZGZ6APQn78mfZUsOYw8V4l+jYjC0g+RqMtfOnbvtLue819HGs8AMTcDjGCNtCtRWbABPCpjramNlfAMYqZylDp4ozTMDKHVyeq9vketkgCfMtI4MAJvowhkDxhIt+YKuhxKa9KG7grEIOGx0TAEHEr0w4NwVoc15HoOXIQGwrBRTbA4bzjo4Ko8AmQKwTj6HWrECEgJ4Ul1qoe+fqslfB69jEhXgnzUAW50yMifJlvjAscT1GUrRN5dX62oD3xSBEsS23jUU2b8cjhVs9KFEFx6kX7en+pUAq+PbYb0E4acRdnfend7bhgAfUOGT/Gbi0n4ZFcS++v6hlzo3l186yUePP15OEPO4Gqb0AAAAAElFTkSuQmCC",
+      "position": 20,
+      "headline_offer_docid": "12340211001166953840",
+      "image_docid": "8804152129103242971",
+      "product_id": "12340211001166953840"
+    }
+  ],
+  "filters": [
+    {
+      "type": "Nearby",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Nearby",
+          "shoprs": "CAEYAyocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIMCAMSBk5lYXJieRgCWOauIWAC",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAyocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIMCAMSBk5lYXJieRgCWOauIWAC",
+              "q": "Schneider LC1D09BD contactor nearby"
+            }
+          }
+        },
+        {
+          "text": "On sale",
+          "shoprs": "CAESBEoCGAEYBiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjITCAYSB09uIHNhbGUYAiIESgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESBEoCGAEYBiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjITCAYSB09uIHNhbGUYAiIESgIYAVjmriFgAg",
+              "q": "Schneider LC1D09BD contactor sale"
+            }
+          }
+        },
+        {
+          "text": "Get it tomorrow",
+          "shoprs": "CAESDZoBCgoIEAE4AUAESAEYFCocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIoCBQSD0dldCBpdCB0b21vcnJvdyINmgEKCggQATgBQARIASoEEAEYAWAC",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESDZoBCgoIEAE4AUAESAEYFCocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIoCBQSD0dldCBpdCB0b21vcnJvdyINmgEKCggQATgBQARIASoEEAEYAWAC",
+              "q": "schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "New",
+          "shoprs": "CAEYCiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIHCAoSA05ld1jmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIHCAoSA05ld1jmriFgAg",
+              "q": "new Schneider LC1D09BD contactor"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Category",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Electrical Relays",
+          "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIVCAkSEUVsZWN0cmljYWwgUmVsYXlzYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIVCAkSEUVsZWN0cmljYWwgUmVsYXlzYAI",
+              "q": "electrical relays schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "Surge Protectors",
+          "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIUCAkSEFN1cmdlIFByb3RlY3RvcnNgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIUCAkSEFN1cmdlIFByb3RlY3RvcnNgAg",
+              "q": "surge protectors schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "Electrical Motors",
+          "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIVCAkSEUVsZWN0cmljYWwgTW90b3JzYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYCSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIVCAkSEUVsZWN0cmljYWwgTW90b3JzYAI",
+              "q": "electrical motors schneider lc1d09bd contactor"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Brand",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Schneider Electric",
+          "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAESElNjaG5laWRlciBFbGVjdHJpYzoKCIPzPBCS4z4wAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAESElNjaG5laWRlciBFbGVjdHJpYzoKCIPzPBCS4z4wAVjmriFgAg",
+              "q": "schneider electric lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "Siemens",
+          "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIXCAESB1NpZW1lbnM6CgiD8zwQ6NQ-MAFY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIXCAESB1NpZW1lbnM6CgiD8zwQ6NQ-MAFY5q4hYAI",
+              "q": "siemens schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "Grizzly Industrial",
+          "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIjCAESEkdyaXp6bHkgSW5kdXN0cmlhbDoLCIPzPBDv58cCMAFY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIjCAESEkdyaXp6bHkgSW5kdXN0cmlhbDoLCIPzPBDv58cCMAFY5q4hYAI",
+              "q": "grizzly industrial schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "tc electronic",
+          "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIdCAESDXRjIGVsZWN0cm9uaWM6CgiD8zwQt_8-MAFY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYASocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIdCAESDXRjIGVsZWN0cm9uaWM6CgiD8zwQt_8-MAFY5q4hYAI",
+              "q": "tc electronic schneider lc1d09bd contactor"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Stores",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Grainger Industrial Supply",
+          "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIeCAISGkdyYWluZ2VyIEluZHVzdHJpYWwgU3VwcGx5WOauIWAC",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIeCAISGkdyYWluZ2VyIEluZHVzdHJpYWwgU3VwcGx5WOauIWAC",
+              "q": "grainger industrial supply schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "eBay",
+          "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIICAISBGVCYXlY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIICAISBGVCYXlY5q4hYAI",
+              "q": "ebay schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "RSP Supply",
+          "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIOCAISClJTUCBTdXBwbHlY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIOCAISClJTUCBTdXBwbHlY5q4hYAI",
+              "q": "rsp supply schneider lc1d09bd contactor"
+            }
+          }
+        },
+        {
+          "text": "Zoro",
+          "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIICAISBFpvcm9Y5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAEYAiocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIICAISBFpvcm9Y5q4hYAI",
+              "q": "zoro schneider lc1d09bd contactor"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Price",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Under $25",
+          "shoprs": "CAESDRILEQAAAACE13dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAUSCVVuZGVyICQyNRgCIg0SCxEAAAAAhNd3QRgBKgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESDRILEQAAAACE13dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAUSCVVuZGVyICQyNRgCIg0SCxEAAAAAhNd3QRgBKgIYAVjmriFgAg",
+              "q": "Schneider LC1D09BD contactor under $25"
+            }
+          }
+        },
+        {
+          "text": "$25 - $60",
+          "shoprs": "CAESFhIUCQAAAACE13dBEQAAAAA4nIxBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIrCAUSCSQyNSAtICQ2MBgCIhYSFAkAAAAAhNd3QREAAAAAOJyMQRgBKgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESFhIUCQAAAACE13dBEQAAAAA4nIxBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIrCAUSCSQyNSAtICQ2MBgCIhYSFAkAAAAAhNd3QREAAAAAOJyMQRgBKgIYAVjmriFgAg",
+              "q": "Schneider LC1D09BD contactor between $25 and $60"
+            }
+          }
+        },
+        {
+          "text": "$60 - $100",
+          "shoprs": "CAESFhIUCQAAAAA4nIxBEQAAAACE15dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIsCAUSCiQ2MCAtICQxMDAYAiIWEhQJAAAAADicjEERAAAAAITXl0EYASoCGAFY5q4hYAI",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESFhIUCQAAAAA4nIxBEQAAAACE15dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIsCAUSCiQ2MCAtICQxMDAYAiIWEhQJAAAAADicjEERAAAAAITXl0EYASoCGAFY5q4hYAI",
+              "q": "Schneider LC1D09BD contactor between $60 and $100"
+            }
+          }
+        },
+        {
+          "text": "Over $100",
+          "shoprs": "CAESDRILCQAAAACE15dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAUSCU92ZXIgJDEwMBgCIg0SCwkAAAAAhNeXQRgBKgIYAVjmriFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESDRILCQAAAACE15dBGAEYBSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIiCAUSCU92ZXIgJDEwMBgCIg0SCwkAAAAAhNeXQRgBKgIYAVjmriFgAg",
+              "q": "Schneider LC1D09BD contactor over $100"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Free shipping",
+      "input_type": "link",
+      "options": [
+        {
+          "text": "Free shipping",
+          "shoprs": "CAESBFICEAEYGSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIXCBkSDUZyZWUgc2hpcHBpbmciBFICEAFgAg",
+          "litescrape_link": {
+            "endpoint": "/google/shopping",
+            "queryParams": {
+              "google_domain": "google.com",
+              "hl": "en",
+              "gl": "us",
+              "device": "desktop",
+              "shoprs": "CAESBFICEAEYGSocc2NobmVpZGVyIGxjMWQwOWJkIGNvbnRhY3RvcjIXCBkSDUZyZWUgc2hpcHBpbmciBFICEAFgAg",
+              "q": "Schneider LC1D09BD contactor free shipping"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "carousel_filters": [
+    {
+      "text": "Nearby",
+      "shoprs": "CAEYAyocU2NobmVpZGVyIExDMUQwOUJEIGNvbnRhY3RvcjIOCAMSBk5lYXJieRgCSAE",
+      "input_type": "link",
+      "litescrape_link": {
+        "endpoint": "/google/shopping",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "shoprs": "CAEYAyocU2NobmVpZGVyIExDMUQwOUJEIGNvbnRhY3RvcjIOCAMSBk5lYXJieRgCSAE",
+          "q": "Schneider LC1D09BD contactor"
+        }
+      }
+    },
+    {
+      "text": "Deals",
+      "shoprs": "CAESBEoCGAEYBiocU2NobmVpZGVyIExDMUQwOUJEIGNvbnRhY3RvcjIVCAYSB09uIHNhbGUYAiIESgIYAUgB",
+      "input_type": "link",
+      "litescrape_link": {
+        "endpoint": "/google/shopping",
+        "queryParams": {
+          "google_domain": "google.com",
+          "hl": "en",
+          "gl": "us",
+          "device": "desktop",
+          "shoprs": "CAESBEoCGAEYBiocU2NobmVpZGVyIExDMUQwOUJEIGNvbnRhY3RvcjIVCAYSB09uIHNhbGUYAiIESgIYAUgB",
+          "q": "Schneider LC1D09BD contactor"
+        }
+      }
+    }
+  ]
+}
