@@ -1,0 +1,21 @@
+# slice-preview deploy evidence (D3, S4 Platform) — no secret values
+date: 2026-10-07 15:20-15:37 PDT
+project: 5111d812-e645-48ee-8b4d-f9c6c527395b
+
+1. branch create slice-preview --from main
+   attempt 1: id 800b9a2f-f7c6-4d45-8526-3c62582c1786 -> status "error" (event branch.create.failed, no reason given;
+              a concurrent branch create analysis-20261007222046 started from main at the same second)
+   attempt 2: id fa69aaa7-eeb1-40e1-8830-d697696c36d5 -> active (~15s); cloned postgres/db + compute/app
+2. local link: insta branch switch slice-preview; status --json confirmed branch=slice-preview before any write
+3. secrets: scripts/deploy-env.sh --apply --branch slice-preview -> 20/20 CONTRACTS vars set on compute/app
+   (values via stdin, never printed); each set redeployed service 48763cf7-92f0-4027-90d7-c8575c608416
+4. deploy: insta --agent deploy . --group app --port 8080 --branch slice-preview
+   packed 66 files, 1624494 bytes, dockerfile build via gateway
+   build/operation id: d25cfd4c-74f3-462f-b778-6dca8480ec85
+   build log tail: "[deps 2/4] WORKDIR /app: context canceled" then node:22-slim metadata/auth lines;
+   one "Could not read build logs (HTTP 502)". The build hung for more than 10 min. The coordinator
+   reports that this operation was cancelled. S4 took over the redeploy, so D3 stopped here.
+5. URL: https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.com/
+   GET / -> HTTP 200, body starts: {"message":"agent37 is running on InstaCloud","visits":N,"db
+   (this is the placeholder server.js cloned from main, NOT the Next.js Dockerfile build)
+main: never targeted (no secrets set / deploy on main).

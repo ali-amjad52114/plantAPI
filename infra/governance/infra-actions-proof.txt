@@ -1,0 +1,15 @@
+infra_actions proof (S4 Platform, W3) - generated 2026-10-07T22:31:29.820Z
+
+Migration: supabase/migrations/020_infra_actions.sql applied to the real Supabase project via
+  Management API POST /v1/projects/<ref>/database/query -> HTTP 201.
+  Checks: pg_publication_tables(supabase_realtime) includes infra_actions; pg_class.relrowsecurity = false.
+
+Backfill: npx tsx lib/infra/infra-actions.ts --backfill infra/governance/evidence-2026-10-07T22-20-46-232Z.json
+  Source: the real --live run of lib/infra/governance-demo.ts (insta CLI output, branch analysis-20261007222046).
+  Re-run is idempotent (skips existing run_id).
+
+Read back with the ANON key (what the browser uses):
+  GET /rest/v1/infra_actions?run_id=eq.2026-10-07T22-20-46-232Z -> HTTP 200, 3 rows
+  ALLOW    branch.create    expected=allow  returned=allow  approval=-  step=0  id=e8a4477b-350e-4b73-a2ac-43e81f6af103
+  APPROVE  service.scale    expected=approve  returned=approve  approval=05f384af-2ced-4f15-9d7c-f905469cc00a  step=1  id=d804ba6d-58ed-420e-a48b-526f315a5fdb
+  DENY     project.delete   expected=deny  returned=deny  approval=-  step=2  id=08ec0f21-6c5d-40a9-abce-43cf06bec7b7

@@ -1,0 +1,1630 @@
+{
+  "startedAt": "2026-10-07T22:20:46.235Z",
+  "mode": "live",
+  "branch": "analysis-20261007222046",
+  "preflight": {
+    "policyCli": {
+      "cmd": "insta --agent agent policy get --json",
+      "exitCode": 0,
+      "stdout": "{\n  \"policy\": {\n    \"mode\": \"branch_specific\",\n    \"rules\": {},\n    \"updatedAt\": \"2026-10-07T22:08:43.454Z\",\n    \"updatedBy\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"protectedBranchIds\": []\n  },\n  \"agentSessionEpoch\": 0,\n  \"actions\": [\n    \"project.read\",\n    \"branch.read\",\n    \"service.read\",\n    \"logs.read\",\n    \"metrics.read\",\n    \"usage.read\",\n    \"secrets.read\",\n    \"storage.read\",\n    \"db.query\",\n    \"events.read\",\n    \"cron.read\",\n    \"project.create\",\n    \"project.update\",\n    \"project.delete\",\n    \"project.transfer\",\n    \"project.members.update\",\n    \"project.billing.update\",\n    \"branch.create\",\n    \"branch.update\",\n    \"branch.delete\",\n    \"branch.promote\",\n    \"branch.protection.update\",\n    \"agent_policy.update\",\n    \"service.add\",\n    \"service.remove\",\n    \"service.rename\",\n    \"service.scale\",\n    \"service.upgrade\",\n    \"service.setAccess\",\n    \"deploy\",\n    \"compute.shell\",\n    \"secrets.write\",\n    \"storage.write\",\n    \"storage.delete\",\n    \"db.write\",\n    \"db.destructive\",\n    \"db.restore\",\n    \"events.write\",\n    \"domain.purchase\",\n    \"domain.delegate\",\n    \"zone.delegate\",\n    \"cron.write\",\n    \"cron.run\",\n    \"cron.delete\"\n  ],\n  \"actionCatalog\": [\n    {\n      \"action\": \"project.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Inspect the project\",\n      \"hint\": \"Metadata, manifest, settings\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"branch.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"List branches\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"service.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"List services\",\n      \"hint\": \"Includes a service's connected source\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"logs.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Read logs\",\n      \"hint\": \"Runtime, build and deploy events\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"metrics.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Read metrics\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"usage.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Read usage\",\n      \"hint\": \"Billable quantities and cost\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"events.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Read the activity timeline\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"secrets.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Read secrets and connection strings\",\n      \"hint\": \"Secret bundle, database URLs, provider credentials\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"storage.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Browse and download storage objects\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"db.query\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"Run database console queries\",\n      \"hint\": \"v1: undifferentiated -- arbitrary SQL, writes included\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"cron.read\",\n      \"group\": \"reads\",\n      \"groupLabel\": \"Reads\",\n      \"label\": \"List cron schedules and their run history\",\n      \"hint\": \"Never the request config: that is encrypted and read as a secret\",\n      \"editable\": false,\n      \"fixedDecision\": \"allow\"\n    },\n    {\n      \"action\": \"branch.create\",\n      \"group\": \"branches\",\n      \"groupLabel\": \"Branches\",\n      \"label\": \"Create a branch\",\n      \"hint\": \"Forks DB / storage / services from a parent\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"branch.update\",\n      \"group\": \"branches\",\n      \"groupLabel\": \"Branches\",\n      \"label\": \"Rename a branch\",\n      \"hint\": \"Metadata only\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"branch.delete\",\n      \"group\": \"branches\",\n      \"groupLabel\": \"Branches\",\n      \"label\": \"Delete a branch\",\n      \"hint\": \"Tears down the branch and its resources\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"branch.promote\",\n      \"group\": \"branches\",\n      \"groupLabel\": \"Branches\",\n      \"label\": \"Promote / merge a branch\",\n      \"hint\": \"Into an unprotected destination\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"branch.protection.update\",\n      \"group\": \"branches\",\n      \"groupLabel\": \"Branches\",\n      \"label\": \"Change the protected branch list\",\n      \"hint\": \"An agent may never edit its own blast radius\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    },\n    {\n      \"action\": \"deploy\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Deploy compute\",\n      \"hint\": \"Also covers deploy-equivalent runtime config and a service's source\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.add\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Add a service\",\n      \"hint\": \"Provisions new billable capacity\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.rename\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Rename a service\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.scale\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Scale machine count\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.upgrade\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Upgrade spec, storage, or plan\",\n      \"hint\": \"Raises the bill\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.remove\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Remove a service\",\n      \"hint\": \"Also covers deleting a compute volume\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"service.setAccess\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Change public / private access\",\n      \"hint\": \"Changes external exposure\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"compute.shell\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Open a shell on a machine\",\n      \"hint\": \"Interactive root with the service's decrypted environment\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"domain.purchase\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Buy a domain\",\n      \"hint\": \"Charges the organization through the registrar\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"domain.delegate\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Delegate a domain to a managed zone\",\n      \"hint\": \"Re-points the domain's nameservers; DNS stays platform-managed\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"zone.delegate\",\n      \"group\": \"services\",\n      \"groupLabel\": \"Services & deploys\",\n      \"label\": \"Delegate a bring-your-own domain's zone\",\n      \"hint\": \"Builds the InstaCloud-managed zone a customer-owned domain points its nameservers at (and releases it)\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"cron.write\",\n      \"group\": \"cron\",\n      \"groupLabel\": \"Scheduled jobs\",\n      \"label\": \"Create or edit a cron schedule\",\n      \"hint\": \"Decides what runs unattended, and how often\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"cron.run\",\n      \"group\": \"cron\",\n      \"groupLabel\": \"Scheduled jobs\",\n      \"label\": \"Trigger a cron job now\",\n      \"hint\": \"One off-schedule execution of the job as configured\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"cron.delete\",\n      \"group\": \"cron\",\n      \"groupLabel\": \"Scheduled jobs\",\n      \"label\": \"Delete a cron schedule\",\n      \"hint\": \"Cannot be undone: the job stops firing and its run history is no longer readable\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"secrets.write\",\n      \"group\": \"secrets\",\n      \"groupLabel\": \"Secrets & storage\",\n      \"label\": \"Set or unset secrets and bindings\",\n      \"hint\": \"Normal development work in a sandbox\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"storage.write\",\n      \"group\": \"secrets\",\n      \"groupLabel\": \"Secrets & storage\",\n      \"label\": \"Upload or overwrite storage objects\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"storage.delete\",\n      \"group\": \"secrets\",\n      \"groupLabel\": \"Secrets & storage\",\n      \"label\": \"Delete storage objects\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"db.write\",\n      \"group\": \"database\",\n      \"groupLabel\": \"Database\",\n      \"label\": \"Create databases and extensions\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"db.destructive\",\n      \"group\": \"database\",\n      \"groupLabel\": \"Database\",\n      \"label\": \"Drop a database or backup\",\n      \"hint\": \"\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"db.restore\",\n      \"group\": \"database\",\n      \"groupLabel\": \"Database\",\n      \"label\": \"Restore a database from backup\",\n      \"hint\": \"Overwrites live data in place\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"project.update\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Rename project / change settings\",\n      \"hint\": \"Cannot authorize indirect writes to a protected branch\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"events.write\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Write to the activity timeline\",\n      \"hint\": \"How an agent records what it did\",\n      \"editable\": true,\n      \"fixedDecision\": null\n    },\n    {\n      \"action\": \"project.delete\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Delete the whole project\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    },\n    {\n      \"action\": \"agent_policy.update\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Change this agent policy\",\n      \"hint\": \"An agent may never widen its own policy\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    },\n    {\n      \"action\": \"project.transfer\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Transfer ownership or organization\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    },\n    {\n      \"action\": \"project.members.update\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Change members or roles\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    },\n    {\n      \"action\": \"project.billing.update\",\n      \"group\": \"project\",\n      \"groupLabel\": \"Project administration\",\n      \"label\": \"Project billing administration\",\n      \"hint\": \"\",\n      \"editable\": false,\n      \"fixedDecision\": \"deny\"\n    }\n  ],\n  \"defaultRules\": {\n    \"project\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"approve\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"allow\",\n      \"branch.update\": \"allow\",\n      \"branch.delete\": \"approve\",\n      \"branch.promote\": \"allow\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"allow\",\n      \"service.remove\": \"approve\",\n      \"service.rename\": \"allow\",\n      \"service.scale\": \"approve\",\n      \"service.upgrade\": \"approve\",\n      \"service.setAccess\": \"approve\",\n      \"deploy\": \"allow\",\n      \"compute.shell\": \"approve\",\n      \"secrets.write\": \"allow\",\n      \"storage.write\": \"allow\",\n      \"storage.delete\": \"approve\",\n      \"db.write\": \"allow\",\n      \"db.destructive\": \"approve\",\n      \"db.restore\": \"approve\",\n      \"events.write\": \"allow\",\n      \"domain.purchase\": \"approve\",\n      \"domain.delegate\": \"approve\",\n      \"zone.delegate\": \"approve\",\n      \"cron.write\": \"allow\",\n      \"cron.run\": \"allow\",\n      \"cron.delete\": \"approve\"\n    },\n    \"unprotectedBranch\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"approve\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"allow\",\n      \"branch.update\": \"allow\",\n      \"branch.delete\": \"approve\",\n      \"branch.promote\": \"allow\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"allow\",\n      \"service.remove\": \"approve\",\n      \"service.rename\": \"allow\",\n      \"service.scale\": \"approve\",\n      \"service.upgrade\": \"approve\",\n      \"service.setAccess\": \"approve\",\n      \"deploy\": \"allow\",\n      \"compute.shell\": \"approve\",\n      \"secrets.write\": \"allow\",\n      \"storage.write\": \"allow\",\n      \"storage.delete\": \"approve\",\n      \"db.write\": \"allow\",\n      \"db.destructive\": \"approve\",\n      \"db.restore\": \"approve\",\n      \"events.write\": \"allow\",\n      \"domain.purchase\": \"approve\",\n      \"domain.delegate\": \"approve\",\n      \"zone.delegate\": \"approve\",\n      \"cron.write\": \"allow\",\n      \"cron.run\": \"allow\",\n      \"cron.delete\": \"approve\"\n    },\n    \"protectedBranch\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"deny\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"deny\",\n      \"branch.update\": \"deny\",\n      \"branch.delete\": \"deny\",\n      \"branch.promote\": \"deny\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"deny\",\n      \"service.remove\": \"deny\",\n      \"service.rename\": \"deny\",\n      \"service.scale\": \"deny\",\n      \"service.upgrade\": \"deny\",\n      \"service.setAccess\": \"deny\",\n      \"deploy\": \"deny\",\n      \"compute.shell\": \"deny\",\n      \"secrets.write\": \"deny\",\n      \"storage.write\": \"deny\",\n      \"storage.delete\": \"deny\",\n      \"db.write\": \"deny\",\n      \"db.destructive\": \"deny\",\n      \"db.restore\": \"deny\",\n      \"events.write\": \"deny\",\n      \"domain.purchase\": \"deny\",\n      \"domain.delegate\": \"deny\",\n      \"zone.delegate\": \"deny\",\n      \"cron.write\": \"deny\",\n      \"cron.run\": \"deny\",\n      \"cron.delete\": \"deny\"\n    }\n  },\n  \"effectiveRules\": {\n    \"project\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"approve\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"allow\",\n      \"branch.update\": \"allow\",\n      \"branch.delete\": \"approve\",\n      \"branch.promote\": \"allow\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"allow\",\n      \"service.remove\": \"approve\",\n      \"service.rename\": \"allow\",\n      \"service.scale\": \"approve\",\n      \"service.upgrade\": \"approve\",\n      \"service.setAccess\": \"approve\",\n      \"deploy\": \"allow\",\n      \"compute.shell\": \"approve\",\n      \"secrets.write\": \"allow\",\n      \"storage.write\": \"allow\",\n      \"storage.delete\": \"approve\",\n      \"db.write\": \"allow\",\n      \"db.destructive\": \"approve\",\n      \"db.restore\": \"approve\",\n      \"events.write\": \"allow\",\n      \"domain.purchase\": \"approve\",\n      \"domain.delegate\": \"approve\",\n      \"zone.delegate\": \"approve\",\n      \"cron.write\": \"allow\",\n      \"cron.run\": \"allow\",\n      \"cron.delete\": \"approve\"\n    },\n    \"unprotectedBranch\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"approve\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"allow\",\n      \"branch.update\": \"allow\",\n      \"branch.delete\": \"approve\",\n      \"branch.promote\": \"allow\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"allow\",\n      \"service.remove\": \"approve\",\n      \"service.rename\": \"allow\",\n      \"service.scale\": \"approve\",\n      \"service.upgrade\": \"approve\",\n      \"service.setAccess\": \"approve\",\n      \"deploy\": \"allow\",\n      \"compute.shell\": \"approve\",\n      \"secrets.write\": \"allow\",\n      \"storage.write\": \"allow\",\n      \"storage.delete\": \"approve\",\n      \"db.write\": \"allow\",\n      \"db.destructive\": \"approve\",\n      \"db.restore\": \"approve\",\n      \"events.write\": \"allow\",\n      \"domain.purchase\": \"approve\",\n      \"domain.delegate\": \"approve\",\n      \"zone.delegate\": \"approve\",\n      \"cron.write\": \"allow\",\n      \"cron.run\": \"allow\",\n      \"cron.delete\": \"approve\"\n    },\n    \"protectedBranch\": {\n      \"project.read\": \"allow\",\n      \"branch.read\": \"allow\",\n      \"service.read\": \"allow\",\n      \"logs.read\": \"allow\",\n      \"metrics.read\": \"allow\",\n      \"usage.read\": \"allow\",\n      \"secrets.read\": \"allow\",\n      \"storage.read\": \"allow\",\n      \"db.query\": \"allow\",\n      \"events.read\": \"allow\",\n      \"cron.read\": \"allow\",\n      \"project.update\": \"deny\",\n      \"project.delete\": \"deny\",\n      \"project.transfer\": \"deny\",\n      \"project.members.update\": \"deny\",\n      \"project.billing.update\": \"deny\",\n      \"branch.create\": \"deny\",\n      \"branch.update\": \"deny\",\n      \"branch.delete\": \"deny\",\n      \"branch.promote\": \"deny\",\n      \"branch.protection.update\": \"deny\",\n      \"agent_policy.update\": \"deny\",\n      \"service.add\": \"deny\",\n      \"service.remove\": \"deny\",\n      \"service.rename\": \"deny\",\n      \"service.scale\": \"deny\",\n      \"service.upgrade\": \"deny\",\n      \"service.setAccess\": \"deny\",\n      \"deploy\": \"deny\",\n      \"compute.shell\": \"deny\",\n      \"secrets.write\": \"deny\",\n      \"storage.write\": \"deny\",\n      \"storage.delete\": \"deny\",\n      \"db.write\": \"deny\",\n      \"db.destructive\": \"deny\",\n      \"db.restore\": \"deny\",\n      \"events.write\": \"deny\",\n      \"domain.purchase\": \"deny\",\n      \"domain.delegate\": \"deny\",\n      \"zone.delegate\": \"deny\",\n      \"cron.write\": \"deny\",\n      \"cron.run\": \"deny\",\n      \"cron.delete\": \"deny\"\n    }\n  },\n  \"bootstrapRules\": {\n    \"project.create\": \"allow\"\n  },\n  \"ruleNotes\": [\n    \"Policy-only guidance, not authorization: current user RBAC, actor/session validation and route guards still apply.\",\n    \"project means no affected branches. Project-wide writes affecting branches must use their database-resolved scopes; protectedBranch applies if any affected branch is protected.\",\n    \"Compound actions merge with deny > approve > allow. approve authorizes only the bound request after human approval.\",\n    \"project.create is account/organization bootstrap, independent of this project policy; organization access is required and the new project starts with full_access.\",\n    \"db.query includes arbitrary SQL in v1; allow does not enforce SQL-level read-only access.\",\n    \"branch_specific and customize authorize identically; customize is the same mode carrying explicit rules. full_access and read_only take no rules.\",\n    \"branchDeveloperRules is a deprecated mirror of rules, and branch_developer of branch_specific. Both are still accepted on write and will be removed.\"\n  ]\n}\n",
+      "stderr": "",
+      "json": {
+        "policy": {
+          "mode": "branch_specific",
+          "rules": {},
+          "updatedAt": "2026-10-07T22:08:43.454Z",
+          "updatedBy": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+          "protectedBranchIds": []
+        },
+        "agentSessionEpoch": 0,
+        "actions": [
+          "project.read",
+          "branch.read",
+          "service.read",
+          "logs.read",
+          "metrics.read",
+          "usage.read",
+          "secrets.read",
+          "storage.read",
+          "db.query",
+          "events.read",
+          "cron.read",
+          "project.create",
+          "project.update",
+          "project.delete",
+          "project.transfer",
+          "project.members.update",
+          "project.billing.update",
+          "branch.create",
+          "branch.update",
+          "branch.delete",
+          "branch.promote",
+          "branch.protection.update",
+          "agent_policy.update",
+          "service.add",
+          "service.remove",
+          "service.rename",
+          "service.scale",
+          "service.upgrade",
+          "service.setAccess",
+          "deploy",
+          "compute.shell",
+          "secrets.write",
+          "storage.write",
+          "storage.delete",
+          "db.write",
+          "db.destructive",
+          "db.restore",
+          "events.write",
+          "domain.purchase",
+          "domain.delegate",
+          "zone.delegate",
+          "cron.write",
+          "cron.run",
+          "cron.delete"
+        ],
+        "actionCatalog": [
+          {
+            "action": "project.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Inspect the project",
+            "hint": "Metadata, manifest, settings",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "branch.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "List branches",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "service.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "List services",
+            "hint": "Includes a service's connected source",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "logs.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Read logs",
+            "hint": "Runtime, build and deploy events",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "metrics.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Read metrics",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "usage.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Read usage",
+            "hint": "Billable quantities and cost",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "events.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Read the activity timeline",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "secrets.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Read secrets and connection strings",
+            "hint": "Secret bundle, database URLs, provider credentials",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "storage.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Browse and download storage objects",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "db.query",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "Run database console queries",
+            "hint": "v1: undifferentiated -- arbitrary SQL, writes included",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "cron.read",
+            "group": "reads",
+            "groupLabel": "Reads",
+            "label": "List cron schedules and their run history",
+            "hint": "Never the request config: that is encrypted and read as a secret",
+            "editable": false,
+            "fixedDecision": "allow"
+          },
+          {
+            "action": "branch.create",
+            "group": "branches",
+            "groupLabel": "Branches",
+            "label": "Create a branch",
+            "hint": "Forks DB / storage / services from a parent",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "branch.update",
+            "group": "branches",
+            "groupLabel": "Branches",
+            "label": "Rename a branch",
+            "hint": "Metadata only",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "branch.delete",
+            "group": "branches",
+            "groupLabel": "Branches",
+            "label": "Delete a branch",
+            "hint": "Tears down the branch and its resources",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "branch.promote",
+            "group": "branches",
+            "groupLabel": "Branches",
+            "label": "Promote / merge a branch",
+            "hint": "Into an unprotected destination",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "branch.protection.update",
+            "group": "branches",
+            "groupLabel": "Branches",
+            "label": "Change the protected branch list",
+            "hint": "An agent may never edit its own blast radius",
+            "editable": false,
+            "fixedDecision": "deny"
+          },
+          {
+            "action": "deploy",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Deploy compute",
+            "hint": "Also covers deploy-equivalent runtime config and a service's source",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.add",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Add a service",
+            "hint": "Provisions new billable capacity",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.rename",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Rename a service",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.scale",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Scale machine count",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.upgrade",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Upgrade spec, storage, or plan",
+            "hint": "Raises the bill",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.remove",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Remove a service",
+            "hint": "Also covers deleting a compute volume",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "service.setAccess",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Change public / private access",
+            "hint": "Changes external exposure",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "compute.shell",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Open a shell on a machine",
+            "hint": "Interactive root with the service's decrypted environment",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "domain.purchase",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Buy a domain",
+            "hint": "Charges the organization through the registrar",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "domain.delegate",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Delegate a domain to a managed zone",
+            "hint": "Re-points the domain's nameservers; DNS stays platform-managed",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "zone.delegate",
+            "group": "services",
+            "groupLabel": "Services & deploys",
+            "label": "Delegate a bring-your-own domain's zone",
+            "hint": "Builds the InstaCloud-managed zone a customer-owned domain points its nameservers at (and releases it)",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "cron.write",
+            "group": "cron",
+            "groupLabel": "Scheduled jobs",
+            "label": "Create or edit a cron schedule",
+            "hint": "Decides what runs unattended, and how often",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "cron.run",
+            "group": "cron",
+            "groupLabel": "Scheduled jobs",
+            "label": "Trigger a cron job now",
+            "hint": "One off-schedule execution of the job as configured",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "cron.delete",
+            "group": "cron",
+            "groupLabel": "Scheduled jobs",
+            "label": "Delete a cron schedule",
+            "hint": "Cannot be undone: the job stops firing and its run history is no longer readable",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "secrets.write",
+            "group": "secrets",
+            "groupLabel": "Secrets & storage",
+            "label": "Set or unset secrets and bindings",
+            "hint": "Normal development work in a sandbox",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "storage.write",
+            "group": "secrets",
+            "groupLabel": "Secrets & storage",
+            "label": "Upload or overwrite storage objects",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "storage.delete",
+            "group": "secrets",
+            "groupLabel": "Secrets & storage",
+            "label": "Delete storage objects",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "db.write",
+            "group": "database",
+            "groupLabel": "Database",
+            "label": "Create databases and extensions",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "db.destructive",
+            "group": "database",
+            "groupLabel": "Database",
+            "label": "Drop a database or backup",
+            "hint": "",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "db.restore",
+            "group": "database",
+            "groupLabel": "Database",
+            "label": "Restore a database from backup",
+            "hint": "Overwrites live data in place",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "project.update",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Rename project / change settings",
+            "hint": "Cannot authorize indirect writes to a protected branch",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "events.write",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Write to the activity timeline",
+            "hint": "How an agent records what it did",
+            "editable": true,
+            "fixedDecision": null
+          },
+          {
+            "action": "project.delete",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Delete the whole project",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "deny"
+          },
+          {
+            "action": "agent_policy.update",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Change this agent policy",
+            "hint": "An agent may never widen its own policy",
+            "editable": false,
+            "fixedDecision": "deny"
+          },
+          {
+            "action": "project.transfer",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Transfer ownership or organization",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "deny"
+          },
+          {
+            "action": "project.members.update",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Change members or roles",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "deny"
+          },
+          {
+            "action": "project.billing.update",
+            "group": "project",
+            "groupLabel": "Project administration",
+            "label": "Project billing administration",
+            "hint": "",
+            "editable": false,
+            "fixedDecision": "deny"
+          }
+        ],
+        "defaultRules": {
+          "project": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "approve",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "allow",
+            "branch.update": "allow",
+            "branch.delete": "approve",
+            "branch.promote": "allow",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "allow",
+            "service.remove": "approve",
+            "service.rename": "allow",
+            "service.scale": "approve",
+            "service.upgrade": "approve",
+            "service.setAccess": "approve",
+            "deploy": "allow",
+            "compute.shell": "approve",
+            "secrets.write": "allow",
+            "storage.write": "allow",
+            "storage.delete": "approve",
+            "db.write": "allow",
+            "db.destructive": "approve",
+            "db.restore": "approve",
+            "events.write": "allow",
+            "domain.purchase": "approve",
+            "domain.delegate": "approve",
+            "zone.delegate": "approve",
+            "cron.write": "allow",
+            "cron.run": "allow",
+            "cron.delete": "approve"
+          },
+          "unprotectedBranch": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "approve",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "allow",
+            "branch.update": "allow",
+            "branch.delete": "approve",
+            "branch.promote": "allow",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "allow",
+            "service.remove": "approve",
+            "service.rename": "allow",
+            "service.scale": "approve",
+            "service.upgrade": "approve",
+            "service.setAccess": "approve",
+            "deploy": "allow",
+            "compute.shell": "approve",
+            "secrets.write": "allow",
+            "storage.write": "allow",
+            "storage.delete": "approve",
+            "db.write": "allow",
+            "db.destructive": "approve",
+            "db.restore": "approve",
+            "events.write": "allow",
+            "domain.purchase": "approve",
+            "domain.delegate": "approve",
+            "zone.delegate": "approve",
+            "cron.write": "allow",
+            "cron.run": "allow",
+            "cron.delete": "approve"
+          },
+          "protectedBranch": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "deny",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "deny",
+            "branch.update": "deny",
+            "branch.delete": "deny",
+            "branch.promote": "deny",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "deny",
+            "service.remove": "deny",
+            "service.rename": "deny",
+            "service.scale": "deny",
+            "service.upgrade": "deny",
+            "service.setAccess": "deny",
+            "deploy": "deny",
+            "compute.shell": "deny",
+            "secrets.write": "deny",
+            "storage.write": "deny",
+            "storage.delete": "deny",
+            "db.write": "deny",
+            "db.destructive": "deny",
+            "db.restore": "deny",
+            "events.write": "deny",
+            "domain.purchase": "deny",
+            "domain.delegate": "deny",
+            "zone.delegate": "deny",
+            "cron.write": "deny",
+            "cron.run": "deny",
+            "cron.delete": "deny"
+          }
+        },
+        "effectiveRules": {
+          "project": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "approve",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "allow",
+            "branch.update": "allow",
+            "branch.delete": "approve",
+            "branch.promote": "allow",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "allow",
+            "service.remove": "approve",
+            "service.rename": "allow",
+            "service.scale": "approve",
+            "service.upgrade": "approve",
+            "service.setAccess": "approve",
+            "deploy": "allow",
+            "compute.shell": "approve",
+            "secrets.write": "allow",
+            "storage.write": "allow",
+            "storage.delete": "approve",
+            "db.write": "allow",
+            "db.destructive": "approve",
+            "db.restore": "approve",
+            "events.write": "allow",
+            "domain.purchase": "approve",
+            "domain.delegate": "approve",
+            "zone.delegate": "approve",
+            "cron.write": "allow",
+            "cron.run": "allow",
+            "cron.delete": "approve"
+          },
+          "unprotectedBranch": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "approve",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "allow",
+            "branch.update": "allow",
+            "branch.delete": "approve",
+            "branch.promote": "allow",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "allow",
+            "service.remove": "approve",
+            "service.rename": "allow",
+            "service.scale": "approve",
+            "service.upgrade": "approve",
+            "service.setAccess": "approve",
+            "deploy": "allow",
+            "compute.shell": "approve",
+            "secrets.write": "allow",
+            "storage.write": "allow",
+            "storage.delete": "approve",
+            "db.write": "allow",
+            "db.destructive": "approve",
+            "db.restore": "approve",
+            "events.write": "allow",
+            "domain.purchase": "approve",
+            "domain.delegate": "approve",
+            "zone.delegate": "approve",
+            "cron.write": "allow",
+            "cron.run": "allow",
+            "cron.delete": "approve"
+          },
+          "protectedBranch": {
+            "project.read": "allow",
+            "branch.read": "allow",
+            "service.read": "allow",
+            "logs.read": "allow",
+            "metrics.read": "allow",
+            "usage.read": "allow",
+            "secrets.read": "allow",
+            "storage.read": "allow",
+            "db.query": "allow",
+            "events.read": "allow",
+            "cron.read": "allow",
+            "project.update": "deny",
+            "project.delete": "deny",
+            "project.transfer": "deny",
+            "project.members.update": "deny",
+            "project.billing.update": "deny",
+            "branch.create": "deny",
+            "branch.update": "deny",
+            "branch.delete": "deny",
+            "branch.promote": "deny",
+            "branch.protection.update": "deny",
+            "agent_policy.update": "deny",
+            "service.add": "deny",
+            "service.remove": "deny",
+            "service.rename": "deny",
+            "service.scale": "deny",
+            "service.upgrade": "deny",
+            "service.setAccess": "deny",
+            "deploy": "deny",
+            "compute.shell": "deny",
+            "secrets.write": "deny",
+            "storage.write": "deny",
+            "storage.delete": "deny",
+            "db.write": "deny",
+            "db.destructive": "deny",
+            "db.restore": "deny",
+            "events.write": "deny",
+            "domain.purchase": "deny",
+            "domain.delegate": "deny",
+            "zone.delegate": "deny",
+            "cron.write": "deny",
+            "cron.run": "deny",
+            "cron.delete": "deny"
+          }
+        },
+        "bootstrapRules": {
+          "project.create": "allow"
+        },
+        "ruleNotes": [
+          "Policy-only guidance, not authorization: current user RBAC, actor/session validation and route guards still apply.",
+          "project means no affected branches. Project-wide writes affecting branches must use their database-resolved scopes; protectedBranch applies if any affected branch is protected.",
+          "Compound actions merge with deny > approve > allow. approve authorizes only the bound request after human approval.",
+          "project.create is account/organization bootstrap, independent of this project policy; organization access is required and the new project starts with full_access.",
+          "db.query includes arbitrary SQL in v1; allow does not enforce SQL-level read-only access.",
+          "branch_specific and customize authorize identically; customize is the same mode carrying explicit rules. full_access and read_only take no rules.",
+          "branchDeveloperRules is a deprecated mirror of rules, and branch_developer of branch_specific. Both are still accepted on write and will be removed."
+        ]
+      },
+      "ms": 2752
+    },
+    "branchListCli": {
+      "cmd": "insta --agent branch list --json",
+      "exitCode": 0,
+      "stdout": "[\n  {\n    \"id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"name\": \"main\",\n    \"parent_branch_id\": null,\n    \"is_default\": true,\n    \"status\": \"active\",\n    \"created_at\": \"2026-10-07T02:32:31.581Z\",\n    \"updated_at\": \"2026-10-07T02:32:31.581Z\"\n  }\n]\n",
+      "stderr": "",
+      "json": [
+        {
+          "id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+          "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+          "name": "main",
+          "parent_branch_id": null,
+          "is_default": true,
+          "status": "active",
+          "created_at": "2026-10-07T02:32:31.581Z",
+          "updated_at": "2026-10-07T02:32:31.581Z"
+        }
+      ],
+      "ms": 2304
+    }
+  },
+  "guard": {
+    "ok": true,
+    "reasons": [],
+    "mode": "branch_specific",
+    "mainProtected": false
+  },
+  "steps": [
+    {
+      "label": "ALLOW",
+      "action": "branch.create",
+      "expected": "allow",
+      "decision": "allow",
+      "approvalId": null,
+      "detail": "executed (exit 0)",
+      "cli": {
+        "cmd": "insta --agent branch create analysis-20261007222046 --json",
+        "exitCode": 0,
+        "stdout": "{\n  \"branch\": {\n    \"id\": \"aa32cdae-a3a6-4d8f-890c-76e0df973528\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"name\": \"analysis-20261007222046\",\n    \"parent_branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"is_default\": false,\n    \"status\": \"creating\",\n    \"created_at\": \"2026-10-07T22:20:53.016Z\",\n    \"updated_at\": \"2026-10-07T22:20:53.016Z\"\n  },\n  \"nextActions\": [\n    {\n      \"op\": \"deploy\",\n      \"reason\": \"Deploy an image to the new branch.\",\n      \"args\": {\n        \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n        \"branch\": \"analysis-20261007222046\"\n      }\n    }\n  ]\n}\n",
+        "stderr": "",
+        "json": {
+          "branch": {
+            "id": "aa32cdae-a3a6-4d8f-890c-76e0df973528",
+            "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+            "name": "analysis-20261007222046",
+            "parent_branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+            "is_default": false,
+            "status": "creating",
+            "created_at": "2026-10-07T22:20:53.016Z",
+            "updated_at": "2026-10-07T22:20:53.016Z"
+          },
+          "nextActions": [
+            {
+              "op": "deploy",
+              "reason": "Deploy an image to the new branch.",
+              "args": {
+                "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+                "branch": "analysis-20261007222046"
+              }
+            }
+          ]
+        },
+        "ms": 2385
+      }
+    },
+    {
+      "label": "APPROVE",
+      "action": "service.scale",
+      "expected": "approve",
+      "decision": "approve",
+      "approvalId": "05f384af-2ced-4f15-9d7c-f905469cc00a",
+      "detail": "approval required for service.scale — review it at https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a or run: insta agent approvals approve 05f384af-2ced-4f15-9d7c-f905469cc00a",
+      "cli": {
+        "cmd": "insta --agent compute scale 2 app --branch analysis-20261007222046 --json",
+        "exitCode": 2,
+        "stdout": "{\n  \"status\": \"approval_required\",\n  \"approvalId\": \"05f384af-2ced-4f15-9d7c-f905469cc00a\",\n  \"action\": \"service.scale\",\n  \"actions\": [\n    \"service.scale\"\n  ],\n  \"url\": \"https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a\",\n  \"message\": \"Agent request requires approval — have an admin review it at https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a or run `insta agent approvals approve 05f384af-2ced-4f15-9d7c-f905469cc00a`, then retry the unchanged request\"\n}\n",
+        "stderr": "approval required for service.scale — review it at https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a or run: insta agent approvals approve 05f384af-2ced-4f15-9d7c-f905469cc00a\n",
+        "json": {
+          "status": "approval_required",
+          "approvalId": "05f384af-2ced-4f15-9d7c-f905469cc00a",
+          "action": "service.scale",
+          "actions": [
+            "service.scale"
+          ],
+          "url": "https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a",
+          "message": "Agent request requires approval — have an admin review it at https://console.instacloud.com/projects/5111d812-e645-48ee-8b4d-f9c6c527395b?review=05f384af-2ced-4f15-9d7c-f905469cc00a or run `insta agent approvals approve 05f384af-2ced-4f15-9d7c-f905469cc00a`, then retry the unchanged request"
+        },
+        "ms": 2782
+      }
+    },
+    {
+      "label": "DENY",
+      "action": "project.delete",
+      "expected": "deny",
+      "decision": "deny",
+      "approvalId": null,
+      "detail": "error: project.delete denied by agent policy (HTTP 403)",
+      "cli": {
+        "cmd": "insta --agent project delete --json",
+        "exitCode": 1,
+        "stdout": "",
+        "stderr": "error: project.delete denied by agent policy (HTTP 403)\n",
+        "json": null,
+        "ms": 2227
+      }
+    }
+  ],
+  "pendingApprovals": {
+    "cmd": "insta --agent agent approvals list --status pending --json",
+    "exitCode": 0,
+    "stdout": "[\n  {\n    \"id\": \"05f384af-2ced-4f15-9d7c-f905469cc00a\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"action\": \"service.scale\",\n    \"branch_id\": \"aa32cdae-a3a6-4d8f-890c-76e0df973528\",\n    \"status\": \"pending\",\n    \"requested_by\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"decided_by\": null,\n    \"requested_at\": \"2026-10-07T22:20:55.970Z\",\n    \"decided_at\": null,\n    \"request_hash\": \"5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d\",\n    \"request_context\": {\n      \"actor\": {\n        \"client\": \"claude-code\",\n        \"source\": \"cli-explicit\",\n        \"actorType\": \"agent\",\n        \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n        \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\",\n        \"principalUserId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\"\n      },\n      \"method\": \"POST\",\n      \"actions\": [\n        \"service.scale\"\n      ],\n      \"bodyHash\": \"d0264cb6225be67662322cf1fc5a5c217c517510d5a3e5bcc89c694a3a4e0ef7\",\n      \"resource\": {\n        \"branchIds\": [\n          \"aa32cdae-a3a6-4d8f-890c-76e0df973528\"\n        ],\n        \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n        \"serviceId\": \"f788a197-bf02-4b86-88e9-0bb69fdd8e22\"\n      },\n      \"parameters\": {\n        \"machineCount\": 2\n      },\n      \"parameterDigest\": \"5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d\"\n    }\n  }\n]\n",
+    "stderr": "",
+    "json": [
+      {
+        "id": "05f384af-2ced-4f15-9d7c-f905469cc00a",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "action": "service.scale",
+        "branch_id": "aa32cdae-a3a6-4d8f-890c-76e0df973528",
+        "status": "pending",
+        "requested_by": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "decided_by": null,
+        "requested_at": "2026-10-07T22:20:55.970Z",
+        "decided_at": null,
+        "request_hash": "5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d",
+        "request_context": {
+          "actor": {
+            "client": "claude-code",
+            "source": "cli-explicit",
+            "actorType": "agent",
+            "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+            "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653",
+            "principalUserId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY"
+          },
+          "method": "POST",
+          "actions": [
+            "service.scale"
+          ],
+          "bodyHash": "d0264cb6225be67662322cf1fc5a5c217c517510d5a3e5bcc89c694a3a4e0ef7",
+          "resource": {
+            "branchIds": [
+              "aa32cdae-a3a6-4d8f-890c-76e0df973528"
+            ],
+            "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+            "serviceId": "f788a197-bf02-4b86-88e9-0bb69fdd8e22"
+          },
+          "parameters": {
+            "machineCount": 2
+          },
+          "parameterDigest": "5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d"
+        }
+      }
+    ],
+    "ms": 2304
+  },
+  "events": {
+    "cmd": "insta --agent agent events --limit 25 --json",
+    "exitCode": 0,
+    "stdout": "[\n  {\n    \"id\": \"08d6f927-9e8c-418e-8434-7994d7226c78\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"800b9a2f-f7c6-4d45-8526-3c62582c1786\",\n    \"source\": \"resource\",\n    \"kind\": \"branch.create.failed\",\n    \"payload\": {\n      \"from\": \"main\",\n      \"name\": \"slice-preview\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"failed\"\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"branch\",\n          \"branchIds\": [\n            \"800b9a2f-f7c6-4d45-8526-3c62582c1786\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"e1007e5d-8688-4a62-bcf1-aac656ddcf49\",\n        \"occurredAt\": \"2026-10-07T22:21:00.565Z\",\n        \"operationId\": \"800b9a2f-f7c6-4d45-8526-3c62582c1786\"\n      }\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:21:00.566Z\"\n  },\n  {\n    \"id\": \"17f12bc5-3217-4b55-8ce4-606a0a478a10\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"agent_policy.denied\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"denied\",\n          \"durationMs\": 31,\n          \"httpStatus\": 403\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"b1e28f87-52db-4636-8285-94be2b527b0b\",\n        \"occurredAt\": \"2026-10-07T22:21:00.542Z\",\n        \"operationId\": \"a7183677-466c-4050-ad40-0b8639940863\"\n      },\n      \"client\": \"claude-code\",\n      \"bodyHash\": \"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855\",\n      \"decision\": \"deny\",\n      \"operation\": \"deleteProject\",\n      \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\",\n      \"requestHash\": \"2d452b5f2f16351c0135bf2816bc7fdd0452a36d0e112b182307cea0da835313\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:21:00.542Z\"\n  },\n  {\n    \"id\": \"25475c4e-f217-467a-9e6d-31e6e2584cf6\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"aa32cdae-a3a6-4d8f-890c-76e0df973528\",\n    \"source\": \"resource\",\n    \"kind\": \"agent_policy.pending\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"pending\",\n          \"durationMs\": 39,\n          \"httpStatus\": 202\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"aa32cdae-a3a6-4d8f-890c-76e0df973528\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f788a197-bf02-4b86-88e9-0bb69fdd8e22\"\n          ]\n        },\n        \"requestId\": \"bf3447be-3c13-47c5-a8a6-43a50323a335\",\n        \"occurredAt\": \"2026-10-07T22:20:55.978Z\",\n        \"operationId\": \"b744c722-2722-4004-a990-1c8d8fdc335e\"\n      },\n      \"client\": \"claude-code\",\n      \"bodyHash\": \"d0264cb6225be67662322cf1fc5a5c217c517510d5a3e5bcc89c694a3a4e0ef7\",\n      \"decision\": \"approve\",\n      \"operation\": \"scaleService\",\n      \"serviceId\": \"f788a197-bf02-4b86-88e9-0bb69fdd8e22\",\n      \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\",\n      \"approvalId\": \"05f384af-2ced-4f15-9d7c-f905469cc00a\",\n      \"requestHash\": \"5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d\",\n      \"machineCount\": 2\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:20:55.979Z\"\n  },\n  {\n    \"id\": \"dd985659-a55b-4233-a746-67b78973a665\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"800b9a2f-f7c6-4d45-8526-3c62582c1786\",\n    \"source\": \"resource\",\n    \"kind\": \"branch.create\",\n    \"payload\": {\n      \"from\": \"main\",\n      \"name\": \"slice-preview\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"accepted\",\n          \"durationMs\": 67,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"branch\",\n          \"branchIds\": [\n            \"800b9a2f-f7c6-4d45-8526-3c62582c1786\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"e1007e5d-8688-4a62-bcf1-aac656ddcf49\",\n        \"occurredAt\": \"2026-10-07T22:20:54.375Z\",\n        \"operationId\": \"800b9a2f-f7c6-4d45-8526-3c62582c1786\"\n      },\n      \"empty\": false,\n      \"operation\": \"createBranch\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:20:54.375Z\"\n  },\n  {\n    \"id\": \"5f68d148-4fd5-484b-aaf2-d1acb912a5a1\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"aa32cdae-a3a6-4d8f-890c-76e0df973528\",\n    \"source\": \"resource\",\n    \"kind\": \"branch.create\",\n    \"payload\": {\n      \"from\": \"main\",\n      \"name\": \"analysis-20261007222046\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"accepted\",\n          \"durationMs\": 80,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"branch\",\n          \"branchIds\": [\n            \"aa32cdae-a3a6-4d8f-890c-76e0df973528\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"f49abe49-3730-4cde-9ab1-7a5b28863d7f\",\n        \"occurredAt\": \"2026-10-07T22:20:53.042Z\",\n        \"operationId\": \"aa32cdae-a3a6-4d8f-890c-76e0df973528\"\n      },\n      \"empty\": false,\n      \"operation\": \"createBranch\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:20:53.042Z\"\n  },\n  {\n    \"id\": \"e17fce47-ebb2-48f7-8423-79661f44b400\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"agent_policy.denied\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"denied\",\n          \"durationMs\": 28,\n          \"httpStatus\": 403\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"0c1811fa-d28d-4e76-b369-9b572ebcaae1\",\n        \"occurredAt\": \"2026-10-07T22:08:45.901Z\",\n        \"operationId\": \"04ee1315-215e-4019-9186-bb5a46135e61\"\n      },\n      \"client\": \"claude-code\",\n      \"bodyHash\": \"1ad9bad85bea664e84afa85cb51a9db620492956350a56ea585b83a881f7db8e\",\n      \"decision\": \"deny\",\n      \"operation\": \"setAgentPolicy\",\n      \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\",\n      \"requestHash\": \"1f827bf655815b251ac7801bae73efeb35da70136a971644465665fca1f4528b\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:08:45.902Z\"\n  },\n  {\n    \"id\": \"787fb7c6-15de-4740-ac2d-ee3195ba622f\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"agent_policy.updated\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 44,\n          \"httpStatus\": 200\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"333bb7ad-d73a-473f-bb21-5e248932000e\",\n        \"occurredAt\": \"2026-10-07T22:08:43.460Z\",\n        \"operationId\": \"e4eb5238-0d7d-44f8-b3b6-5945ac1a775f\"\n      },\n      \"operation\": \"setAgentPolicy\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T22:08:43.461Z\"\n  },\n  {\n    \"id\": \"01099ea1-610f-4b8a-ac2f-38975ebb33d7\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"project.rename\",\n    \"payload\": {\n      \"name\": \"PlantAPI\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 37,\n          \"httpStatus\": 200\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"f988fea6-d2d2-4329-8493-03323b63eda3\",\n        \"occurredAt\": \"2026-10-07T03:51:39.409Z\",\n        \"operationId\": \"cdc088fb-42a3-4131-9b2f-be63e39d5759\"\n      },\n      \"operation\": \"renameProject\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T03:51:39.410Z\"\n  },\n  {\n    \"id\": \"f0066cc1-ec86-4df3-a7e4-caefb27885a9\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"deploy\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\"\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n          ]\n        },\n        \"requestId\": \"6d8f64fe-4fd3-45e8-a3e3-f6f53e1f37ea\",\n        \"occurredAt\": \"2026-10-07T02:34:00.875Z\",\n        \"operationId\": \"b39922d9-b6fe-46df-b839-dc6c1ab7b06b\"\n      },\n      \"group\": \"app\",\n      \"branch\": \"main\",\n      \"serviceId\": \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:34:00.876Z\"\n  },\n  {\n    \"id\": \"f4e15945-34ed-45d8-bf6e-4c4f205a4916\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"deploy.enqueued\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"accepted\",\n          \"durationMs\": 78,\n          \"httpStatus\": 202\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n          ]\n        },\n        \"requestId\": \"6d8f64fe-4fd3-45e8-a3e3-f6f53e1f37ea\",\n        \"occurredAt\": \"2026-10-07T02:33:36.152Z\",\n        \"operationId\": \"b39922d9-b6fe-46df-b839-dc6c1ab7b06b\"\n      },\n      \"group\": \"app\",\n      \"operation\": \"\",\n      \"serviceId\": \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:36.152Z\"\n  },\n  {\n    \"id\": \"9899f672-537b-45ec-acad-3712acf4ae04\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"deploy.credentials.read\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 102,\n          \"httpStatus\": 200\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n          ]\n        },\n        \"requestId\": \"fe2476cf-2ce3-42b0-a81d-0cfc8aef7ef5\",\n        \"occurredAt\": \"2026-10-07T02:33:35.514Z\",\n        \"operationId\": \"506c3d3b-ccea-450a-862a-9ee669d03124\"\n      },\n      \"operation\": \"\",\n      \"serviceId\": \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:35.515Z\"\n  },\n  {\n    \"id\": \"82477e5e-1e6f-43b0-a24e-5b3f1060707a\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"secret.binding.set\",\n    \"payload\": {\n      \"name\": \"DATABASE_URL\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 52,\n          \"httpStatus\": 200\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n          ]\n        },\n        \"requestId\": \"95962e0e-717d-4d04-bea1-11605b11e9d1\",\n        \"occurredAt\": \"2026-10-07T02:33:32.009Z\",\n        \"operationId\": \"a523b7bd-5906-4ad1-9738-2f4a2226006a\"\n      },\n      \"target\": \"compute/app\",\n      \"operation\": \"setSecretBinding\",\n      \"serviceId\": \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:32.010Z\"\n  },\n  {\n    \"id\": \"d5e42bc8-271c-4021-b47b-935016cdc46e\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"service.add\",\n    \"payload\": {\n      \"name\": \"app\",\n      \"type\": \"compute\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 163,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n          ]\n        },\n        \"requestId\": \"2bd7260c-ba18-4d89-83ac-a41f4a70f3ae\",\n        \"occurredAt\": \"2026-10-07T02:33:20.586Z\",\n        \"operationId\": \"e0d22ea8-2cbd-4bb3-bf79-5462bf28b347\"\n      },\n      \"public\": false,\n      \"operation\": \"addService\",\n      \"serviceId\": \"f54746a5-1155-49a2-9aba-9f849c5fb3cb\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:20.588Z\"\n  },\n  {\n    \"id\": \"75778459-0110-45ab-9405-1a09c301ed57\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"service.add\",\n    \"payload\": {\n      \"name\": \"db\",\n      \"type\": \"postgres\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 12314,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"service\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": [\n            \"3c915abf-5701-439e-b8a9-81f0af26d964\"\n          ]\n        },\n        \"requestId\": \"be446f84-ce77-46b3-a282-2c74659af7bb\",\n        \"occurredAt\": \"2026-10-07T02:33:19.295Z\",\n        \"operationId\": \"a614ab91-9529-4e99-8617-03029b0a2d5a\"\n      },\n      \"public\": false,\n      \"operation\": \"addService\",\n      \"serviceId\": \"3c915abf-5701-439e-b8a9-81f0af26d964\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:19.295Z\"\n  },\n  {\n    \"id\": \"112f7a22-32b2-4a32-9a1f-d8fcd83b9b1b\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"agent_session.issued\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 26,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"45796776-5ca5-4ffd-8f77-bb07b5f7f2fe\",\n        \"occurredAt\": \"2026-10-07T02:33:03.268Z\",\n        \"operationId\": \"5f5068b0-5e89-456e-887b-c51ab4b25689\"\n      },\n      \"epoch\": 0,\n      \"client\": \"claude-code\",\n      \"operation\": \"issueAgentSession\",\n      \"sessionId\": \"ags_c49a98f6-0586-4c51-a106-031b5b309653\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:33:03.268Z\"\n  },\n  {\n    \"id\": \"3b6c3f78-88aa-4d48-835a-b4dcf4192767\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": null,\n    \"source\": \"resource\",\n    \"kind\": \"agent_session.issued\",\n    \"payload\": {\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 10,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"fdeb0aef-1d2d-4a6b-b34c-b228ea1df866\",\n        \"occurredAt\": \"2026-10-07T02:32:31.704Z\",\n        \"operationId\": \"bbc8ecf8-0d4a-404a-b36d-237b97c41ffb\"\n      },\n      \"epoch\": 0,\n      \"client\": \"claude-code\",\n      \"operation\": \"issueAgentSession\",\n      \"sessionId\": \"ags_dc43d154-f185-42d7-bcc0-e7770b36ef9d\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:32:31.704Z\"\n  },\n  {\n    \"id\": \"6390ddb4-0ef1-4120-9f23-975d6c560b74\",\n    \"project_id\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n    \"branch_id\": \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\",\n    \"source\": \"resource\",\n    \"kind\": \"project.create\",\n    \"payload\": {\n      \"name\": \"agent37\",\n      \"audit\": {\n        \"actor\": {\n          \"type\": \"agent\",\n          \"client\": \"claude-code\",\n          \"userId\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n          \"sessionId\": \"ags_096c8ccc-1b30-4391-b60a-e8f1d0b0e849\"\n        },\n        \"origin\": \"server\",\n        \"result\": {\n          \"status\": \"succeeded\",\n          \"durationMs\": 64,\n          \"httpStatus\": 201\n        },\n        \"channel\": \"cli\",\n        \"version\": 2,\n        \"resource\": {\n          \"scope\": \"project\",\n          \"branchIds\": [\n            \"ab51b9c2-d0bd-407b-8ad2-8f07e3403b46\"\n          ],\n          \"projectId\": \"5111d812-e645-48ee-8b4d-f9c6c527395b\",\n          \"serviceIds\": []\n        },\n        \"requestId\": \"e80d439b-4c5b-465e-8654-1394855caf9b\",\n        \"occurredAt\": \"2026-10-07T02:32:31.586Z\",\n        \"operationId\": \"e8596306-9b64-425c-b136-ba34e226d09a\"\n      },\n      \"operation\": \"createProject\"\n    },\n    \"actor_user_id\": \"ca2fYemDzElrgTFUyx2S2nvdLbce6ViY\",\n    \"dedup_key\": null,\n    \"created_at\": \"2026-10-07T02:32:31.587Z\"\n  }\n]\n",
+    "stderr": "",
+    "json": [
+      {
+        "id": "08d6f927-9e8c-418e-8434-7994d7226c78",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "800b9a2f-f7c6-4d45-8526-3c62582c1786",
+        "source": "resource",
+        "kind": "branch.create.failed",
+        "payload": {
+          "from": "main",
+          "name": "slice-preview",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "failed"
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "branch",
+              "branchIds": [
+                "800b9a2f-f7c6-4d45-8526-3c62582c1786"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "e1007e5d-8688-4a62-bcf1-aac656ddcf49",
+            "occurredAt": "2026-10-07T22:21:00.565Z",
+            "operationId": "800b9a2f-f7c6-4d45-8526-3c62582c1786"
+          }
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:21:00.566Z"
+      },
+      {
+        "id": "17f12bc5-3217-4b55-8ce4-606a0a478a10",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "agent_policy.denied",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "denied",
+              "durationMs": 31,
+              "httpStatus": 403
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "b1e28f87-52db-4636-8285-94be2b527b0b",
+            "occurredAt": "2026-10-07T22:21:00.542Z",
+            "operationId": "a7183677-466c-4050-ad40-0b8639940863"
+          },
+          "client": "claude-code",
+          "bodyHash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "decision": "deny",
+          "operation": "deleteProject",
+          "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653",
+          "requestHash": "2d452b5f2f16351c0135bf2816bc7fdd0452a36d0e112b182307cea0da835313"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:21:00.542Z"
+      },
+      {
+        "id": "25475c4e-f217-467a-9e6d-31e6e2584cf6",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "aa32cdae-a3a6-4d8f-890c-76e0df973528",
+        "source": "resource",
+        "kind": "agent_policy.pending",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "pending",
+              "durationMs": 39,
+              "httpStatus": 202
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "aa32cdae-a3a6-4d8f-890c-76e0df973528"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f788a197-bf02-4b86-88e9-0bb69fdd8e22"
+              ]
+            },
+            "requestId": "bf3447be-3c13-47c5-a8a6-43a50323a335",
+            "occurredAt": "2026-10-07T22:20:55.978Z",
+            "operationId": "b744c722-2722-4004-a990-1c8d8fdc335e"
+          },
+          "client": "claude-code",
+          "bodyHash": "d0264cb6225be67662322cf1fc5a5c217c517510d5a3e5bcc89c694a3a4e0ef7",
+          "decision": "approve",
+          "operation": "scaleService",
+          "serviceId": "f788a197-bf02-4b86-88e9-0bb69fdd8e22",
+          "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653",
+          "approvalId": "05f384af-2ced-4f15-9d7c-f905469cc00a",
+          "requestHash": "5c39326d330cf15e445e9e1868b384af9858b2208b05a59c79611dd5ab0c626d",
+          "machineCount": 2
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:20:55.979Z"
+      },
+      {
+        "id": "dd985659-a55b-4233-a746-67b78973a665",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "800b9a2f-f7c6-4d45-8526-3c62582c1786",
+        "source": "resource",
+        "kind": "branch.create",
+        "payload": {
+          "from": "main",
+          "name": "slice-preview",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "accepted",
+              "durationMs": 67,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "branch",
+              "branchIds": [
+                "800b9a2f-f7c6-4d45-8526-3c62582c1786"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "e1007e5d-8688-4a62-bcf1-aac656ddcf49",
+            "occurredAt": "2026-10-07T22:20:54.375Z",
+            "operationId": "800b9a2f-f7c6-4d45-8526-3c62582c1786"
+          },
+          "empty": false,
+          "operation": "createBranch"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:20:54.375Z"
+      },
+      {
+        "id": "5f68d148-4fd5-484b-aaf2-d1acb912a5a1",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "aa32cdae-a3a6-4d8f-890c-76e0df973528",
+        "source": "resource",
+        "kind": "branch.create",
+        "payload": {
+          "from": "main",
+          "name": "analysis-20261007222046",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "accepted",
+              "durationMs": 80,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "branch",
+              "branchIds": [
+                "aa32cdae-a3a6-4d8f-890c-76e0df973528"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "f49abe49-3730-4cde-9ab1-7a5b28863d7f",
+            "occurredAt": "2026-10-07T22:20:53.042Z",
+            "operationId": "aa32cdae-a3a6-4d8f-890c-76e0df973528"
+          },
+          "empty": false,
+          "operation": "createBranch"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:20:53.042Z"
+      },
+      {
+        "id": "e17fce47-ebb2-48f7-8423-79661f44b400",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "agent_policy.denied",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "denied",
+              "durationMs": 28,
+              "httpStatus": 403
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "0c1811fa-d28d-4e76-b369-9b572ebcaae1",
+            "occurredAt": "2026-10-07T22:08:45.901Z",
+            "operationId": "04ee1315-215e-4019-9186-bb5a46135e61"
+          },
+          "client": "claude-code",
+          "bodyHash": "1ad9bad85bea664e84afa85cb51a9db620492956350a56ea585b83a881f7db8e",
+          "decision": "deny",
+          "operation": "setAgentPolicy",
+          "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653",
+          "requestHash": "1f827bf655815b251ac7801bae73efeb35da70136a971644465665fca1f4528b"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:08:45.902Z"
+      },
+      {
+        "id": "787fb7c6-15de-4740-ac2d-ee3195ba622f",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "agent_policy.updated",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 44,
+              "httpStatus": 200
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "333bb7ad-d73a-473f-bb21-5e248932000e",
+            "occurredAt": "2026-10-07T22:08:43.460Z",
+            "operationId": "e4eb5238-0d7d-44f8-b3b6-5945ac1a775f"
+          },
+          "operation": "setAgentPolicy"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T22:08:43.461Z"
+      },
+      {
+        "id": "01099ea1-610f-4b8a-ac2f-38975ebb33d7",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "project.rename",
+        "payload": {
+          "name": "PlantAPI",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 37,
+              "httpStatus": 200
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "f988fea6-d2d2-4329-8493-03323b63eda3",
+            "occurredAt": "2026-10-07T03:51:39.409Z",
+            "operationId": "cdc088fb-42a3-4131-9b2f-be63e39d5759"
+          },
+          "operation": "renameProject"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T03:51:39.410Z"
+      },
+      {
+        "id": "f0066cc1-ec86-4df3-a7e4-caefb27885a9",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "deploy",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded"
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+              ]
+            },
+            "requestId": "6d8f64fe-4fd3-45e8-a3e3-f6f53e1f37ea",
+            "occurredAt": "2026-10-07T02:34:00.875Z",
+            "operationId": "b39922d9-b6fe-46df-b839-dc6c1ab7b06b"
+          },
+          "group": "app",
+          "branch": "main",
+          "serviceId": "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:34:00.876Z"
+      },
+      {
+        "id": "f4e15945-34ed-45d8-bf6e-4c4f205a4916",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "deploy.enqueued",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "accepted",
+              "durationMs": 78,
+              "httpStatus": 202
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+              ]
+            },
+            "requestId": "6d8f64fe-4fd3-45e8-a3e3-f6f53e1f37ea",
+            "occurredAt": "2026-10-07T02:33:36.152Z",
+            "operationId": "b39922d9-b6fe-46df-b839-dc6c1ab7b06b"
+          },
+          "group": "app",
+          "operation": "",
+          "serviceId": "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:36.152Z"
+      },
+      {
+        "id": "9899f672-537b-45ec-acad-3712acf4ae04",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "deploy.credentials.read",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 102,
+              "httpStatus": 200
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+              ]
+            },
+            "requestId": "fe2476cf-2ce3-42b0-a81d-0cfc8aef7ef5",
+            "occurredAt": "2026-10-07T02:33:35.514Z",
+            "operationId": "506c3d3b-ccea-450a-862a-9ee669d03124"
+          },
+          "operation": "",
+          "serviceId": "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:35.515Z"
+      },
+      {
+        "id": "82477e5e-1e6f-43b0-a24e-5b3f1060707a",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "secret.binding.set",
+        "payload": {
+          "name": "DATABASE_URL",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 52,
+              "httpStatus": 200
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+              ]
+            },
+            "requestId": "95962e0e-717d-4d04-bea1-11605b11e9d1",
+            "occurredAt": "2026-10-07T02:33:32.009Z",
+            "operationId": "a523b7bd-5906-4ad1-9738-2f4a2226006a"
+          },
+          "target": "compute/app",
+          "operation": "setSecretBinding",
+          "serviceId": "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:32.010Z"
+      },
+      {
+        "id": "d5e42bc8-271c-4021-b47b-935016cdc46e",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "service.add",
+        "payload": {
+          "name": "app",
+          "type": "compute",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 163,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+              ]
+            },
+            "requestId": "2bd7260c-ba18-4d89-83ac-a41f4a70f3ae",
+            "occurredAt": "2026-10-07T02:33:20.586Z",
+            "operationId": "e0d22ea8-2cbd-4bb3-bf79-5462bf28b347"
+          },
+          "public": false,
+          "operation": "addService",
+          "serviceId": "f54746a5-1155-49a2-9aba-9f849c5fb3cb"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:20.588Z"
+      },
+      {
+        "id": "75778459-0110-45ab-9405-1a09c301ed57",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "service.add",
+        "payload": {
+          "name": "db",
+          "type": "postgres",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 12314,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "service",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": [
+                "3c915abf-5701-439e-b8a9-81f0af26d964"
+              ]
+            },
+            "requestId": "be446f84-ce77-46b3-a282-2c74659af7bb",
+            "occurredAt": "2026-10-07T02:33:19.295Z",
+            "operationId": "a614ab91-9529-4e99-8617-03029b0a2d5a"
+          },
+          "public": false,
+          "operation": "addService",
+          "serviceId": "3c915abf-5701-439e-b8a9-81f0af26d964"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:19.295Z"
+      },
+      {
+        "id": "112f7a22-32b2-4a32-9a1f-d8fcd83b9b1b",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "agent_session.issued",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 26,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "45796776-5ca5-4ffd-8f77-bb07b5f7f2fe",
+            "occurredAt": "2026-10-07T02:33:03.268Z",
+            "operationId": "5f5068b0-5e89-456e-887b-c51ab4b25689"
+          },
+          "epoch": 0,
+          "client": "claude-code",
+          "operation": "issueAgentSession",
+          "sessionId": "ags_c49a98f6-0586-4c51-a106-031b5b309653"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:33:03.268Z"
+      },
+      {
+        "id": "3b6c3f78-88aa-4d48-835a-b4dcf4192767",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": null,
+        "source": "resource",
+        "kind": "agent_session.issued",
+        "payload": {
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 10,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "fdeb0aef-1d2d-4a6b-b34c-b228ea1df866",
+            "occurredAt": "2026-10-07T02:32:31.704Z",
+            "operationId": "bbc8ecf8-0d4a-404a-b36d-237b97c41ffb"
+          },
+          "epoch": 0,
+          "client": "claude-code",
+          "operation": "issueAgentSession",
+          "sessionId": "ags_dc43d154-f185-42d7-bcc0-e7770b36ef9d"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:32:31.704Z"
+      },
+      {
+        "id": "6390ddb4-0ef1-4120-9f23-975d6c560b74",
+        "project_id": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+        "branch_id": "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46",
+        "source": "resource",
+        "kind": "project.create",
+        "payload": {
+          "name": "agent37",
+          "audit": {
+            "actor": {
+              "type": "agent",
+              "client": "claude-code",
+              "userId": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+              "sessionId": "ags_096c8ccc-1b30-4391-b60a-e8f1d0b0e849"
+            },
+            "origin": "server",
+            "result": {
+              "status": "succeeded",
+              "durationMs": 64,
+              "httpStatus": 201
+            },
+            "channel": "cli",
+            "version": 2,
+            "resource": {
+              "scope": "project",
+              "branchIds": [
+                "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46"
+              ],
+              "projectId": "5111d812-e645-48ee-8b4d-f9c6c527395b",
+              "serviceIds": []
+            },
+            "requestId": "e80d439b-4c5b-465e-8654-1394855caf9b",
+            "occurredAt": "2026-10-07T02:32:31.586Z",
+            "operationId": "e8596306-9b64-425c-b136-ba34e226d09a"
+          },
+          "operation": "createProject"
+        },
+        "actor_user_id": "ca2fYemDzElrgTFUyx2S2nvdLbce6ViY",
+        "dedup_key": null,
+        "created_at": "2026-10-07T02:32:31.587Z"
+      }
+    ],
+    "ms": 2192
+  },
+  "finishedAt": "2026-10-07T22:21:05.609Z"
+}
