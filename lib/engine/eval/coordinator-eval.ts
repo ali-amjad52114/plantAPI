@@ -8,6 +8,8 @@ loadEnv();
 
 const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD local
 const tomorrow = new Date(Date.now() + 86_400_000).toLocaleDateString("en-CA");
+// Pinned plant time so the eval does not depend on when it runs (the coordinator never plans in the past).
+const NOW = `${today}T15:00:00-04:00`;
 
 const triage = {
   asset_id: "CV-104", failure_category: "electrical", suspected_component: "contactor", suspected_part: "LC1D09BD",
@@ -19,11 +21,11 @@ const materials = { part: "LC1D09BD", internal_stock: 0, odoo_product_id: 1, mon
 const reliability = { asset_id: "CV-104", recurring: true, failures_last_12_months: 3, pattern: "3rd KM104 contactor failure in 12 months", root_cause: "contact wear from frequent starts", recommendation: "Replace as soon as possible; review duty cycle", urgency: "asap", sources: ["WO-1", "WO-2"], summary: "Recurring — repair ASAP" };
 const production = {
   workcenter: "Crushing Line 2",
-  recommended: { start: `${tomorrow}T07:00:00`, end: `${tomorrow}T08:00:00`, impact: "none", note: "planned stop, lowest impact" },
-  alternatives: [{ start: `${today}T18:00:00`, end: `${today}T20:00:00`, impact: "low", note: "reduced production" }],
+  recommended: { start: `${tomorrow}T07:00:00-04:00`, end: `${tomorrow}T08:00:00-04:00`, impact: "none", note: "planned stop, lowest impact" },
+  alternatives: [{ start: `${today}T18:00:00-04:00`, end: `${today}T20:00:00-04:00`, impact: "low", note: "reduced production" }],
   source: "sheets:eval", summary: "Lowest impact tomorrow 07:00; today 18:00–20:00 is low impact",
 };
-const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "calendar:eval", summary: "Sarah free today 18:00, busy tomorrow morning" };
+const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00-04:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "calendar:eval", summary: "Sarah free today 18:00, busy tomorrow morning" };
 
 const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials; noLeadTime?: boolean; expect?: string }> = [
   { name: "baseline seeded disagreement", team: { reliability, production, workforce } },
@@ -35,8 +37,8 @@ const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: ty
     name: "today's only window is 28 min for a 45 min repair → tomorrow 07:00",
     team: {
       reliability,
-      production: { ...production, recommended: { start: `${today}T19:32:00`, end: `${today}T20:00:00`, impact: "low", note: "only gap today" }, alternatives: [{ start: `${tomorrow}T07:00:00`, end: `${tomorrow}T09:00:00`, impact: "none", note: "planned stop" }], summary: "Today only 19:32-20:00; tomorrow 07:00-09:00 planned stop" },
-      workforce: { ...workforce, available_from: `${today}T18:00:00`, conflicts: [] , summary: "Sarah free from today 18:00, no conflicts tomorrow" },
+      production: { ...production, recommended: { start: `${today}T19:32:00-04:00`, end: `${today}T20:00:00-04:00`, impact: "low", note: "only gap today" }, alternatives: [{ start: `${tomorrow}T07:00:00-04:00`, end: `${tomorrow}T09:00:00-04:00`, impact: "none", note: "planned stop" }], summary: "Today only 19:32-20:00; tomorrow 07:00-09:00 planned stop" },
+      workforce: { ...workforce, available_from: `${today}T18:00:00-04:00`, conflicts: [] , summary: "Sarah free from today 18:00, no conflicts tomorrow" },
     },
     expect: `${tomorrow}T07:00`,
   },
@@ -54,10 +56,10 @@ async function main() {
     CASES.map(async (c, i) => {
       const incident = { id: `eval-${i}`, alarm_text: "CV-104 tripped 3x, KM104 feedback lost", photo_url: null, triage, materials: c.materials ?? materials, plan: null, erp: null } as unknown as Incident;
       const t0 = Date.now();
-      const turn = await agent37.runTurn({ instanceId, role: "coordinator", incidentId: incident.id, input: buildTaskText("coordinator", incident, { team: c.team }), reasoningEffort: "medium" }, () => {});
+      const turn = await agent37.runTurn({ instanceId, role: "coordinator", incidentId: incident.id, input: buildTaskText("coordinator", incident, { team: c.team, now: NOW }), reasoningEffort: "medium" }, () => {});
       const plan = await ai.parseAgentOutput("coordinator", turn.outputText);
       const at18 = plan.window_start.startsWith(c.expect ?? `${today}T18:00`);
-      const problem = checkOutput("coordinator", plan, incident);
+      const problem = checkOutput("coordinator", plan, incident, Date.parse(NOW));
       // Unknown lead time: earliest feasible window today (18:00 here), never blank, marked conditional, expedite needs approval.
       const conditionalOk = !c.noLeadTime || (plan.safety.some((x) => /conditional/i.test(x)) && plan.actions.some((a) => /expedite/i.test(a.action) && a.rule === "APPROVAL"));
       return { name: c.name, pass: at18 && !problem && conditionalOk, window: plan.window_start, supplier: `${plan.supplier.supplier} $${plan.supplier.price}`, problem, seconds: ((Date.now() - t0) / 1000).toFixed(0), response: turn.responseId };

@@ -16,6 +16,7 @@ import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
 import { FLAGS } from "@/lib/contracts/flags";
 import { extractLastJson } from "@/lib/ai";
+import { PLAN_RULES_VERSION, stalePlanReason } from "./flow";
 import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
 import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
@@ -30,6 +31,12 @@ const db = () => supabaseAdmin();
 function must<T>(res: { data: T | null; error: { message: string } | null }, what: string): T {
   if (res.error) throw new Error(`${what}: ${res.error.message}`);
   return res.data as T;
+}
+
+export class StalePlanError extends Error {
+  constructor(public reason: string) {
+    super(`plan is stale — re-plan (${reason})`);
+  }
 }
 
 export class IncidentNotFoundError extends Error {
@@ -276,6 +283,7 @@ ${outputSchemaText(role)}`,
       response_id: turn.responseId,
       cost_usd: turn.costUsd,
       duration_ms: turn.durationMs,
+      ...(role === "coordinator" ? { plan_rules: PLAN_RULES_VERSION } : {}),
       input_tokens: (turn as { inputTokens?: number | null }).inputTokens ?? null,
       output_tokens: (turn as { outputTokens?: number | null }).outputTokens ?? null,
     });
@@ -342,6 +350,15 @@ export const engine: Engine = {
   async approve(incidentId, decision, by, note) {
     const incident = await getIncident(incidentId);
     if (!CAN_APPROVE.includes(incident.status)) throw new Error(`cannot ${decision} in status ${incident.status}`);
+    if (decision === "approve") {
+      const last = await db().from("audit_logs").select("detail").eq("incident_id", incidentId).eq("action", "coordinator.complete").order("created_at", { ascending: false }).limit(1);
+      const rules = (last.data?.[0]?.detail as { plan_rules?: string } | undefined)?.plan_rules;
+      const reason = stalePlanReason(incident.plan, incident.triage?.estimated_repair_minutes, rules, Date.now());
+      if (reason) {
+        await emit({ incident_id: incidentId, agent: "system", kind: "error", system: "supabase", message: `Approval refused: plan is stale — ${reason}. Re-plan first.` });
+        throw new StalePlanError(reason);
+      }
+    }
     must(await db().from("approvals").insert({ incident_id: incidentId, decision, decided_by: by, note: note ?? null }).select("id"), "insert approval");
     await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: `${by} ${decision === "approve" ? "approved" : "rejected"} the plan` });
     await audit(incidentId, by, `plan.${decision}`, "supabase", { note });
@@ -374,3 +391,13 @@ export const engine: Engine = {
 
 /** Worker: resolve Agent37 ack-check crons; no ack → queue a dispatch follow-up turn. */
 export const checkFollowUps = () => checkAckFollowUps((incidentId, input) => enqueue(incidentId, "dispatch", input));
+
+/** Re-plan a waiting incident with the current rules: the coordinator (then risk, with the full team) runs again. */
+export async function replan(incidentId: string): Promise<void> {
+  const incident = await getIncident(incidentId);
+  if (!["WAITING_APPROVAL", "REJECTED"].includes(incident.status)) throw new Error(`cannot re-plan in status ${incident.status}`);
+  if (!incident.triage || !incident.materials) throw new Error("cannot re-plan without triage and materials");
+  await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: "Re-plan requested" });
+  await setStatus(incidentId, "PLANNING");
+  await enqueue(incidentId, "coordinator", { replan: true });
+}

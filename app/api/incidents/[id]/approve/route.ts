@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { engine, IncidentNotFoundError } from "@/lib/engine";
+import { engine, IncidentNotFoundError, StalePlanError } from "@/lib/engine";
 
 export const runtime = "nodejs";
 
@@ -12,6 +12,7 @@ export async function POST(req: Request, ctx: { params: Promise<{ id: string }> 
     return NextResponse.json({ ok: true });
   } catch (err) {
     if (err instanceof IncidentNotFoundError) return NextResponse.json({ error: "incident not found" }, { status: 404 });
+    if (err instanceof StalePlanError) return NextResponse.json({ error: "plan is stale — re-plan", reason: err.reason }, { status: 409 });
     return NextResponse.json({ error: String(err instanceof Error ? err.message : err) }, { status: 409 });
   }
 }

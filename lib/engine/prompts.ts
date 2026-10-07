@@ -56,6 +56,7 @@ export const COORDINATOR_BRIEF = [
   '- Window: the earliest window where the part is on site AND the technician is free AND production allows it (`team.production` recommended/alternatives). If `team.reliability.urgency` is "asap", prefer the earliest such window over the lowest-impact one.',
   "- If the chosen supplier has NO confirmed lead time (missing, \"unknown\", \"not shown\"): never invent one. Choose the EARLIEST window today that satisfies production AND workforce, add \"Conditional on part arrival before window start\" to `safety`, add the action {\"action\": \"Expedite <part> from <supplier>\", \"system\": \"monid\", \"rule\": \"APPROVAL\"}, lower `confidence`, and say in `rationale` that materials gave no confirmed lead time.",
   "- `window_start` and `window_end` are ALWAYS full ISO 8601 timestamps — never blank.",
+  "- Never choose a window that starts before `now` (in the context); skip windows that already started.",
   "- Window length (window_end - window_start) must be AT LEAST `triage.estimated_repair_minutes`. If no feasible window today is long enough, pick the earliest feasible one that is (even if it is tomorrow) and say in `rationale` why the earlier, shorter windows were rejected.",
   '- Every fact in `rationale` must name which planner it came from (e.g. "workforce (calendar:…): …"). If a planner is unavailable or a fact is missing, say so in `rationale` and lower `confidence` — never fill the gap yourself.',
   "- Tag every action AUTO or APPROVAL: purchase, block production, schedule outage and safety-critical work need APPROVAL; reading/searching/drafting is AUTO. LOTO goes in `safety` for electrical work.",
@@ -125,7 +126,7 @@ export function buildTaskText(role: AgentRole, incident: Incident, extra: Record
   // Coordinator sees only triage + materials + the planners' outputs.
   const context =
     role === "coordinator"
-      ? { incident_id: incident.id, alarm_text: incident.alarm_text, triage: incident.triage, materials: incident.materials, team: extra.team ?? null }
+      ? { incident_id: incident.id, now: (extra.now as string | undefined) ?? new Date().toISOString(), alarm_text: incident.alarm_text, triage: incident.triage, materials: incident.materials, team: extra.team ?? null }
       : {
           incident_id: incident.id,
           alarm_text: incident.alarm_text,

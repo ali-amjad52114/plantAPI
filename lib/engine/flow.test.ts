@@ -30,7 +30,7 @@ describe("real-only guards", () => {
   const materials = { suppliers: [{ supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }] } as any;
   it("rejects a plan supplier that Materials never found", () => {
     expect(checkOutput("coordinator", { supplier: { supplier: "RS Components", price: 29.49, url: "https://rs/x" } }, { materials })).toMatch(/not one of/);
-    expect(checkOutput("coordinator", { supplier: { supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }, window_start: "2026-10-07T18:00:00", window_end: "2026-10-07T19:00:00" }, { materials })).toBeNull();
+    expect(checkOutput("coordinator", { supplier: { supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }, window_start: "2030-10-07T18:00:00", window_end: "2030-10-07T19:00:00" }, { materials })).toBeNull();
   });
   it("rejects ERP without a Fiix WO and accept without close", () => {
     expect(checkOutput("erp", { fiix_wo_code: "" }, { materials: null })).toMatch(/no Fiix/);
@@ -136,7 +136,7 @@ describe("coordinator window is never blank", () => {
   it("rejects a plan without a window", () => {
     const materials = { suppliers: [{ supplier: "RS", price: 1, url: "u" }] } as any;
     expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "", window_end: "" }, { materials })).toMatch(/window_start is blank/);
-    expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "2026-10-07T18:35:00-04:00", window_end: "2026-10-07T19:20:00-04:00" }, { materials })).toBeNull();
+    expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "2030-10-07T18:35:00-04:00", window_end: "2030-10-07T19:20:00-04:00" }, { materials })).toBeNull();
   });
 });
 
@@ -191,7 +191,19 @@ describe("window long enough for the repair", () => {
     const materials = { suppliers: [{ supplier: "RS", price: 1, url: "u" }] } as any;
     const triage = { estimated_repair_minutes: 45 } as any;
     const sup = { supplier: "RS", price: 1, url: "u" };
-    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-07T19:32:00-04:00", window_end: "2026-10-07T20:00:00-04:00" }, { materials, triage })).toMatch(/28 min but triage estimates 45/);
-    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-07T18:00:00-04:00", window_end: "2026-10-07T18:45:00-04:00" }, { materials, triage })).toBeNull();
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2030-10-07T19:32:00-04:00", window_end: "2030-10-07T20:00:00-04:00" }, { materials, triage })).toMatch(/28 min but triage estimates 45/);
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2030-10-07T18:00:00-04:00", window_end: "2030-10-07T18:45:00-04:00" }, { materials, triage })).toBeNull();
+  });
+});
+
+describe("stale plans", () => {
+  it("refuses old-rules plans, ended windows and too little time left", async () => {
+    const { stalePlanReason, PLAN_RULES_VERSION } = await import("./flow");
+    const plan = { window_start: "2026-10-07T18:00:00-04:00", window_end: "2026-10-07T19:00:00-04:00" };
+    const at = (iso: string) => Date.parse(iso);
+    expect(stalePlanReason(plan, 45, undefined, at("2026-10-07T21:00:00Z"))).toMatch(/older engine rules/);
+    expect(stalePlanReason(plan, 45, PLAN_RULES_VERSION, at("2026-10-07T23:32:29Z"))).toMatch(/ended/); // c62334f1
+    expect(stalePlanReason(plan, 45, PLAN_RULES_VERSION, at("2026-10-07T22:30:00Z"))).toMatch(/only 30 min/);
+    expect(stalePlanReason(plan, 45, PLAN_RULES_VERSION, at("2026-10-07T21:00:00Z"))).toBeNull();
   });
 });

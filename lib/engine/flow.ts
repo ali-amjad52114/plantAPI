@@ -46,7 +46,7 @@ export const OUTPUT_COLUMN: Record<Slice1Role, "triage" | "materials" | "plan" |
 };
 
 /** REAL ONLY guards: reject outputs that claim results the agent did not actually produce. Returns the problem or null. */
-export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials"> & Partial<Pick<Incident, "triage">>): string | null {
+export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials"> & Partial<Pick<Incident, "triage">>, now: number = Date.now()): string | null {
   const o = output as Record<string, any>;
   if (role === "coordinator") {
     const s = o.supplier ?? {};
@@ -58,6 +58,7 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
     const need = incident.triage?.estimated_repair_minutes;
     const have = Math.round((Date.parse(o.window_end) - Date.parse(o.window_start)) / 60_000);
     if (need && have < need) return `plan window is ${have} min but triage estimates ${need} min of repair`;
+    if (Date.parse(o.window_start) < now - 5 * 60_000) return `plan window starts in the past (${o.window_start})`;
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
   // odoo_block_ref is verified against the real Odoo record (window bounds) in odoo-check.ts.
@@ -120,4 +121,24 @@ export function plannerFailureIsFatal(role: AgentRole, fullTeam: boolean): boole
   if (PLANNERS.includes(role)) return role === "materials"; // no part, no plan
   if (EXECUTORS.includes(role)) return role === "erp"; // no WO / no block, no repair
   return true;
+}
+
+/** Bump whenever the coordinator rules (COORDINATOR_BRIEF / plan guards) change; plans without it are stale. */
+export const PLAN_RULES_VERSION = "2026-10-07.4";
+
+/** Why a plan can no longer be approved as-is (null = still fine). */
+export function stalePlanReason(
+  plan: { window_start: string; window_end: string } | null,
+  repairMinutes: number | undefined,
+  planRules: string | null | undefined,
+  now: number,
+): string | null {
+  if (!plan) return "no plan";
+  if (planRules !== PLAN_RULES_VERSION) return `plan was made under older engine rules (${planRules ?? "none"}; current ${PLAN_RULES_VERSION})`;
+  const ws = Date.parse(plan.window_start);
+  const we = Date.parse(plan.window_end);
+  if (we <= now) return `the planned window ended at ${plan.window_end}`;
+  const left = Math.round((we - Math.max(now, ws)) / 60_000);
+  if (repairMinutes && left < repairMinutes) return `only ${left} min of the planned window are left, the repair needs ${repairMinutes} min`;
+  return null;
 }
