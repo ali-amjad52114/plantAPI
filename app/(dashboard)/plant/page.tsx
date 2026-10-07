@@ -40,7 +40,7 @@ export default async function PlantPage() {
   const since = new Date(Date.now() - 24 * 3600e3).toISOString();
   const [inst, bud, use, met, cr, bk, ses, fl, lg, incs, evs] = await Promise.all([
     a37.instance(), a37.budget(), a37.usage(), a37.metrics(), a37.crons(), a37.backups(), a37.sessions(), a37.files(), a37.logs(),
-    sb ? sb.from("incidents").select("id,title,status,cost,created_at").order("created_at", { ascending: false }).limit(12) : null,
+    sb ? sb.from("incidents").select("*").order("created_at", { ascending: false }).limit(30) : null,
     sb ? sb.from("agent_events").select("system,kind,created_at").gte("created_at", since).not("system", "is", null).limit(5000) : null,
   ]);
 
@@ -72,7 +72,7 @@ export default async function PlantPage() {
           </div>
 
           <div className="pane"><h2>Cost per incident <span>incidents.cost (Agent37 usage delta)</span></h2>
-            {incs?.error ? <Err e={incs.error.message} /> : <ul className="list">{((incs?.data ?? []) as { id: string; title: string; status: string; cost: { agent37_usd: number; shared_instance: boolean } | null }[]).map(i => (
+            {incs?.error ? <Err e={incs.error.message} /> : <ul className="list">{((incs?.data ?? []) as { id: string; title: string; status: string; archived?: boolean; cost: { agent37_usd: number; shared_instance: boolean } | null }[]).filter(i => !i.archived).slice(0, 12).map(i => (
               <li key={i.id}><Link href={`/incidents/${i.id}`} style={{ color: "inherit", textDecoration: "none" }}>
                 <Ln k={`${i.id.slice(0, 8)} · ${i.status.replace("_", " ").toLowerCase()}`} v={i.cost ? `$${i.cost.agent37_usd.toFixed(2)}${i.cost.shared_instance ? "*" : ""}` : "—"} cls={i.cost ? "c-agent" : "dim"} /></Link></li>))}
               <li className="dim" style={{ fontSize: 11 }}>* instance shared with other work during the incident</li></ul>}
