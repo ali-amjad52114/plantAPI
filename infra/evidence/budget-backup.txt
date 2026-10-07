@@ -1,0 +1,21 @@
+Agent37 budget + backup evidence (S4 W2), 2026-10-07, instance pfd5d7eukw. REAL API, no secrets.
+CLI: npx tsx lib/agent37/provision/platform-cli.ts ... --live   (env loaded from .env)
+
+1. budget get (22:30:34Z)  GET /v1/instances/pfd5d7eukw/budget -> 200
+   monthlyCapUsd 3, spentUsd 0.394364, remainingUsd 2.605636, creditRemainingUsd 0, period 2026-10
+
+2. budget set 3 (22:30:51Z)  PATCH /v1/instances/pfd5d7eukw/budget {monthly_cap_micros: 3000000} -> 200
+   cap OLD $3 -> NEW $3 (unchanged; lead's $3 was already current). spent 0.399429. Revert: budget set 3.
+
+3. budget get read-back (22:30:57Z) -> monthlyCapUsd 3, spentUsd 0.399429, updatedAt 1791412251 (bumped by the PATCH)
+
+4. backup list before (22:30:35Z)  GET /v1/instances/pfd5d7eukw/backups -> 200 {data: []}  (no backups yet)
+
+5. backup create --label plantapi-checkpoint-test (22:31:04Z)  POST /v1/instances/pfd5d7eukw/backups -> 201
+   status completed, id 1d7078da8512977edbf0, kind manual, created 1791412265 (2026-10-07T22:31:05Z),
+   size_bytes 259655423, durationMs 19849. (label is client-side only; API has no label field)
+
+6. backup list after (22:31:25Z) -> [{id 1d7078da8512977edbf0, kind manual, created 2026-10-07T22:31:05Z, size_bytes 259655423}]
+
+On-demand backups used: 1 of 2 allowed. No restore, no delete, no other instance change.
+Note: next on-demand backup allowed after ~22:46Z (1 per 15 min) and it will REPLACE 1d7078da8512977edbf0.
