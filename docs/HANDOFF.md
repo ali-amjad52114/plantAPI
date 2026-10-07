@@ -248,3 +248,7 @@ BLOCKER: none.
 ## S4 — 16:32 · done: drain deploy of main 0441341 (light theme)
 DONE: deploy-safe.sh --branch slice-preview (s/platform 53471a8, image sha256:a03c6035…), drain respected, 0 in flight. / 200 · /plant 200 · /governance 200 · /api/health 200. Light theme: computed body bg rgb(233,237,241)=#E9EDF1. Screenshot docs/screenshots/platform/preview-0441341-light.jpg.
 NEXT: hold until "deploy now".
+
+## S4 — 16:50 · done: drain deploy of main 283707f
+DONE: deploy-safe.sh --branch slice-preview (s/platform f528d93, image sha256:ee285dbf…), drained with 0 in flight. / · /plant · /governance 200; /api/health 200.
+NEXT: "Reset demo" deploy on the lead's go.
