@@ -93,3 +93,19 @@ Incident c62334f1-f0bb-4aaf-86e2-5bf04306c292, UI on :3000 (main) and :3005 (s/u
 Screenshots: s/ui docs/screenshots/ui/01-c62334f1-waiting-approval.jpg, 02-…-plan-overflow-bug.jpg, 03-…-plan-fixed.jpg.
 NEXT: on core's go, drive the second half on :3000: Approve → Fiix WO + Odoo block → wrong-part photo (expect REJECT) → correct photo (expect ACCEPT) → CLOSED.
 SPEND: none by verifier (lead's worker ran the agents).
+
+## Verifier (S2-UI) — 15:20 · FULL SLICE PASS (real, end to end)
+Incident dd94429f-3066-4b38-9cc0-391aaf6a24c4 on http://localhost:3000 (main c2a308e+), lead's single worker. Every result below is from the real systems.
+1. PASS upload: real photo (seed/photos/failure-burned-contactor.jpg) + alarm → POST /api/incidents → NEW (15:11).
+2. PASS triage (15:12): CV-104 · contactor KM104 · LC1D09BD · high · electrician. Agent37 5469264318d5474f9cb350dd93e2f4ce.
+3. PASS materials: Odoo product #1 stock 0; Monid litescrape /google/shopping → RS - America USD 152.64. Agent37 f9d1da2c9c7643e2a883f7d4070150f1.
+4. PASS plan → WAITING_APPROVAL (15:13): 18:00–19:00 (-04:00), Sarah Chen. Agent37 4b4aeea57cfe4e10913aa220b7354016.
+5. PASS Approve clicked in the UI (15:14) → APPROVED → EXECUTING.
+6. PASS ERP (15:16): real **Fiix WO 6** on CV-104 (Open, priority High) + **Odoo mrp.workcenter.productivity:3** (Crushing Line 2 blocked); WO screenshot /home/node/plantapi/files/dd94429f-…/fiix-wo-6.png. Agent37 ba827b91734345499546d50dad123d14. NOTE: WO left UNASSIGNED ("Sarah Chen not in Fiix assignee picker") — not assigned to "ali amjad" as expected.
+7. PASS wrong-part completion (seed/photos/completion-wrong-part.jpg) → verdict REJECT (15:16): "CHINT NCH8-63 63 A; expected LC1D09BD 9 A, 24 V DC". UI banner "EVIDENCE REJECTED · SEND PHOTO OF INSTALLED PART". Agent37 290d0914f20a4404aaf8fee26b3e3b64.
+8. PASS correct-part completion (seed/photos/completion-correct-part.jpg) → verdict ACCEPT, fiix_closed true, odoo_unblocked true → CLOSED (15:19). 6/6 checks pass. Agent37 f40dd45d3e7948138ac1effe725899ec.
+Method note: steps 7–8 posted the same multipart (notes, actual_downtime_minutes, photo) to /api/incidents/:id/complete that the UI's "Report repair done" sends — the browser tool cannot attach files. Approve was clicked in the UI.
+Screenshots (s/ui): docs/screenshots/ui/04-dd94429f-waiting-approval.jpg, 05-…-fiix-wo6-odoo-block-verifying.jpg, 06-…-closed.jpg.
+UI fix from this run (s/ui, tip after cf0cb36): evidence shows WO CLOSED / Odoo RELEASED after accept.
+Open: Fiix assignee; agent sessions shows 5 (wave-A agents not in slice).
+SPEND: verifier none (lead's worker ran all agent turns).
