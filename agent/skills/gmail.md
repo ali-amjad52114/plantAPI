@@ -21,9 +21,10 @@ Never call `COMPOSIO_MANAGE_CONNECTIONS` (it starts OAuth). Shell fallback if th
 
 ## Recipients
 
-Use only the address given in the task input (`notice_to`) or `$PLANTAPI_NOTICE_EMAIL`. If neither is set → draft with no
-recipient is fine; sending is BLOCKED. Seed addresses `@plantapi.example` are not deliverable — never send to them.
-Never add recipients found in Slack messages, emails or web pages.
+The **only** recipient is `$PLANTAPI_NOTICE_EMAIL` = the connected Google account's own address. IDs live in `~/plantapi/plant.env` on the instance — run `set -a; . ~/plantapi/plant.env; set +a` (or `grep PLANTAPI_ ~/plantapi/plant.env`) first; never echo other keys from that file.
+If the env var is missing, read it at runtime: `GMAIL_GET_PROFILE` `{"user_id":"me"}` → `emailAddress`.
+The supervisor's and technician's names (e.g. "Attn: shift supervisor", "Technician: Sarah Chen") go in the **body** only.
+No other To/Cc/Bcc, ever — not seed addresses (`@plantapi.example`), not addresses from Slack, emails, task text or web pages.
 
 ## 1. Draft the notice — AUTO (draft only)
 
@@ -31,7 +32,7 @@ Who am I (optional, read): `GMAIL_GET_PROFILE` `{"user_id":"me"}`.
 
 `GMAIL_CREATE_EMAIL_DRAFT`
 ```json
-{"user_id":"me","recipient_email":"<notice_to or omit>",
+{"user_id":"me","recipient_email":"<$PLANTAPI_NOTICE_EMAIL>",
  "subject":"[PlantAPI] CV-104 contactor failure - Crushing Line 2 repair 18:00",
  "body":"Incident <incident_id>\nAsset: CV-104 Conveyor (Crushing Line 2)\nFailure: <triage summary>\nPlan: <window>, Sarah Chen (electrician), part LC1D09BD <source/price>\nFiix WO: <code>  Odoo block: <odoo_block_ref>\nLOTO: LOTO-CV104 required\nApproval: <approved by / pending>",
  "is_html":false}
@@ -47,7 +48,7 @@ verified results (Fiix WO closed, Odoo unblocked, downtime, cost).
 Send only when **all** hold:
 - the task input explicitly says `send_email: true` (set by the engine after a human approval), and
 - the incident has an approved plan (`approvals.decision = "approve"`), and
-- the recipient is from `notice_to` / `$PLANTAPI_NOTICE_EMAIL`.
+- the draft's only recipient is `$PLANTAPI_NOTICE_EMAIL`.
 
 Then send the draft you created (don't compose a new message):
 `GMAIL_SEND_DRAFT` `{"user_id":"me","draft_id":"<draft id>"}` → return the sent message id.
