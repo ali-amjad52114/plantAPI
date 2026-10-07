@@ -167,3 +167,16 @@ FINDINGS for core: incidents.cost is null on all incidents (panel shows "—"); 
 | Slack | `#plant-ops` `C0C7DT5EBFV` created through Composio |
 | RS (browser) | Honest negative: RS blocks the datacenter IP (DataDome CAPTCHA / Akamai Access Denied) — screenshot `evidence/rs-LC1D09BD-1791412430802.png`; not bypassed, step dropped |
 | Supabase, InstaCloud | (lead / S1 / S4 to add) |
+
+## L lead — 15:42 · evidence: AI lead refused by InstaCloud governance
+Command run by the lead session (an AI, using the user's InstaCloud login) at ~15:41, after the user said "you go run the commands". Real output, verbatim:
+```
+$ insta agent approvals deny 05f384af-2ced-4f15-9d7c-f905469cc00a
+error: this operation requires a human request (HTTP 403)
+$ insta agent approvals approve 9d6f239c-d666-48fd-acbd-3f77ff73b329
+error: this operation requires a human request (HTTP 403)
+$ insta agent policy protect-branch main
+error: agent_policy.update, branch.protection.update denied by agent policy (HTTP 403)
+```
+The user then ran the same three commands in their own terminal (~15:43). Verified with `insta agent approvals list` / `insta agent policy get`: 05f384af service.scale [denied], 9d6f239c branch.delete [granted], protected branches: ab51b9c2 (main).
+SPEND: none
