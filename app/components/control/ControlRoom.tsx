@@ -404,7 +404,9 @@ function ExecDetails({ tasks }: { tasks: Partial<Record<AgentRole, AgentTask>> }
   const dp = tasks.dispatch?.output as { technician?: string; booked_start?: string; notices?: { channel: string; to: string; ref: string | null; status: string }[]; ack_received?: boolean; follow_up?: string | null } | null | undefined;
   return (<>
     {pr?.supplier_record_ref && <Ln k="Supplier record" v={pr.supplier_record_ref} />}
-    {pr?.expedite_email && <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />}
+    {pr && (pr.expedite_email
+      ? <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />
+      : tasks.procurement?.status === "COMPLETE" && <Ln k="Expedite email" v="NOT SENT" cls="c-warn" why={(pr as { summary?: string }).summary} />)}
     {pr?.blocked?.map(b => <Ln key={b} k="Procurement" v="BLOCKED" cls="c-caut" why={b} />)}
     {dp?.booked_start && <Ln k="Booked" v={`${dp.technician ?? ""} ${wall(dp.booked_start) ?? ""}`} />}
     {dp?.notices?.map((n, i) => <Ln key={i} k={`${n.channel} → ${n.to}`} v={`${n.status.toUpperCase()}${n.ref ? " · " + n.ref : ""}`} cls={n.status === "failed" ? "c-warn" : n.status === "blocked" ? "c-caut" : ""} />)}
