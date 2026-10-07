@@ -278,6 +278,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
                   {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={`${inc.erp.odoo_block_ref}${ver?.odoo_unblocked ? " · RELEASED" : ""}`} cls={ver?.odoo_unblocked ? "c-ok" : ""} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
+                  {!(status === "APPROVED" || status === "EXECUTING") && <ExecDetails tasks={tasks} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
                 </div>)}
             </div>
