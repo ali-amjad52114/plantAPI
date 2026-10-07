@@ -9,7 +9,7 @@ loadEnv();
 
 const HOME = "/home/node";
 const ROOT = `${HOME}/plantapi`;
-const ENV_KEYS = ["ODOO_URL", "ODOO_DB", "ODOO_API_KEY", "ODOO_MCP_URL", "ODOO_MCP_TOKEN", "MONID_API_KEY", "FIIX_URL", "FIIX_USERNAME", "FIIX_PASSWORD"];
+const ENV_KEYS = ["ODOO_URL", "ODOO_DB", "ODOO_API_KEY", "ODOO_MCP_URL", "ODOO_MCP_TOKEN", "MONID_API_KEY", "FIIX_URL", "FIIX_USERNAME", "FIIX_PASSWORD", "PLANTAPI_SCHEDULE_SHEET_ID", "PLANTAPI_CALENDAR_ID"];
 
 function walk(dir: string): string[] {
   return readdirSync(dir).flatMap((f) => {

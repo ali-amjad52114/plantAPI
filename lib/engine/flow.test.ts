@@ -90,3 +90,25 @@ describe("wave A execution", () => {
     expect(ProcurementOutput.safeParse({ supplier: "RS", part: "LC1D09BD", price: 1, currency: "USD", supplier_record_ref: null, expedite_email: null, purchased: true, blocked: [], summary: "" }).success).toBe(false);
   });
 });
+
+describe("cost per incident", () => {
+  it("accumulates usage deltas per busy period", async () => {
+    const { addSpend } = await import("./cost.pure");
+    const a = addSpend(null, 120_000, false);
+    const b = addSpend(a, 30_000, true);
+    expect([a.agent37_usd, b.agent37_usd, b.periods, b.shared_instance]).toEqual([0.12, 0.15, 2, true]);
+  });
+});
+
+describe("production/workforce sources", () => {
+  it("use the real Sheet/Calendar when their ids are set, seed bridge otherwise", () => {
+    delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+    expect(buildTaskText("production", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("Sheets not connected");
+    process.env.PLANTAPI_SCHEDULE_SHEET_ID = "sheet123";
+    process.env.PLANTAPI_CALENDAR_ID = "cal456";
+    expect(buildTaskText("production", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("google-sheets:sheet123");
+    expect(buildTaskText("workforce", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("google-calendar:cal456");
+    delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+    delete process.env.PLANTAPI_CALENDAR_ID;
+  });
+});
