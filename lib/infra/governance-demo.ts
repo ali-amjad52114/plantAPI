@@ -25,6 +25,7 @@
 import { spawnSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { recordInfraAction, rowFromStep } from "./infra-actions";
 
 type Decision = "allow" | "approve" | "deny" | "blocked_plan" | "error" | "skipped";
 
@@ -256,7 +257,7 @@ function dryRun(): void {
   console.log(`  insta branch delete ${branch}`);
 }
 
-function live(): void {
+async function live(): Promise<void> {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-");
   const branch = `analysis-${stamp.slice(0, 19).replace(/[-T]/g, "").toLowerCase()}`;
   const evidence: Record<string, unknown> = { startedAt: new Date().toISOString(), mode: "live", branch };
@@ -291,12 +292,26 @@ function live(): void {
   }
 
   const steps: StepResult[] = [];
+  // Each real decision is also written to Supabase infra_actions (migration 020) so the UI shows it live.
+  // --live only; the dry run never writes. A DB failure is logged and never changes the platform result.
+  const recorded: { label: string; id: string | null; error?: string }[] = [];
+  const add = async (s: StepResult): Promise<void> => {
+    steps.push(s);
+    try {
+      const id = await recordInfraAction(rowFromStep(stamp, s));
+      recorded.push({ label: s.label, id });
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      recorded.push({ label: s.label, id: null, error: msg });
+      console.error(`WARN infra_actions write failed for ${s.label}: ${msg}`);
+    }
+  };
 
   // ALLOW
   {
     const cli = insta(["branch", "create", branch, "--json"]);
     const c = classify(cli);
-    steps.push({ label: "ALLOW", action: "branch.create", expected: rule(prePolicy, "unprotectedBranch", "branch.create"), ...c, cli });
+    await add({ label: "ALLOW", action: "branch.create", expected: rule(prePolicy, "unprotectedBranch", "branch.create"), ...c, cli });
   }
 
   // APPROVE
@@ -312,7 +327,7 @@ function live(): void {
       cli = insta(["compute", "scale", "2", COMPUTE_SERVICE, "--branch", branch, "--json"]);
       c = classify(cli);
     }
-    steps.push({ label: "APPROVE", action: "service.scale", expected: rule(prePolicy, "unprotectedBranch", "service.scale"), ...c, cli });
+    await add({ label: "APPROVE", action: "service.scale", expected: rule(prePolicy, "unprotectedBranch", "service.scale"), ...c, cli });
 
     if (c.decision !== "approve") {
       // Plan gate (free -> 403) answered before the policy gate, or scale was not attempted:
@@ -322,9 +337,9 @@ function live(): void {
       if (expected === "approve" && name && /^[A-Za-z0-9_-]+$/.test(name)) {
         const fb = insta(["project", "rename", name, "--json"]);
         const fc = classify(fb);
-        steps.push({ label: "APPROVE", action: "project.update (fallback)", expected, ...fc, cli: fb });
+        await add({ label: "APPROVE", action: "project.update (fallback)", expected, ...fc, cli: fb });
       } else {
-        steps.push({
+        await add({
           label: "APPROVE",
           action: "project.update (fallback)",
           expected,
@@ -342,7 +357,7 @@ function live(): void {
     const again = readPolicy();
     const g2 = again.policy ? checkGuard(again.policy, main.id) : null;
     if (!again.policy || !g2?.ok) {
-      steps.push({
+      await add({
         label: "DENY",
         action: "project.delete",
         expected: again.policy ? rule(again.policy, "project", "project.delete") : "unknown",
@@ -354,11 +369,12 @@ function live(): void {
     } else {
       const cli = insta(["project", "delete", "--json"]);
       const c = classify(cli);
-      steps.push({ label: "DENY", action: "project.delete", expected: rule(again.policy, "project", "project.delete"), ...c, cli });
+      await add({ label: "DENY", action: "project.delete", expected: rule(again.policy, "project", "project.delete"), ...c, cli });
     }
   }
 
   evidence.steps = steps;
+  evidence.infraActions = { runId: stamp, rows: recorded };
   evidence.pendingApprovals = insta(["agent", "approvals", "list", "--status", "pending", "--json"]);
   evidence.events = insta(["agent", "events", "--limit", "25", "--json"]);
   evidence.finishedAt = new Date().toISOString();
@@ -380,5 +396,5 @@ function live(): void {
   process.exit(ok ? 0 : 1);
 }
 
-if (LIVE) live();
+if (LIVE) void live();
 else dryRun();
