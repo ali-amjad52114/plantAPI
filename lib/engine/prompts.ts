@@ -44,7 +44,7 @@ export function buildTaskText(role: Slice1Role, incident: Incident, extra: Recor
   return [
     "## Setup on this instance",
     "Run `source ~/plantapi/plant.env` before any Odoo/Monid/Fiix command (ODOO_*, MONID_API_KEY, FIIX_* are set there; the `monid` CLI is installed and logged in).",
-    "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; seed/SOP files at `~/plantapi/seed/`. Fiix: `agent/skills/fiix/SKILL.md` is at `~/plantapi/skills/fiix/SKILL.md`, helper `~/plantapi/fiix-browser.sh`.",
+    "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; seed/SOP files at `~/plantapi/seed/`. Fiix browser helper: `~/plantapi/fiix-browser.sh`.",
     "Only use values from your own tool runs or from the incident context below — if a tool is unavailable, say so and report BLOCKED rather than filling in seed or example values.",
     "",
     roleInstructions(role),
