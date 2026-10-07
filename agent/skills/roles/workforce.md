@@ -45,7 +45,7 @@ Example (illustrative — events must come from your own read):
     "2026-10-08 07:00-12:00 Arc-flash training (off site) - cannot do production's 07:00 window"
   ],
   "alternatives": [],
-  "source": "seed_file",
-  "summary": "seed_file (Calendar: googlecalendar not connected). Sarah Chen, the only LOTO electrician, is free today 18:00-20:00; not available tomorrow 07:00-12:00."
+  "source": "calendar:<PLANTAPI_CALENDAR_ID>",
+  "summary": "Calendar PlantAPI Technicians: Sarah Chen, the only LOTO electrician, is free today 18:00-20:00; not available tomorrow 07:00-12:00."
 }
 ```
