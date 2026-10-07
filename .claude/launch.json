@@ -10,6 +10,12 @@
       ],
       "env": { "PORT": "3000" },
       "port": 3000
+    },
+    {
+      "name": "ui",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:\\AI\\plantapi-ui\\node_modules\\next\\dist\\bin\\next", "dev", "C:\\AI\\plantapi-ui", "-p", "3003"],
+      "port": 3003
     }
   ]
 }
