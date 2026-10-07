@@ -109,3 +109,11 @@ Screenshots (s/ui): docs/screenshots/ui/04-dd94429f-waiting-approval.jpg, 05-…
 UI fix from this run (s/ui, tip after cf0cb36): evidence shows WO CLOSED / Odoo RELEASED after accept.
 Open: Fiix assignee; agent sessions shows 5 (wave-A agents not in slice).
 SPEND: verifier none (lead's worker ran all agent turns).
+
+## S4 wave B — 15:21 · D1 done, D2 done, D3 running
+DONE D1: template hermes-vnc-desktop@1 built (build tb_5ccd9eeaae70c1d63542); live view proven on new instance hj9wbnzkte (auto-sleep, $1 cap): noVNC showed Chrome on the instance desktop; instance deleted (GET = 404). Screenshot: docs/screenshots/platform/live-view-hj9wbnzkte.jpg (s/platform 2ee6474). plantapi-agent template build running.
+DONE D2: governance LIVE PASS (s/platform fcc17f2, infra/governance/evidence-2026-10-07T22-20-46-232Z.json): ALLOW branch.create (analysis-20261007222046 created) · APPROVE service.scale → approval 05f384af-2ced-4f15-9d7c-f905469cc00a · DENY project.delete → HTTP 403.
+NOTE: live policy was switched full_access → branch_specific at ~15:08 by S4 on the USER's direct instruction ("make it happen"), before your "do not change the live policy" message. Without it the DENY step would have deleted the project. Protecting main was refused for the agent (403), so a human must run `insta agent policy protect-branch main`.
+NEXT (human/lead terminal): `insta agent approvals deny 05f384af-2ced-4f15-9d7c-f905469cc00a` · `insta agent approvals approve 9d6f239c-d666-48fd-acbd-3f77ff73b329` (branch.delete of analysis-20261007222046, cleanup) · `insta agent policy protect-branch main`.
+D3: real deploy to branch slice-preview in progress; URL will follow here.
+SPEND: Agent37 ≈ minutes of one instance (< $0.05) · Monid $0 · OpenAI $0

@@ -126,7 +126,9 @@ export function createAgent37Client(opts: Agent37ClientOptions = {}): Agent37Cli
           message: `${req.role} finished in ${(durationMs / 1000).toFixed(1)}s: ${short(outputText, 120)}`,
           data: { responseId: j.id, sessionId: j.session_id, usage: j.usage ?? null, durationMs },
         });
-        return { responseId: j.id, sessionId: j.session_id, outputText, costUsd, durationMs };
+        // inputTokens/outputTokens: beyond the contract's Agent37TurnResult; the cost hook reads them.
+        const result = { responseId: j.id, sessionId: j.session_id, outputText, costUsd, durationMs, inputTokens: j.usage?.input_tokens ?? null, outputTokens: j.usage?.output_tokens ?? null };
+        return result;
       } catch (e) {
         onEvent({
           agent: req.role,

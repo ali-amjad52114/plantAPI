@@ -9,3 +9,9 @@
 | S4 platform | C:\AI\plantapi-platform | s/platform | 3004 | agent/image, lib/agent37/provision, lib/infra, infra, app/(admin) | until 15:15 (D3 only) | S5 · Dockerfile+deploy in progress |
 
 Shared quotas: Agent37 instance `pfd5d7eukw` only (no new instances except S4's named ones) · Monid ≤ $0.50/session · OpenAI ≤ $2/session · Supabase project `plantapi` (ref npbcyyudbftyklenxycr), migrations 001–009 S1 only, 020–029 S4.
+
+## 15:30 — waves
+- Slice 1: PASSED 15:19 (dd94429f CLOSED, all real).
+- Wave A: running (2d9b4671 at WAITING_APPROVAL; fixing coordinator seed-file reasoning, real calendar, Fiix history read, startup sync).
+- Wave B: assigned to all four sessions, queued behind their current wave A task. Done already: live view (hermes-vnc-desktop@1), governance live ALLOW/APPROVE/DENY, cost per incident, AgentMail inbox.
+- Waiting on user: 3 insta governance commands; demo phone number for the Monid call.

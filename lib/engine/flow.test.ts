@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { afterApproval, afterTask, approvalSteps, checkOutput, nextSteps, plannerFailureIsFatal } from "./flow";
 import { ProcurementOutput, RiskOutput } from "./wave-a-schemas";
-import { buildTaskText } from "./prompts";
+import { buildTaskText, productionBrief, workforceBrief } from "./prompts";
 import type { Incident } from "../contracts/types";
 
 describe("slice 1 flow", () => {
@@ -88,5 +88,27 @@ describe("wave A execution", () => {
   });
   it("procurement can never report a purchase", () => {
     expect(ProcurementOutput.safeParse({ supplier: "RS", part: "LC1D09BD", price: 1, currency: "USD", supplier_record_ref: null, expedite_email: null, purchased: true, blocked: [], summary: "" }).success).toBe(false);
+  });
+});
+
+describe("cost per incident", () => {
+  it("accumulates usage deltas per busy period", async () => {
+    const { addSpend } = await import("./cost.pure");
+    const a = addSpend(null, 120_000, false);
+    const b = addSpend(a, 30_000, true);
+    expect([a.agent37_usd, b.agent37_usd, b.periods, b.shared_instance]).toEqual([0.12, 0.15, 2, true]);
+  });
+});
+
+describe("production/workforce sources", () => {
+  it("use the real Sheet/Calendar when their ids are set, seed bridge otherwise", () => {
+    delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+    expect(productionBrief()).toContain("Sheets not connected");
+    process.env.PLANTAPI_SCHEDULE_SHEET_ID = "sheet123";
+    process.env.PLANTAPI_CALENDAR_ID = "cal456";
+    expect(productionBrief()).toContain("google-sheets:sheet123");
+    expect(workforceBrief()).toContain("google-calendar:cal456");
+    delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+    delete process.env.PLANTAPI_CALENDAR_ID;
   });
 });
