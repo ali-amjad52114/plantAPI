@@ -1,0 +1,26 @@
+<section id="gap" data-transition="fade" style="background:#1A2029;color:#F3EFE7;font-family:'Rubik', Arial, sans-serif;padding:128px">
+<p data-build-in="fade order 1 auto" style="position:absolute;left:128px;top:128px;width:1200px;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#FF7A1A;font-weight:500">The real gap</p>
+<h2 data-build-in="rise order 2 auto" style="position:absolute;left:128px;top:180px;width:760px;font-family:'Oswald', Arial, sans-serif;font-size:88px;font-weight:600;line-height:1.1;color:#F3EFE7">Finding a failure is easy. Coordinating the fix is not.</h2>
+<p data-build-in="left order 3 auto" style="position:absolute;left:128px;top:600px;width:700px;font-size:32px;line-height:1.4;color:#A9B4C2">Parts, stock, suppliers, work orders, outage windows, the right technician, proof the fix is right — each lives in a different system, coordinated by hand.</p>
+<p data-build-in="rise order 4 auto" style="position:absolute;left:128px;top:820px;width:700px;font-size:32px;line-height:1.35;color:#F3EFE7"><b>Technicians should repair equipment — not spend hours coordinating the repair.</b></p>
+<x-embed data-build-in="fade order 3 auto" style="position:absolute;left:940px;top:150px;width:852px;height:800px"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+.n{position:absolute;padding:14px 22px;border-radius:14px;background:#10141A;border:2px solid #3A4656;color:#F3EFE7;font-size:26px;white-space:nowrap;animation:fl 5s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translate(0,0) rotate(-2deg)}25%{transform:translate(14px,-18px) rotate(2deg)}50%{transform:translate(-10px,12px) rotate(-1deg)}75%{transform:translate(8px,16px) rotate(3deg)}}
+#t{position:absolute;width:36px;height:36px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 24px #FF7A1A;transition:left .7s ease-in-out,top .7s ease-in-out}
+#c{position:absolute;left:300px;top:370px;width:250px;text-align:center;color:#FF7A1A;font-size:30px;font-weight:700}
+svg{position:absolute;inset:0}
+</style>
+<svg width="852" height="800"><polyline id="pl" fill="none" stroke="#FF7A1A" stroke-width="3" stroke-dasharray="6 8" opacity=".6" points=""/></svg>
+<div class="n" style="left:40px;top:40px">CMMS</div><div class="n" style="left:520px;top:20px;animation-delay:-1s">ERP stock</div>
+<div class="n" style="left:600px;top:280px;animation-delay:-2s">Supplier site</div><div class="n" style="left:20px;top:300px;animation-delay:-3s">Phone calls</div>
+<div class="n" style="left:540px;top:560px;animation-delay:-1.5s">Calendar</div><div class="n" style="left:60px;top:600px;animation-delay:-2.5s">Spreadsheet</div>
+<div class="n" style="left:290px;top:160px;animation-delay:-.5s">Email</div><div class="n" style="left:300px;top:690px;animation-delay:-3.5s">Shift notes</div>
+<div id="c">0 h 00 m</div><div id="t"></div>
+<script>
+const P=[[90,70],[600,50],[690,310],[70,330],[620,590],[140,630],[350,190],[360,720]];let i=0,m=0,pts=[];
+const t=document.getElementById('t'),c=document.getElementById('c'),pl=document.getElementById('pl');
+function step(){const p=P[Math.floor(Math.random()*P.length)];t.style.left=(p[0]-18)+'px';t.style.top=(p[1]-18)+'px';pts.push(p.join(','));if(pts.length>7)pts.shift();pl.setAttribute('points',pts.join(' '));m+=17+Math.floor(Math.random()*25);c.textContent=Math.floor(m/60)+' h '+String(m%60).padStart(2,'0')+' m';if(m>600){m=0;pts=[]}}
+setInterval(step,800);step();
+</script></x-embed>
+<aside>Finding a failure is not the hard part. The hard part is everything after: checking stock, finding a supplier, opening the work order, finding an outage window, booking the right technician, and proving the fix is right. Each step lives in a different system and is coordinated by hand — that is where repairs slip.</aside>
+</section>

@@ -1,0 +1,30 @@
+<section id="agent37" data-transition="push" style="background:#10141A;color:#F3EFE7;font-family:'Rubik', Arial, sans-serif;padding:128px">
+<p data-build-in="fade order 1 auto" style="position:absolute;left:128px;top:128px;width:1200px;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#FF7A1A;font-weight:500">Agent37 · the deepest sponsor</p>
+<h2 data-build-in="rise order 2 auto" style="position:absolute;left:128px;top:180px;width:760px;font-family:'Oswald', Arial, sans-serif;font-size:80px;font-weight:600;line-height:1.1;color:#F3EFE7">The whole maintenance team lives on Agent37</h2>
+<p data-build-in="left order 3 auto" style="position:absolute;left:128px;top:420px;width:760px;font-size:30px;line-height:1.4;color:#A9B4C2">Our backend is only the referee. Every agent turn, tool call, memory, file and schedule runs on the Agent37 plant instance.</p>
+<p data-build-in="pop order 4 auto" style="position:absolute;left:128px;top:600px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Plant instance + 11 role skills</p>
+<p data-build-in="pop order 5 auto" style="position:absolute;left:528px;top:600px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Responses API agent turns</p>
+<p data-build-in="pop order 6 auto" style="position:absolute;left:128px;top:700px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Browser: Fiix login + WO</p>
+<p data-build-in="pop order 7 auto" style="position:absolute;left:528px;top:700px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Files: photos, SOPs, proof</p>
+<p data-build-in="pop order 8 auto" style="position:absolute;left:128px;top:800px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Sessions = plant memory</p>
+<p data-build-in="pop order 9 auto" style="position:absolute;left:528px;top:800px;width:360px;background:#1A2029;border:2px solid #FF7A1A;border-radius:16px;padding:18px 22px;font-size:26px">Crons, apps, budgets</p>
+<x-embed data-build-in="right order 3 auto" style="position:absolute;left:960px;top:180px;width:832px;height:772px"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+#w{position:absolute;inset:0;background:#0A0D11;border:2px solid #2A3442;border-radius:20px;padding:70px 28px 20px;box-sizing:border-box;font-family:Consolas,Menlo,monospace;font-size:24px;line-height:1.45;color:#C9D3DF;overflow:hidden}
+#bar{position:absolute;left:0;right:0;top:0;height:50px;background:#1A2029;border-radius:18px 18px 0 0}
+#bar i{position:absolute;top:17px;width:16px;height:16px;border-radius:50%}
+#bar b{position:absolute;left:110px;top:12px;font:700 22px Arial,sans-serif;color:#A9B4C2}
+.t{color:#FF7A1A}.o{color:#4DA3FF}.g{color:#7EE0A1}.r{color:#FF6B6B}
+.c{display:inline-block;width:12px;height:24px;background:#FF7A1A;vertical-align:middle;animation:bl 1s step-end infinite}@keyframes bl{50%{opacity:0}}
+.ln{opacity:0;transform:translateX(-14px);animation:in .35s forwards}@keyframes in{to{opacity:1;transform:none}}
+</style><div id="w"><div id="bar"><i style="left:20px;background:#FF6B6B"></i><i style="left:46px;background:#FFC24D"></i><i style="left:72px;background:#7EE0A1"></i><b>agent37 · plant instance</b></div><div id="log"></div></div>
+<script>
+const L=[['t','agent37','triage turn started'],['o','openai','vision → CV-104 · LC1D09BD · high'],['t','agent37','materials turn · skill odoo'],['o','odoo','stock LC1D09BD = 0'],['o','monid','RS Online · in stock'],['t','agent37','coordinator → 18:00 today'],['g','human','plan APPROVED'],['t','agent37','browser → fiix login'],['g','fiix','work order created · CV-104'],['o','odoo','Crushing Line 2 blocked'],['r','openai','photo: 63A part · REJECT'],['g','openai','photo: LC1D09BD · ACCEPT'],['g','fiix','work order closed'],['g','odoo','Line 2 unblocked · CLOSED']];
+const log=document.getElementById('log');let i=0;
+function add(){if(i>=L.length){setTimeout(()=>{log.innerHTML='';i=0;add()},2600);return}
+const c=log.querySelector('.c');if(c)c.remove();const d=document.createElement('div');d.className='ln';const x=L[i];
+d.innerHTML='<span class="'+x[0]+'">'+x[1].padEnd(8,' ')+'</span> '+x[2]+' <span class="c"></span>';log.appendChild(d);
+while(log.children.length>13)log.firstChild.remove();i++;setTimeout(add,650+Math.random()*450)}
+setTimeout(add,500);
+</script></x-embed>
+<aside>Agent37 is the deepest sponsor. The backend is only the referee: the plant instance holds eleven role skills, every agent turn runs through its Responses API, its browser logs into Fiix and opens real work orders, its files hold photos and proof, sessions are the plant's memory, and crons, app connections and budgets run the follow-ups and cost. Live today: a real triage turn on Agent37 and a real Fiix work order on CV-104 through the Agent37 browser.</aside>
+</section>

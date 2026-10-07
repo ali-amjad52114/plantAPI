@@ -1,0 +1,28 @@
+<section id="sponsors" data-transition="magic" style="background:radial-gradient(circle at 28% 55%, #233042 0%, #10141A 60%);color:#F3EFE7;font-family:'Rubik', Arial, sans-serif;padding:128px">
+<x-embed data-build-in="scale order 1 auto" style="position:absolute;left:128px;top:150px;width:800px;height:800px"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:Arial,Helvetica,sans-serif}
+#o{position:absolute;left:0;top:0;width:800px;height:800px;animation:sp 40s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.s{position:absolute;width:190px;height:72px;margin:-36px 0 0 -95px;border-radius:36px;background:#1A2029;border:2px solid #4DA3FF;color:#F3EFE7;font-size:26px;font-weight:700;text-align:center;line-height:68px;animation:cs 40s linear infinite}
+@keyframes cs{to{transform:rotate(-360deg)}}
+.a37{border-color:#FF7A1A;background:#FF7A1A;color:#14110E;width:230px;margin-left:-115px}
+#c{position:absolute;left:300px;top:300px;width:200px;height:200px;border-radius:50%;background:#F3EFE7;color:#10141A;font-size:32px;font-weight:800;text-align:center;line-height:200px;box-shadow:0 0 0 0 rgba(255,122,26,.6);animation:pu 2s ease-out infinite}
+@keyframes pu{to{box-shadow:0 0 0 60px rgba(255,122,26,0)}}
+svg{position:absolute;left:0;top:0}
+.ln{stroke-dasharray:10 12;animation:da 1s linear infinite}@keyframes da{to{stroke-dashoffset:-44}}
+</style>
+<div id="o"><svg width="800" height="800" id="sv"></svg></div><div id="c">PlantAPI</div>
+<script>
+const N=[['Agent37',1],['OpenAI'],['Supabase'],['Monid'],['InstaCloud']],o=document.getElementById('o'),sv=document.getElementById('sv');
+N.forEach((n,i)=>{const a=-Math.PI/2+i*2*Math.PI/5,r=310,x=400+r*Math.cos(a),y=400+r*Math.sin(a);
+const l=document.createElementNS('http://www.w3.org/2000/svg','line');l.setAttribute('x1',400);l.setAttribute('y1',400);l.setAttribute('x2',x);l.setAttribute('y2',y);l.setAttribute('class','ln');l.setAttribute('stroke',n[1]?'#FF7A1A':'#4DA3FF');l.setAttribute('stroke-width',n[1]?8:3);sv.appendChild(l);
+const d=document.createElement('div');d.className='s'+(n[1]?' a37':'');d.textContent=n[0];d.style.left=x+'px';d.style.top=y+'px';o.appendChild(d)});
+</script></x-embed>
+<p data-build-in="fade order 2 auto" style="position:absolute;left:1000px;top:150px;width:792px;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#FF7A1A;font-weight:500">How we used the sponsors</p>
+<h2 data-build-in="rise order 3 auto" style="position:absolute;left:1000px;top:200px;width:792px;font-family:'Oswald', Arial, sans-serif;font-size:72px;font-weight:600;line-height:1.1;color:#F3EFE7">Five sponsors, one job each</h2>
+<p data-build-in="right order 4 auto" style="position:absolute;left:1000px;top:400px;width:792px;font-size:34px;line-height:1.3"><span style="color:#FF7A1A"><b>Agent37</b></span> runs the workers.</p>
+<p data-build-in="right order 5 auto" style="position:absolute;left:1000px;top:490px;width:792px;font-size:34px;line-height:1.3"><span style="color:#4DA3FF"><b>OpenAI</b></span> makes them think.</p>
+<p data-build-in="right order 6 auto" style="position:absolute;left:1000px;top:580px;width:792px;font-size:34px;line-height:1.3"><span style="color:#4DA3FF"><b>Supabase</b></span> keeps them coordinated.</p>
+<p data-build-in="right order 7 auto" style="position:absolute;left:1000px;top:670px;width:792px;font-size:34px;line-height:1.3"><span style="color:#4DA3FF"><b>Monid</b></span> gives them tools.</p>
+<p data-build-in="right order 8 auto" style="position:absolute;left:1000px;top:760px;width:792px;font-size:34px;line-height:1.3"><span style="color:#4DA3FF"><b>InstaCloud</b></span> keeps the product running safely.</p>
+<aside>Five sponsors, each with one job. Agent37 runs the workers. OpenAI makes them think. Supabase keeps them coordinated. Monid gives them tools. InstaCloud keeps the product running safely. Agent37 is the deepest — next slide.</aside>
+</section>
