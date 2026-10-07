@@ -191,3 +191,19 @@ Incident ed54ca93-9b88-4c09-b0cf-72c7d1940d88, :3000, PLANTAPI_FULL_TEAM=1. 15:3
 9. BLOCKED dispatch (consequence of 3): calendar + Slack notices "blocked — approved plan has blank window"; no booking.
 10. PASS correct-part photo → ACCEPT, fiix_closed + odoo_unblocked → CLOSED.
 UI (s/ui up to 62e2476): WINDOW NOT SET state, execution results kept in evidence, real cost in closed summary, archived filter (migration 004). Screenshot 13.
+
+## S4/D3 — 15:52 · done
+DONE: real InstaCloud deploy on branch slice-preview (never main): https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.com — Next.js 15.5.27 + worker, GET / = 200 (x3, stable). Image sha256:a113045e…. 1st deploy d25cfd4c was cancelled by the builder ("context canceled", stuck "running"); redeploy OK. Fixed entrypoint: stub worker exiting 0 used to stop the container (30 s restart loop); now web keeps serving, worker crash still stops. Governance: analysis branch deleted with approval 9d6f239c; deploy to protected main refused (403); 6 human-review rows in infra_actions. s/platform 19e75dd, d65aad9.
+NEXT: S1 adds GET /api/health (no /healthz route in app); worker must stay running once implemented. RS_USERNAME/RS_PASSWORD not bound on slice-preview (check .env.local). `.insta/project.json` locally still linked to slice-preview.
+BLOCKER: none.
+SPEND: InstaCloud preview branch compute + 3 builds; Agent37/Monid/OpenAI $0
+
+## Verifier (S2-UI) — 15:53 · WAVE A+B golden path c462b8fc-dfef-4bd2-b969-2869bb97867a · FAILED at ERP check
+1. PASS upload 15:46 → triage → 4 planners parallel → coordinator window **18:47–19:32 today (-04:00)**, conditional on part arrival (never blank now).
+2. PASS risk → Approve (UI, 15:49:48) → fan-out erp ∥ procurement ∥ dispatch (15:49:55).
+3. PASS Agent37 checkpoint: "Checkpoint saved (backup 0bf72f6cc5ee1c4f538e)", 262 MB, 15.4 s.
+4. PASS dispatch: Calendar event bepdjqub6o699a1rgp8aqr9q54 (Sarah 18:47–19:32), Slack notice ts 1791413486.440729 in C0C7DT5EBFV, Agent37 cron 6a8f63c4eb01 fires 23:02 UTC (Slack ack check).
+5. FAIL procurement: COMPLETE with expedite_email null — "No final procurement JSON was present in the reply" (silent success; should be FAILED). UI now shows "Expedite email: NOT SENT".
+6. FAIL erp (backend check, not agent): real Fiix WO 10 (ali amjad) + Odoo mrp.workcenter.productivity:6 for 22:47–23:32 UTC created, but workcenterBlocked() checks the current state (normal at 15:53) → "erp output rejected" → incident FAILED. Needs check against the record's bounds.
+Other: dispatch ran before erp finished ("Fiix WO code unavailable"); mojibake "18:47â€“19:32" in dispatch notice text; reliability "Fiix returned no work-order lines on two attempts" this run (previous run read WO 1/2/6/8).
+UI commits this block (s/ui): 6f8d6d7 checkpoint + cron evidence and dispatch watch row, ca5b100/f2d36ca governance WHO + lead-AI-refused 403, 58853ec procurement NOT SENT. Screenshot 14.
