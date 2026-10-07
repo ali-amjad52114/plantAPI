@@ -9,3 +9,5 @@ create table if not exists worker_control (
 insert into worker_control (id, drain) values ('global', false) on conflict (id) do nothing;
 alter table worker_control disable row level security;
 grant select on worker_control to anon;
+-- Same table as S4/S5's proposed 021_worker_control.sql (infra/deploy, scripts/deploy-safe.sh writes updated_by).
+alter table worker_control add column if not exists updated_by text;
