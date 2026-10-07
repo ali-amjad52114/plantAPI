@@ -125,7 +125,12 @@ async function finish(
     return;
   }
   await emit({ incident_id: w.incident_id, agent: "dispatch", kind: "error", system: "agent37", message: `No ack after ${ACK_DELAY_MIN()} min (${result.evidence ?? ""}) — follow-up queued`.slice(0, 300), data: result });
+  // The dispatch skill only messages people for an approved plan: pass the incident's real approval record.
+  const appr = await db().from("approvals").select("decision,decided_by,note,created_at").eq("incident_id", w.incident_id).order("created_at", { ascending: false }).limit(1);
+  const a = appr.data?.[0];
+  const approval = a ? { decision: a.decision, decided_by: a.decided_by, note: a.note, decided_at: a.created_at } : null;
   await enqueue(w.incident_id, {
+    approval,
     follow_up: true,
     reason: `no Slack ack within ${ACK_DELAY_MIN()} min`,
     action: reminderAction(),
