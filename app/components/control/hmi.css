@@ -412,3 +412,71 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 .win b { font-size: 13px; padding-right: 0; overflow-wrap: normal; word-break: keep-all; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .win .k { top: auto; bottom: 10px; right: 10px }
 .win small { padding-right: 44px }
+
+/* ---- Motion: small, purposeful, fast ---- */
+@keyframes enter { from { opacity: 0; transform: translateY(12px) } to { opacity: 1; transform: none } }
+@keyframes crawl { to { background-position: 34px 0 } }
+@keyframes sweep { from { transform: translateX(-120%) } to { transform: translateX(320%) } }
+@keyframes ping { 0% { box-shadow: 0 0 0 0 rgba(77, 163, 255, .65) } 100% { box-shadow: 0 0 0 9px rgba(77, 163, 255, 0) } }
+@keyframes pingc { 0% { box-shadow: 0 0 0 0 currentColor } 80%, 100% { box-shadow: 0 0 0 7px transparent } }
+@keyframes grow { from { transform: scaleX(0) } to { transform: scaleX(1) } }
+@keyframes flow { to { background-position: -200% 0 } }
+
+/* page arrives in sequence */
+.wrap > * { animation: enter .55s cubic-bezier(.2, .7, .2, 1) both }
+.wrap > *:nth-child(2) { animation-delay: .06s } .wrap > *:nth-child(3) { animation-delay: .12s }
+.wrap > *:nth-child(4) { animation-delay: .18s } .wrap > *:nth-child(5) { animation-delay: .24s }
+.wrap > *:nth-child(6) { animation-delay: .30s } .wrap > *:nth-child(7) { animation-delay: .36s }
+.cols > * { animation: enter .55s cubic-bezier(.2, .7, .2, 1) both }
+.cols > *:nth-child(1) { animation-delay: .30s } .cols > *:nth-child(2) { animation-delay: .38s } .cols > *:nth-child(3) { animation-delay: .46s }
+.ann-row > .win { animation: enter .45s cubic-bezier(.2, .7, .2, 1) both }
+.ann-row > .win:nth-child(2) { animation-delay: .05s } .ann-row > .win:nth-child(3) { animation-delay: .1s } .ann-row > .win:nth-child(4) { animation-delay: .15s }
+
+/* header: hazard stripe crawls, logo mark turns on hover, report button sheen */
+.top::before { animation: crawl 1.8s linear infinite }
+.word i { transition: transform .4s cubic-bezier(.2, .7, .2, 1) }
+.word:hover i { transform: rotate(90deg) }
+.top nav button { position: relative; overflow: hidden }
+.top nav button::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .4), transparent); transform: translateX(-150%); pointer-events: none }
+.top nav button:hover::after { transition: transform .7s ease; transform: translateX(350%) }
+
+/* status chips breathe */
+.chipx::before { animation: pingc 2.2s ease-out infinite }
+
+/* progress: finished steps fill in, current step has a moving bar */
+.fma div { transition: background .3s, color .3s, box-shadow .3s }
+.fma div:not(.now):hover { background: rgba(255, 255, 255, .035); color: var(--ink) }
+.fma .done::after { transform-origin: left; animation: grow .5s cubic-bezier(.2, .7, .2, 1) both }
+.fma .now::after { background: linear-gradient(90deg, var(--agent), #B5D9FF, var(--agent)); background-size: 200% 100%; animation: flow 1.4s linear infinite }
+
+/* agent cards: lift + light sweep on hover; running ones scan and ping */
+.win { overflow: hidden; transition: transform .22s cubic-bezier(.2, .7, .2, 1), border-color .22s, box-shadow .22s, background .3s, color .3s }
+.win::before { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .07), transparent); transform: translateX(-120%); pointer-events: none }
+.win:hover { transform: translateY(-3px); border-color: #46586C; box-shadow: 0 14px 30px rgba(0, 0, 0, .45) }
+.win:hover::before { transition: transform .65s ease; transform: translateX(320%) }
+.win.run::before { background: linear-gradient(90deg, transparent, rgba(77, 163, 255, .22), transparent); animation: sweep 1.6s linear infinite }
+.win.run::after { animation: ping 1.4s ease-out infinite }
+.win:active { transform: translateY(-1px) scale(.985) }
+
+/* buttons: lift, press, sheen on the primary */
+.pb { position: relative; overflow: hidden; transition: background .15s, border-color .15s, box-shadow .2s, transform .15s cubic-bezier(.2, .7, .2, 1) }
+.pb:hover:not(:disabled) { transform: translateY(-1px) }
+.pb:active:not(:disabled) { transform: scale(.97) }
+.pb.act::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 40%; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .45), transparent); transform: translateX(-150%); pointer-events: none }
+.pb.act:hover::after { transition: transform .7s ease; transform: translateX(350%) }
+
+/* panels: border warms and an accent underline draws under the title */
+.pane { transition: border-color .25s, box-shadow .25s }
+.pane:hover { border-color: #34445A; box-shadow: 0 22px 56px rgba(0, 0, 0, .5) }
+.pane > h2 { position: relative }
+.pane > h2::after { content: ""; position: absolute; left: 20px; bottom: -1px; height: 2px; width: 0; background: var(--act); transition: width .35s cubic-bezier(.2, .7, .2, 1) }
+.pane:hover > h2::after { width: 56px }
+
+/* journal: hovered row gets an orange edge */
+.j tbody tr td:first-child { transition: box-shadow .2s }
+.j tbody tr:hover td:first-child { box-shadow: inset 3px 0 0 0 var(--act) }
+.mon-bar .live { animation: pulse 1.2s ease-in-out infinite }
+
+@media (prefers-reduced-motion: reduce) {
+  .cr *, .cr *::before, .cr *::after { animation: none !important; transition: none !important }
+}
