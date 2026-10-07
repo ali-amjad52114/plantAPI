@@ -11,6 +11,9 @@ async function main() {
   let lastFollowUpCheck = 0;
   let lastReap = 0;
   let lastBeat = 0;
+  let resetting = false;
+  let lastResetCheck = 0;
+  const { claimDemoReset, runDemoReset } = await import("@/lib/engine/demo-reset");
   const { supabaseAdmin } = await import("@/lib/db");
   const workerId = process.env.PLANTAPI_WORKER_ID ?? `${hostname()}:${process.pid}`;
   const startedAt = new Date().toISOString();
@@ -18,7 +21,7 @@ async function main() {
   const heartbeat = async (busy: number, drainingNow: boolean) => {
     const { error } = await supabaseAdmin()
       .from("worker_heartbeat")
-      .upsert({ id: workerId, last_poll: new Date().toISOString(), started_at: startedAt, info: { pid: process.pid, running: busy, draining: drainingNow, concurrency: CONCURRENCY, full_team: process.env.PLANTAPI_FULL_TEAM === "1", agent37_depth: process.env.PLANTAPI_AGENT37_DEPTH === "1" } });
+      .upsert({ id: workerId, last_poll: new Date().toISOString(), started_at: startedAt, info: { pid: process.pid, running: busy, draining: drainingNow, resetting, concurrency: CONCURRENCY, full_team: process.env.PLANTAPI_FULL_TEAM === "1", agent37_depth: process.env.PLANTAPI_AGENT37_DEPTH === "1" } });
     if (error) console.error("worker heartbeat failed:", error.message);
   };
   // Merged skill/seed/env changes reach the plant instance only via this sync — run it on every start.
@@ -56,12 +59,27 @@ async function main() {
         }
         draining = want;
       }
-      if (signalled && running === 0) {
+      if (signalled && running === 0 && !resetting) {
         console.log("worker: drained, exiting");
         await heartbeat(0, true).catch(() => {});
         process.exit(0);
       }
-      while (!draining && running < CONCURRENCY) {
+      // Demo reset: only when idle, one at a time; no new agent tasks are claimed while it runs.
+      if (!draining && !resetting && running === 0 && Date.now() - lastResetCheck > 3_000) {
+        lastResetCheck = Date.now();
+        const row = await claimDemoReset();
+        if (row) {
+          resetting = true;
+          console.log(`worker: demo reset ${row.id}${row.force ? " (force)" : ""}`);
+          runDemoReset(row)
+            .catch((err) => console.error("demo reset:", err))
+            .finally(() => {
+              resetting = false;
+              console.log(`worker: demo reset ${row.id} finished`);
+            });
+        }
+      }
+      while (!draining && !resetting && running < CONCURRENCY) {
         const task = await claimNextTask();
         if (!task) break;
         running++;
