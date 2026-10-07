@@ -50,3 +50,33 @@ BLOCKER / for lead:
 - correct-part photo is PROM POWER LC1-D09 style, not Schneider — verification accepts on form factor/terminal markings; neither photo shows wiring.
 - No Agent37 env/secrets endpoint (/env, /secrets 404): Fiix creds written to ~/plantapi/fiix.env (base64, chmod 600) via exec; request body carries them base64.
 SPEND: Agent37 ~$0 (exec only) · Monid $0.0003 · OpenAI ~$0.10
+
+## S4 platform — 15:00 · partial (D3 done, D1/D2 paused)
+DONE: s/platform @ ac848c4 — Dockerfile (node:22-slim, Next standalone + `tsx worker/index.ts`, PORT 8080, entrypoint exits if either dies, no secrets: .dockerignore drops .env*/.insta), scripts/deploy.sh (`insta deploy . --group app --port 8080`, --dry-run prints only). Evidence: `insta build . --port 8080` → verdict deployable (infra/deploy/insta-build.txt); scratch-copy next build exit 0, standalone server GET / = 200, worker runs.
+NEXT (lead): pin `"typescript": "^6"` in package.json + npm install (TS 7.0.2 breaks `next build` and `tsc` — Dockerfile works around it with TS6 --no-save + ignoreBuildErrors; remove after pin). Bind CONTRACTS env vars on InstaCloud, then `bash scripts/deploy.sh`. Then resume D1 (agent/image/RESUME_NOTES.md) and D2 (infra/governance/RESUME_NOTES.md).
+BLOCKER: local docker build — Docker Desktop engine not running (not needed; InstaCloud builds server-side). D2: project likely still `full_access` → DENY demo unsafe until lead runs `insta agent policy set branch-specific` + `insta agent policy protect-branch main`; service.scale may 403 on free plan. CLI fixed itself (0.1.21).
+SPEND: Agent37 $0 · Monid $0 · OpenAI $0 · no instances, no deploy
+
+## S4 platform — 15:03 · started (prep mode)
+DONE: D1/D2/D3 resumed in prep mode on s/platform — read-only API/CLI checks + local code only: D1 Agent37 API summary + template defs + provision code (dry-run), D2 policy read + POLICY_PLAN + governance-demo.ts (dry-run), D3 evidence-storage plan + deploy-env.sh (dry-run).
+NEXT: reports + commits by 15:45. No creates, no deploy, no policy change until the lead says go.
+BLOCKER: none.
+SPEND: $0
+
+## S4/D3 — 15:06 · done
+DONE: s/platform @ 2df5779 — infra/storage/EVIDENCE_PLAN.md (use the existing Supabase bucket `evidence`, already public — nothing to create), scripts/deploy-env.sh (binds all 20 CONTRACTS env vars via `insta --agent secrets set NAME --service compute/app`, values piped on stdin, never echoed; dry-run default, --apply real), deploy.sh --with-env + prints URL + polls GET / for 200. insta build: deployable. App URL: https://prod-main-app-71df9c-00z93asndgk.compute.instacloud-edge.com
+NEXT (lead): `bash scripts/deploy.sh --dry-run --with-env` then `bash scripts/deploy.sh --with-env` (each secret set redeploys compute/app; secrets.write may need an approval id). Add `.gitattributes` `*.sh text eol=lf`. Pin TS ^6. S1: evidence upload per EVIDENCE_PLAN.md.
+BLOCKER: none.
+SPEND: $0
+
+## S4/D2 — 15:08 · done (prep), live BLOCKED on policy
+DONE: s/platform @ 0ef87f7 — infra/governance/{policy-current.json, POLICY_PLAN.md, dry-run.txt, RESUME_NOTES.md}, lib/infra/governance-demo.ts (dry-run default; --live parses real decisions + approval ids, writes evidence-<ts>.json; guard checks policy twice before project.delete). Live policy today: full_access, no protected branches → every action ALLOWS incl. project.delete; script aborts --live until fixed.
+NEXT (lead, human terminal in C:\AI\plantapi-platform): `insta agent policy set branch-specific` · `insta agent policy protect-branch main` · `npx tsx lib/infra/governance-demo.ts` (guard PASS) · `npx tsx lib/infra/governance-demo.ts --live` · deny printed approval ids · `insta branch delete analysis-<ts>`. APPROVE: tries compute scale; on free-plan 403 falls back to `project rename PlantAPI` (no-op). Also: tsconfig `"types": ["node"]` fixes 14 repo tsc errors under TS 7.
+BLOCKER: live demo waits on the 2 policy commands.
+SPEND: $0
+
+## S2 tools — 2026-10-07 15:20 · done (follow-ups)
+DONE (s/tools, not pushed): fd5326b monid/materials use ~/.npm-global/bin/monid, one RS search · 0fb4376 + 8ea5112 scripts/smoke-roles-agent37.ts: all 5 roles return valid ROLE_OUTPUT as REAL Agent37 turns on pfd5d7eukw (triage 29s, materials 27s RS - America $152.64 real Monid, coordinator 17s Sarah Chen 18:00–19:00, erp dry-run 22s, verification wrong→reject 25s / correct→accept 27s) · aa00aa4 Fiix assign + close via Agent37 browser: smoke create→assign→close PASS (WO 5, ~2m12s; screenshots /home/node/shots/fiix-wo-5-*.png); WO 1–5 on CV-104 all "Closed, Completed" → demo starts clean; history now includes closed WOs; smoke flags --assignee, --keep-open.
+NEXT: run erp role live (real Fiix WO + Odoo block) once lead says so; confirm Fiix history filter on a fresh browser session.
+BLOCKER: Fiix has no Sarah Chen user (only "ali amjad", Guest, group entries) → WOs assigned to ali amjad, skill names Sarah Chen in summary. Adding her = new Fiix user, needs lead/user OK.
+SPEND: Agent37 reported $0 for all turns (cost_usd 0 — unmetered or free) · Monid ~$0.0005 total · OpenAI ~$0.10
