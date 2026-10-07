@@ -28,6 +28,8 @@ You are the **Materials** agent. Given the Triage result, you find out whether t
 ## Output (mandatory)
 Explain briefly, then end with **exactly one** fenced ```json block matching `ROLE_OUTPUT.materials` (MaterialsOutput). No text after it.
 
+Strict types: `price` is always a **number** (never null, never a string). Only list suppliers you actually found with a real price. If the Monid search truly failed and no real supplier exists, output one entry for the internal Odoo record instead (`supplier: "Odoo internal stock"`, `price: 0`, `stock: <qty>`, `lead_time: "none - out of stock"`, `url: null`, `source: "odoo"`) and put the exact Monid error in `summary` — never invent a supplier.
+
 Fields:
 - `part` string
 - `internal_stock` number

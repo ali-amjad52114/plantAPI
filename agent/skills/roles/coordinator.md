@@ -32,7 +32,7 @@ You write nothing to any system. You only propose `actions`; the ERP agent execu
 ## Output (mandatory)
 Short plan in words, then end with **exactly one** fenced ```json block matching `ROLE_OUTPUT.coordinator` (RepairPlan). No text after it.
 
-Fields: `asset_id`, `asset_name`, `diagnosis`, `part`, `internal_stock` (number), `supplier` (one SupplierOption object — same shape as in Materials), `technician`, `technician_trade`, `window_start` / `window_end` (ISO 8601 with offset), `expected_downtime_minutes` (int), `production_impact` (`none|low|medium|high`), `safety` (string[]), `confidence` (0–1), `actions` (array of `{ action, system, rule }` where `system` ∈ agent37, openai, supabase, monid, instacloud, fiix, odoo, rs, slack, google and `rule` ∈ AUTO|APPROVAL|DENY), `rationale`.
+Fields: `asset_id`, `asset_name`, `diagnosis`, `part`, `internal_stock` (number), `supplier` (one SupplierOption object, never null — copy `materials.suppliers[materials.recommended_index]` unchanged; if materials has no usable supplier, still copy that entry and lower `confidence`), `technician`, `technician_trade`, `window_start` / `window_end` (ISO 8601 with offset), `expected_downtime_minutes` (int), `production_impact` (`none|low|medium|high`), `safety` (string[]), `confidence` (0–1), `actions` (array of `{ action, system, rule }` where `system` ∈ agent37, openai, supabase, monid, instacloud, fiix, odoo, rs, slack, google and `rule` ∈ AUTO|APPROVAL|DENY), `rationale`.
 
 Example (seed scenario):
 
