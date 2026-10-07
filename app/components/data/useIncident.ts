@@ -44,11 +44,12 @@ export function useIncident(id: string, cfg: SourceConfig) {
 
     const ch = sb.channel("incident-" + id)
       .on("postgres_changes", { event: "*", schema: "public", table: "incidents", filter: `id=eq.${id}` }, p => {
-        if (state && p.new) set({ ...state, incident: p.new as Incident });
+        // Realtime omits unchanged large (TOASTed) JSON columns; merge so triage/plan/etc. are not wiped.
+        if (state && p.new) set({ ...state, incident: mergeRow(state.incident, p.new as Partial<Incident>) });
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "agent_tasks", filter: `incident_id=eq.${id}` }, p => {
         const t = p.new as AgentTask;
-        if (state && t?.role) set({ ...state, tasks: { ...state.tasks, [t.role]: t } });
+        if (state && t?.role) { const prev = state.tasks[t.role]; set({ ...state, tasks: { ...state.tasks, [t.role]: prev && prev.id === t.id ? mergeRow(prev, t) : t } }); }
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "agent_events", filter: `incident_id=eq.${id}` }, p => {
         if (state) set({ ...state, events: [...state.events, p.new as AgentEvent] });
@@ -89,5 +90,11 @@ export function useIncident(id: string, cfg: SourceConfig) {
 function latestTasks(rows: AgentTask[]) {
   const out: Partial<Record<AgentRole, AgentTask>> = {};
   for (const t of rows) out[t.role] = t;
+  return out;
+}
+
+function mergeRow<T extends object>(prev: T, next: Partial<T>): T {
+  const out = { ...prev };
+  for (const [k, v] of Object.entries(next)) if (v !== undefined) (out as Record<string, unknown>)[k] = v;
   return out;
 }

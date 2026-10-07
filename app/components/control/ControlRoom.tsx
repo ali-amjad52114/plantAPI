@@ -15,7 +15,9 @@ import { ReportFailure } from "../ReportFailure";
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
 type Pri = 0 | 1 | 2 | "a";
 const hhmm = (iso?: string | null) => (iso ? new Date(iso).toTimeString().slice(0, 5) : "—");
-const dayWord = (iso: string) => (new Date(iso).toDateString() === new Date().toDateString() ? "TODAY" : "TMRW");
+// Plan times are written in the plant's own offset (e.g. -04:00); show that wall-clock time, not the browser's.
+const plantHHMM = (iso?: string | null) => iso?.match(/T(\d\d:\d\d)/)?.[1] ?? hhmm(iso);
+const dayWord = (iso: string, ref: string) => (iso.slice(0, 10) === ref.slice(0, 10) ? "TODAY" : iso.slice(0, 10) > ref.slice(0, 10) ? "TMRW" : iso.slice(0, 10));
 const roleState = (t?: AgentTask) => !t ? "idle" : t.status === "RUNNING" ? "run" : t.status === "COMPLETE" ? "done" : t.status === "FAILED" ? "fail" : "queued";
 
 export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig; asset?: string }) {
@@ -187,9 +189,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
-                  <div className="bigplan">REPAIR {hhmm(plan.window_start)} {dayWord(plan.window_start)}</div>
+                  <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action.replace(/\s*\(.*\)$/, "")} v={a.rule} cls={a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : ""} />)}
-                  <Ln k="Window" v={`${hhmm(plan.window_start)}–${hhmm(plan.window_end)}`} />
+                  <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
                   <Ln k="Technician" v={plan.technician} />
                   {plan.safety.map(s => <Ln key={s} k="Safety" v={s} cls="c-caut" />)}
                   <div className="why" style={{ marginTop: 6 }}>{plan.rationale}</div>
