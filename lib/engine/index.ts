@@ -20,6 +20,7 @@ import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextS
 import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
 import { beginTurn, endTurn } from "./cost";
+import { checkAckFollowUps, depthEnabled, ensureCheckpoint, scheduleAckFollowUp } from "./depth";
 import { buildTaskText } from "./prompts";
 
 const db = () => supabaseAdmin();
@@ -130,7 +131,14 @@ export async function runTask(task: AgentTask): Promise<void> {
     const allowed: AgentRole[] = team ? [...SLICE1_ROLES, ...WAVE_A_ROLES] : SLICE1_ROLES;
     if (!allowed.includes(role)) throw new Error(`role ${role} not enabled (fullTeam=${team})`);
     let incident = await getIncident(incidentId);
-    if (incident.status !== runningStatus(role)) await setStatus(incidentId, runningStatus(role));
+    // A dispatch follow-up (no Slack ack) runs beside the repair: it never moves the incident.
+    const followUp = task.input.follow_up === true;
+    if (!followUp && incident.status !== runningStatus(role)) await setStatus(incidentId, runningStatus(role));
+    if (depthEnabled() && EXECUTORS.includes(role) && !followUp) {
+      await ensureCheckpoint(incidentId).catch((err) =>
+        emit({ incident_id: incidentId, agent: "system", kind: "error", system: "agent37", message: `Checkpoint failed: ${String(err instanceof Error ? err.message : err).slice(0, 200)}` }),
+      );
+    }
     await emit({ incident_id: incidentId, agent: role, kind: "status", system: "agent37", message: `${role} started on Agent37` });
 
     const extra: Record<string, unknown> = { ...task.input };
@@ -177,6 +185,15 @@ export async function runTask(task: AgentTask): Promise<void> {
     });
 
     incident = await getIncident(incidentId);
+    if (followUp) {
+      await emit({ incident_id: incidentId, agent: role, kind: "output", system: "agent37", message: `${role} follow-up done`, data: output as Record<string, unknown> });
+      return;
+    }
+    if (role === "dispatch" && depthEnabled()) {
+      await scheduleAckFollowUp(incident, { id: task.id, output: output as Record<string, unknown> }).catch((err) =>
+        emit({ incident_id: incidentId, agent: role, kind: "error", system: "agent37", message: `Ack follow-up cron failed: ${String(err instanceof Error ? err.message : err).slice(0, 200)}` }),
+      );
+    }
     const t = nextSteps(role, output, team, team ? await settledRoles(incidentId) : []);
     const patch: Record<string, unknown> = { agent37_session_ids: { ...incident.agent37_session_ids, [role]: turn.sessionId } };
     const src = (output as { source?: unknown }).source;
@@ -257,3 +274,6 @@ export const engine: Engine = {
     await enqueue(incidentId, "verification", { completion: { notes: input.notes, actual_downtime_minutes: input.actualDowntimeMinutes, photo: input.photoUrl } });
   },
 };
+
+/** Worker: resolve Agent37 ack-check crons; no ack → queue a dispatch follow-up turn. */
+export const checkFollowUps = () => checkAckFollowUps((incidentId, input) => enqueue(incidentId, "dispatch", input));
