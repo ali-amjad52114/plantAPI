@@ -264,6 +264,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   <Ln k="Fiix WO" v={ver?.fiix_closed ? "CLOSED" : "OPEN"} cls={ver?.fiix_closed ? "c-ok" : "c-warn"} />
                   <Ln k="Line" v={ver?.odoo_unblocked ? "RELEASED" : "BLOCKED"} cls={ver?.odoo_unblocked ? "c-ok" : "c-warn"} />
                   <Ln k="Agent sessions" v={String(Object.keys(inc.agent37_session_ids ?? {}).length)} />
+                  {inc.cost && <Ln k="Agent37 cost" v={`$${inc.cost.agent37_usd.toFixed(2)}${inc.cost.shared_instance ? " *shared" : ""}`} cls="c-agent" />}
                   {ver?.reason && <div className="why">{ver.reason}</div>}
                 </div>)}
 
