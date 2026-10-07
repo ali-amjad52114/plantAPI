@@ -1,0 +1,3 @@
+instance hj9wbnzkte (template hermes-vnc-desktop@1, build tb_5ccd9eeaae70c1d63542, auto_sleep=true, $1 cap)
+created 2026-10-07 15:19, live view (noVNC) showed Chrome on the instance desktop -> live-view-hj9wbnzkte.jpg
+deleted: {"id":"hj9wbnzkte","deleted":true}; GET after delete = 404

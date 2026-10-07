@@ -23,8 +23,8 @@ Always use the helper, which reads that file itself:
 ~/plantapi/fiix-browser.sh shot ~/shots/fiix-wo-<code>.png
 ```
 
-Assignee: Fiix users today are only **ali amjad** (+ group placeholders). Sarah Chen is NOT a Fiix user, so assign
-to "ali amjad" and say in the summary that the job is for Sarah Chen (electrician). Each call ~10-30 s.
+Assignee: Fiix users today are only **ali amjad** (+ group placeholders). Sarah Chen is NOT a Fiix user (final decision), so assign
+to "ali amjad" and put the line `Technician: Sarah Chen (Electrical)` in the WO description text. Each call ~10-30 s.
 
 If the helper is missing, do the same by hand: `agent-browser open "$FIIX_URL"`, fill Email/Password
 from the decoded env values inside a shell command (never in your reply), click "Log In".
