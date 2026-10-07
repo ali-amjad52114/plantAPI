@@ -1,0 +1,13 @@
+/* Report-failure dialog, shared by the site view and the control room. */
+.rf { position: fixed; inset: 0; z-index: 30; background: rgba(15, 18, 16, .6); display: grid; place-items: center; padding: 16px }
+.rf form { width: min(440px, 100%); background: #e1e2df; color: #141715; border: 1px solid #141715; padding: 16px; display: grid; gap: 8px; font: 13px/1.45 "B612", "Segoe UI", Arial, sans-serif }
+.rf h2 { margin: 0; font: 700 13px/1 "B612", Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase }
+.rf p { margin: 0; color: #565b57 }
+.rf label { font: 700 11px/1 "B612", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #565b57; margin-top: 4px }
+.rf input, .rf textarea { font: 12.5px "B612 Mono", Consolas, monospace; padding: 7px; border: 1px solid #8e928e; background: #f2f3f1; color: #141715 }
+.rf .rf-note { color: #0b5fa5 }
+.rf .rf-err { color: #c8102e }
+.rf .rf-row { display: flex; gap: 8px; margin-top: 6px }
+.rf button { min-height: 34px; padding: 0 14px; border: 1px solid #141715; background: #141715; color: #fff; font: 700 11px/1 "B612", Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; cursor: pointer }
+.rf button.ghost { background: #eceeeb; color: #141715 }
+.rf button:disabled { opacity: .5 }

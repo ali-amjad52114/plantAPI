@@ -1,0 +1,97 @@
+/* 3D site view. Ported from docs/plant-3d.html; every rule scoped under .sv. Owned by S3 UI. */
+@import url("https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap");
+
+/* Single deliberate look: a light industrial hall under a dark glass HUD (matches the control room mockup's type and amber accent). */
+.sv {
+  --glass: rgba(14, 19, 24, .8); --edge: #e08a00; --fg: #eef1f3; --dim: #93a0ab; --amber: #f2a531; --ok: #4cc38a; --crit: #f06a5e; --run: #6aa6e8;
+  --f-display: "Barlow Condensed", "Arial Narrow", sans-serif; --f-body: "Barlow", "Segoe UI", sans-serif; --f-mono: "JetBrains Mono", Consolas, monospace;
+  color-scheme: dark;
+}
+.sv * { box-sizing: border-box }
+.sv { position: fixed; inset: 0; overflow: hidden; background: #c3c9ce; color: var(--fg); font: 14px/1.4 var(--f-body) }
+body { margin: 0 }
+.sv #host { position: fixed; inset: 0 }
+.sv #host canvas { display: block; outline: none }
+.sv .css2d { position: absolute; inset: 0; pointer-events: none }
+.sv .glass { background: var(--glass); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-left: 2px solid var(--edge); border-radius: 4px }
+.sv button { font: inherit; color: inherit; cursor: pointer }
+.sv :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px }
+
+/* top HUD */
+.sv #top { position: fixed; z-index: 5; top: calc(12px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none }
+.sv #top > * { pointer-events: auto }
+.sv .brand { padding: 8px 14px; display: flex; align-items: center; gap: 10px }
+.sv .brand i { width: 20px; height: 20px; border-radius: 3px; background: repeating-linear-gradient(-45deg, var(--amber) 0 5px, #1b232b 5px 10px) }
+.sv .brand b { font: 700 20px/1 var(--f-display); letter-spacing: .04em }
+.sv .brand small { display: block; font: 11px var(--f-mono); color: var(--dim); margin-top: 2px }
+.sv .stat { padding: 7px 12px; min-width: 78px }
+.sv .stat .k { font: 600 10px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--dim) }
+.sv .stat .v { font: 600 19px/1.15 var(--f-mono); font-variant-numeric: tabular-nums }
+.sv .stat.bad { border-left-color: var(--crit) } .stat.bad .v { color: var(--crit) }
+.sv .sp { flex: 1 }
+.sv .tag { align-self: center; font: 600 10px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: #1b1300; background: var(--amber); padding: 5px 8px; border-radius: 3px }
+.sv .hbtn { border: 0; padding: 0 14px; min-height: 40px; font: 600 13px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase }
+.sv .hbtn kbd { font: 600 10px var(--f-mono); color: var(--dim); margin-left: 6px; border: 1px solid #ffffff30; padding: 1px 4px; border-radius: 2px }
+.sv .hbtn[aria-pressed="false"] { color: var(--dim) }
+.sv .hbtn:hover { background: rgba(40, 48, 56, .9) }
+
+/* incident card */
+.sv #alert { position: fixed; z-index: 5; top: calc(74px + env(safe-area-inset-top, 0px)); right: 12px; width: 300px; padding: 12px 14px; border-left-color: var(--crit); display: grid; gap: 8px }
+.sv #alert .k { font: 600 11px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--crit); display: flex; align-items: center; gap: 6px }
+.sv #alert .k::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--crit); animation: pulse 1s infinite }
+.sv #alert h2 { margin: 0; font: 700 20px/1.1 var(--f-display) }
+.sv #alert p { margin: 0; color: var(--dim); font-size: 13px }
+.sv .go { border: 0; background: var(--amber); color: #1b1300; font: 700 13px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px; border-radius: 3px; text-align: left }
+.sv .go:hover { background: #ffbe55 }
+.sv .ghost { border: 1px solid #ffffff2a; background: transparent; font: 600 12px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 8px 10px; border-radius: 3px; text-align: left }
+@keyframes pulse { 50% { opacity: .3 } }
+
+/* asset list */
+.sv #panel { position: fixed; z-index: 4; top: calc(74px + env(safe-area-inset-top, 0px)); left: 12px; width: 260px; max-height: calc(100% - 140px); overflow: auto; padding: 10px 12px; scrollbar-width: thin }
+.sv #panel h3 { margin: 10px 0 4px; font: 600 11px/1 var(--f-display); letter-spacing: .12em; text-transform: uppercase; color: var(--amber) }
+.sv #panel h3:first-child { margin-top: 2px }
+.sv .asset { width: 100%; border: 0; background: none; display: grid; grid-template-columns: 10px 62px minmax(0, 1fr); gap: 8px; align-items: center; text-align: left; padding: 6px 6px; border-radius: 3px; font-size: 13px }
+.sv .asset:hover, .sv .asset.hov { background: rgba(242, 165, 49, .12) }
+.sv .asset .d { width: 8px; height: 8px; border-radius: 50% }
+.sv .asset .id { font: 600 12px var(--f-mono) }
+.sv .asset .n { color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.sv .d.ok { background: var(--ok) } .d.down { background: var(--crit); animation: pulse 1s infinite } .d.warn { background: var(--amber) }
+.sv #panel .fiix { font: 10px var(--f-mono); color: var(--dim); margin: 10px 0 0 }
+
+/* 3D labels */
+.sv .lbl { pointer-events: auto; cursor: pointer; white-space: nowrap; font: 600 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: #fff;
+  background: rgba(14, 19, 24, .82); padding: 4px 8px 4px 7px; border-left: 2px solid var(--ok); border-radius: 2px; transition: transform .15s }
+.sv .lbl:hover, .sv .lbl.hov { transform: translateY(-2px); border-left-color: var(--amber) }
+.sv .lbl small { font: 10px var(--f-mono); color: var(--dim); margin-left: 5px; text-transform: none; letter-spacing: 0 }
+.sv .lbl.down { background: rgba(170, 30, 22, .92); border-left-color: #fff; animation: lblp 1.2s infinite }
+.sv .lbl.down small { color: #ffd9d4 }
+.sv .lbl.warn { border-left-color: var(--amber) }
+@keyframes lblp { 50% { background: rgba(230, 90, 20, .95) } }
+.sv .area { pointer-events: none; font: 700 15px/1 var(--f-display); letter-spacing: .3em; text-transform: uppercase; color: rgba(20, 26, 32, .55); white-space: nowrap }
+.sv.nolabels .lbl:not(.down) { display: none }
+
+/* bottom hints, tooltip, stage banner */
+.sv #keys { position: fixed; z-index: 4; left: 50%; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); display: flex; gap: 14px; padding: 8px 14px; font: 600 11px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; color: var(--dim); white-space: nowrap }
+.sv #keys b { font: 600 10px var(--f-mono); color: var(--fg); border: 1px solid #ffffff35; padding: 1px 5px; margin-right: 5px; border-radius: 2px }
+.sv #tip { position: fixed; z-index: 6; pointer-events: none; padding: 8px 10px; font-size: 12px; max-width: 260px; display: none }
+.sv #tip b { display: block; font: 700 15px/1.1 var(--f-display); letter-spacing: .04em }
+.sv #tip span { color: var(--dim) }
+.sv #tip em { font-style: normal; color: var(--amber); display: block; margin-top: 4px; font: 600 11px var(--f-display); letter-spacing: .08em; text-transform: uppercase }
+.sv #stage { position: fixed; z-index: 7; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 12px 22px; font: 700 18px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap }
+.sv #stage.on { opacity: 1 }
+.sv #fade { position: fixed; inset: 0; z-index: 8; background: #0b0f13; opacity: 0; pointer-events: none; transition: opacity .45s }
+.sv #fade.on { opacity: 1 }
+.sv #fallback { position: fixed; inset: 0; z-index: 9; display: none; place-items: center; background: #1a2128; text-align: center; padding: 24px }
+.sv #fallback a { color: var(--amber) }
+.sv #assetsBtn { display: none }
+
+@media (max-width: 860px) {
+  .sv #panel { display: none; top: auto; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); max-height: 50%; width: calc(100% - 24px) }
+  .sv.showlist #panel { display: block }
+  .sv #assetsBtn { display: inline-block }
+  .sv #alert { top: auto; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); width: calc(100% - 24px) }
+  .sv.showlist #alert { display: none }
+  .sv #keys { display: none }
+  .sv .stat.opt { display: none }
+}
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
