@@ -213,3 +213,9 @@ DONE: https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.
 NEXT: only ONE worker should run against the shared Supabase/Agent37 — stop local workers or scale preview worker off. Re-generate infra/deploy/public.env before each deploy (not committed).
 BLOCKER: none.
 SPEND: InstaCloud builds/compute on preview branch; Agent37 turns from the worker count against the plant budget
+
+## S4 — 16:05 · done, with an incident
+DONE: slice-preview serves main @ 2d91057: / 200, /plant 200, /governance 200, /api/health 200 (supabase true, worker_ok true, full_team, agent37_depth). Single worker (lead stopped local at 16:01).
+INCIDENT: lead asked to hold the redeploy while 604da17b was EXECUTING; the deploy (op ad77668f) had already started at 16:00:47. Killing the local CLI did not cancel it; InstaCloud finished the build remotely and replaced the container at 16:04:10, cutting off in-flight worker turns (604da17b risk/erp, c462b8fc dispatch). Check agent_tasks for stuck RUNNING rows.
+LESSON: an `insta deploy` cannot be cancelled once the remote build starts; check `incidents` status for EXECUTING before starting any deploy.
+SPEND: InstaCloud preview builds
