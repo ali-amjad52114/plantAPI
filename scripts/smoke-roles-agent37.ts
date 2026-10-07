@@ -117,7 +117,7 @@ async function main() {
     ? await turn("triage", "triage", task("triage", { incident_id: "smoke-roles", alarm_text: alarm, photo: failurePhoto }), [failurePhoto])
     : prev("triage");
   const materials = want("materials")
-    ? await turn("materials", "materials", task("materials", { incident_id: "smoke-roles", triage }))
+    ? await turn("materials", "materials", task("materials", { incident_id: "smoke-roles", triage }, "SMOKE: another agent is using the browser on this instance - skip the browser price-confirm step (Odoo API + Monid CLI only)."))
     : prev("materials");
   const plan = want("coordinator")
     ? await turn("coordinator", "coordinator", task("coordinator", { incident_id: "smoke-roles", triage, materials }))
