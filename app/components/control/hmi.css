@@ -3,14 +3,14 @@
    procedure (left), monitor wall (centre), trend + event journal (right).
    Colour is semantic and always paired with a word: orange = action for a person, blue = systems / values computed by agents,
    green = completed / accepted, red = fault / rejected. Spacing scale 8 / 16 / 24 / 32 / 48. */
-@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Rubik:wght@400;500;700&family=JetBrains+Mono:wght@400;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
 
 .cr {
   --deep: #0B0F14; --bg: #10161D; --panel: #161D26; --raised: #1F2833; --well: #0F151C; --rule: #2A3644; --hair: #222C38;
   --ink: #F3EFE7; --muted: #A9B4C2; --faint: #6B7787;
   --bezel: #0B0F14; --unlit: #121922; --unlit-ink: #6B7787; --lit: #2A1C10; --lit-ink: #FFD9B8;
   --warn: #FF5A5A; --caution: #FFB020; --caution-ink: #FFC866; --act: #FF7A1A; --agent: #4DA3FF; --ok: #3DDC97;
-  --f: "Rubik", "Segoe UI", Arial, sans-serif; --fh: "Oswald", Arial, sans-serif; --fm: "JetBrains Mono", "Courier New", Consolas, monospace;
+  --f: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; --fh: "IBM Plex Sans", "Segoe UI", Arial, sans-serif; --fm: "IBM Plex Mono", Consolas, monospace;
   --s1: 8px; --s2: 16px; --s3: 24px; --s4: 32px; --s6: 48px;
   --r: 12px; --shadow: 0 16px 48px rgba(0, 0, 0, .45);
   color-scheme: dark;
@@ -374,3 +374,40 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 .agraph .n.queued rect { stroke: var(--act); stroke-dasharray: 3 3 }
 .agraph .n.flash rect { fill: rgba(255, 122, 26, .35) } .agraph .n.flash text { fill: var(--ink) }
 .agraph .n.focus rect { stroke: var(--act); stroke-width: 2 }
+
+/* ---- Final pass: calmer type, readable sizes, more room ---- */
+.ihead .eyebrow { font: 500 12px/1 var(--fm); letter-spacing: .12em }
+.ihead h1 { font: 600 clamp(28px, 2.4vw, 36px)/1.15 var(--fh); letter-spacing: -.015em; text-transform: none }
+.cap { font: 600 11.5px/1 var(--fm); letter-spacing: .08em }
+.chipx { font: 600 12.5px/1 var(--f); letter-spacing: .01em; text-transform: none; height: 34px; padding: 0 16px }
+.pb { font: 600 13.5px/1 var(--f); letter-spacing: 0; text-transform: none; border-radius: 8px; padding: 0 18px }
+.fma div { font: 600 12px/1.2 var(--f); letter-spacing: 0; text-transform: none; padding: 14px 14px }
+.fma div::before { font: 500 11px/1 var(--fm); letter-spacing: .08em }
+.ann-g > span { font: 600 11px/1 var(--fm); letter-spacing: .1em }
+.win { padding: 14px 14px 12px; min-height: 84px; gap: 8px }
+.win b { font: 600 14px/1.25 var(--fh); letter-spacing: -.005em; text-transform: none; padding-right: 44px; overflow-wrap: anywhere }
+.win small { font: 500 12px/1.3 var(--fm) }
+.win .k { font: 600 10px/1 var(--fm); padding: 4px 6px; top: 12px; right: 12px }
+.pane > h2 { font: 600 15px/1.2 var(--fh); letter-spacing: -.005em; text-transform: none; padding: 16px 20px }
+.pane > h2 span { font: 500 12px/1 var(--f); letter-spacing: 0; text-transform: none }
+.ln .k { text-transform: none; letter-spacing: 0; font-size: 13px }
+.ln .v { text-transform: none; font: 500 13px/1.4 var(--fm) }
+.sec.ev .ln .k { font: 500 12px/1.3 var(--fm); letter-spacing: .04em }
+.rule { font: 600 11px/1 var(--fm); letter-spacing: .06em; padding: 5px 9px }
+.plan-meta .cap { font-size: 11px }
+.vbanner { font: 600 18px/1.2 var(--fh); letter-spacing: 0; text-transform: none; padding: 16px 20px }
+.mon-bar .chip { font: 600 11.5px/1 var(--fm); letter-spacing: .04em }
+.mon-bar .live { font: 600 11px/1 var(--fm); letter-spacing: .1em }
+.tile .lab span { font: 600 11px/1 var(--fm); letter-spacing: .04em }
+.j th { font: 600 11px/1 var(--fm); letter-spacing: .08em }
+.j td { font-size: 13px }
+.src { font: 600 10.5px/1 var(--fm); letter-spacing: .04em; padding: 4px 7px }
+.verdict { font: 600 12px/1 var(--fm); letter-spacing: .06em }
+.resolve .rv { text-transform: none; font-size: 12.5px }
+.tr > span { text-transform: none }
+.clock small { font: 600 11px var(--fm); letter-spacing: .1em }
+.mock { font: 600 11px/1 var(--fm); letter-spacing: .1em }
+.agraph .n text { font: 600 11.5px var(--fm); letter-spacing: .04em }
+.win { padding: 12px 12px 10px }
+.win b { font-size: 13px; padding-right: 0; overflow-wrap: normal; word-break: keep-all; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.win .k { top: auto; bottom: 10px; right: 10px }
