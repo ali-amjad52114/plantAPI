@@ -1,5 +1,13 @@
 .env
+.env*
+**/.env*
+node_modules
+.next
+.git
 .insta/
-node_modules/
 .claude/
 .agents/
+.codex/
+*.tsbuildinfo
+next-env.d.ts
+infra/deploy/build-log.txt

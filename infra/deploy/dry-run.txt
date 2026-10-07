@@ -1,0 +1,60 @@
+## 2026-10-07 15:05:54 PDT scripts/deploy-env.sh --dry-run
+# deploy-env: target=compute/app mode=dry-run
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_MODEL_FAST --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_MODEL_SMART --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_BASE_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_INSTANCE_ID --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_ANON_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_SERVICE_ROLE_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set MONID_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_DB --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_MCP_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_MCP_TOKEN --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_URL --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_USERNAME --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_PASSWORD --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set RS_USERNAME --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set RS_PASSWORD --service compute/app 
+# 20 vars, 0 missing/invalid
+# dry-run: nothing executed. Apply with: scripts/deploy-env.sh --apply
+# verify names afterwards (names only): insta --agent secrets list
+exit=0
+
+## scripts/deploy.sh --dry-run --with-env
+# deploy-env: target=compute/app mode=dry-run
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_MODEL_FAST --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set OPENAI_MODEL_SMART --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_BASE_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set AGENT37_INSTANCE_ID --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_ANON_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set SUPABASE_SERVICE_ROLE_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set MONID_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_DB --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_API_KEY --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_MCP_URL --service compute/app 
++ printf '%s' '<redacted from .env>' | insta --agent secrets set ODOO_MCP_TOKEN --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_URL --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_USERNAME --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set FIIX_PASSWORD --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set RS_USERNAME --service compute/app 
++ printf '%s' '<redacted from .env.local>' | insta --agent secrets set RS_PASSWORD --service compute/app 
+# 20 vars, 0 missing/invalid
+# dry-run: nothing executed. Apply with: scripts/deploy-env.sh --apply
+# verify names afterwards (names only): insta --agent secrets list
++ insta --agent status --json
++ insta --agent build . --port 8080
++ insta --agent deploy . --group app --port 8080
++ URL=$(deploy output https://... | insta --agent service list --json -> compute/app domain)
+  current compute/app URL (read-only lookup): https://prod-main-app-71df9c-00z93asndgk.compute.instacloud-edge.com
++ curl -s -o /dev/null -w '%{http_code}' "$URL/"   # poll every 3s up to 60s, expect 200
+# dry-run: nothing deployed.
+exit=0
