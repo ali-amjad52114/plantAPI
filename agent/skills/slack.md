@@ -5,9 +5,8 @@ description: Read failure reports (incident intake) from the plant Slack channel
 
 # Slack — intake, approval request, acks (Triage / Dispatch / Verification roles)
 
-Two different Slack paths exist on Agent37; this skill is the **Composio app** path (read channel history, post
-messages). The Hermes **messaging gateway** (operator DMs the agent via Socket Mode) is separate; if a report arrives
-that way it is already in your conversation — do not re-read it here.
+Intake is **Composio channel history in `#plant-ops`** — operators post failure reports there; you read them with the
+Composio Slack tools below. (The Hermes messaging gateway / Socket Mode DMs are a wave B stretch — not used now.)
 
 ## How you call it (Agent37 managed Composio)
 
@@ -23,8 +22,8 @@ Never call `COMPOSIO_MANAGE_CONNECTIONS` (it starts OAuth). Shell fallback if th
 
 ## Channel
 
-`$PLANTAPI_SLACK_CHANNEL` (channel id `C...` preferred, else name). Resolve a name once:
-`SLACK_FIND_CHANNELS` `{"query":"<name>","exact_match":true}` → `id`. Post and read only in this channel.
+`$PLANTAPI_SLACK_CHANNEL` = the channel **id** of `#plant-ops` (default name `plant-ops`). IDs live in `~/plantapi/plant.env` on the instance — run `set -a; . ~/plantapi/plant.env; set +a` (or `grep PLANTAPI_ ~/plantapi/plant.env`) first; never echo other keys from that file.
+If unset, resolve once: `SLACK_FIND_CHANNELS` `{"query":"plant-ops","exact_match":true}` → `id`. Post and read only in this channel.
 
 ## 1. Read incident intake — AUTO
 

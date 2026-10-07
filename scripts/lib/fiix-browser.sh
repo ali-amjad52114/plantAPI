@@ -16,20 +16,31 @@ val() { $AB eval "document.querySelectorAll('[data-pa=v]').forEach(e=>e.removeAt
 openwo() { jsclick Maintenance; sleep 3; $AB fill 'input[name$=_search____searchtermparameter]' "$1" >/dev/null; $AB press Enter >/dev/null; sleep 3
   $AB eval "(()=>{const r=[...document.querySelectorAll('tr')].find(r=>r.offsetParent&&r.cells[1]&&r.cells[1].innerText.trim()==='$1');if(!r)return false;r.cells[2].click();return true})()" | grep -q true || { echo "WO $1 not in Active list"; return 1; }; sleep 4; }
 case "${1:-}" in
-  login)
-    $AB open "$FIIX_URL" >/dev/null; sleep 3
-    if $AB get url | grep -q auth.fiix.software; then
-      $AB fill 'input[type=email],input[name=email],input[name=username]' "$(echo "$FIIX_USERNAME_B64" | base64 -d)" >/dev/null
-      $AB fill 'input[type=password]' "$(echo "$FIIX_PASSWORD_B64" | base64 -d)" >/dev/null
-      $AB find role button click --name "Log In" >/dev/null 2>&1 || $AB press Enter >/dev/null
-      sleep 8
-    fi
+  login)   # works from a fresh browser: polls through the fiix.software/login -> auth.fiix.software redirect chain
+    $AB open "$FIIX_URL" >/dev/null 2>&1 || { sleep 2; $AB open "$FIIX_URL" >/dev/null; }
+    for i in $(seq 1 20); do
+      u=$($AB get url 2>/dev/null || true)
+      if echo "$u" | grep -q auth.fiix.software && [ "$($AB eval "!!document.querySelector('input[type=password]')" 2>/dev/null)" = true ]; then
+        $AB eval "(()=>{const i=[...document.querySelectorAll('input')].find(i=>i.offsetParent&&/^(email|text)$/.test(i.type));if(!i)return false;i.setAttribute('data-pa','user');return true})()" >/dev/null
+        $AB fill '[data-pa=user]' "$(echo "$FIIX_USERNAME_B64" | base64 -d)" >/dev/null
+        $AB fill 'input[type=password]' "$(echo "$FIIX_PASSWORD_B64" | base64 -d)" >/dev/null
+        $AB press Enter >/dev/null; sleep 6; continue
+      fi
+      if echo "$u" | grep -q macmms.com && jsclick Maintenance >/dev/null 2>&1; then break; fi
+      sleep 1.5
+    done
     $AB get url ;;
-  history) # all CV-104 WOs (any status): code | description | ... | status | ...
-    jsclick Maintenance; sleep 3
-    $AB eval "(()=>{const e=[...document.querySelectorAll('*')].find(e=>e.offsetParent&&e.children.length==0&&/^Status group:/.test((e.innerText||'').trim()));if(!e)return false;const r=e.getBoundingClientRect();const a=document.elementFromPoint(r.right+300>innerWidth?r.right:r.left+330,r.top+r.height/2)||e;[a,e].forEach(x=>['mousedown','mouseup','click'].forEach(t=>x.dispatchEvent(new MouseEvent(t,{bubbles:true}))));return true})()" >/dev/null; sleep 2
-    jsclick "All work orders" || true; sleep 3
-    $AB fill 'input[name$=_search____searchtermparameter]' "CV-104" >/dev/null; $AB press Enter >/dev/null; sleep 3
+  history) # all CV-104 WOs (any status): code | description | ... | status | user. Fresh-session safe.
+    $AB get url | grep -q macmms.com || "$0" login >/dev/null
+    jsclick Maintenance || true
+    # wait for the WO list (header "Status group: ...")
+    for i in $(seq 1 15); do [ "$($AB eval "[...document.querySelectorAll('*')].some(e=>e.offsetParent&&e.children.length==0&&/^Status group:/.test((e.innerText||'').trim()))")" = true ] && break; sleep 1; done
+    # switch to "All work orders" unless already set
+    if ! $AB eval "[...document.querySelectorAll('*')].some(e=>e.offsetParent&&e.children.length==0&&/^Status group: All work orders/.test((e.innerText||'').trim()))" | grep -q true; then
+      $AB eval "(()=>{const e=[...document.querySelectorAll('*')].find(e=>e.offsetParent&&e.children.length==0&&/^Status group:/.test((e.innerText||'').trim()));if(!e)return false;let b=e;for(let k=0;k<3&&b.parentElement;k++)b=b.parentElement;const r=b.getBoundingClientRect();const a=document.elementFromPoint(r.right-12,r.top+r.height/2)||e;[e,a].forEach(x=>['mousedown','mouseup','click'].forEach(t=>x.dispatchEvent(new MouseEvent(t,{bubbles:true}))));return true})()" >/dev/null
+      for i in $(seq 1 8); do jsclick "All work orders" && break; sleep 1; done; sleep 3
+    fi
+    # filter rows client-side (no search input needed)
     $AB eval "[...document.querySelectorAll('tr')].filter(r=>r.offsetParent&&/CV-104 Conveyor/.test(r.innerText)).map(r=>[...r.cells].map(c=>c.innerText.trim()).filter(Boolean).join(' | ')).join('\n')" ;;
   create)
     jsclick Maintenance; sleep 3

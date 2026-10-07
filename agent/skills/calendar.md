@@ -19,7 +19,8 @@ Never call `COMPOSIO_MANAGE_CONNECTIONS` (it starts OAuth). Shell fallback if th
 
 ## Calendar convention
 
-- Calendar: `$PLANTAPI_CALENDAR_ID` if set, else `primary` of the connected Google account.
+- Calendar: **`$PLANTAPI_CALENDAR_ID`** = the "PlantAPI Technicians" calendar (NOT `primary`). IDs live in `~/plantapi/plant.env` on the instance — run `set -a; . ~/plantapi/plant.env; set +a` (or `grep PLANTAPI_ ~/plantapi/plant.env`) first; never echo other keys from that file.
+  If unset: `GOOGLECALENDAR_LIST_CALENDARS` and take the calendar whose `summary` is `PlantAPI Technicians`. Never read `primary` for technician data.
 - Technicians are not Google users. Their events mirror `seed/calendar_events.json` and are titled
   **`<Technician>: <title>`** (e.g. `Sarah Chen: PM rounds - MCC-01/02`). Events titled `<Technician>: Available` are free time.
 - Shifts and trades come from `technicians.json` / Supabase `technicians` (Sarah Chen, electrician, 14:00–22:00).
@@ -29,14 +30,14 @@ Never call `COMPOSIO_MANAGE_CONNECTIONS` (it starts OAuth). Shell fallback if th
 
 `GOOGLECALENDAR_EVENTS_LIST`
 ```json
-{"calendarId":"primary","query":"Sarah Chen","timeMin":"2026-10-07T00:00:00-04:00","timeMax":"2026-10-09T00:00:00-04:00",
+{"calendarId":"$PLANTAPI_CALENDAR_ID","query":"Sarah Chen","timeMin":"2026-10-07T00:00:00-04:00","timeMax":"2026-10-09T00:00:00-04:00",
  "singleEvents":true,"orderBy":"startTime","timeZone":"America/New_York","maxResults":50}
 ```
 (`timeMin`/`timeMax` = now → +48 h; `query` = the technician needed for the trade.)
 
 Busy = any event for that technician not titled `Available`. A slot is usable when it is inside the shift,
 free of busy events and long enough for the job (default 60 min). Prefer explicit `Available` blocks.
-Optional cross-check: `GOOGLECALENDAR_FIND_FREE_SLOTS` `{"items":["primary"],"time_min":"...","time_max":"...","timezone":"America/New_York"}`
+Optional cross-check: `GOOGLECALENDAR_FIND_FREE_SLOTS` `{"items":["$PLANTAPI_CALENDAR_ID"],"time_min":"...","time_max":"...","timezone":"America/New_York"}`
 (only meaningful for the calendar as a whole, not per technician).
 
 Report the event ids and times you saw; with today's data Sarah is busy 14:00–17:30, available 18:00–20:00, off site tomorrow 07:00–12:00 — but report what the calendar returns, not this line.
@@ -50,12 +51,14 @@ Only when the incident has an **approved** plan (`incidents.status` APPROVED/EXE
 2. Check for a duplicate: `GOOGLECALENDAR_EVENTS_LIST` with `"query":"PlantAPI <incident_id>"` in the slot window — reuse it if found.
 3. `GOOGLECALENDAR_CREATE_EVENT`
 ```json
-{"calendar_id":"primary","summary":"Sarah Chen: PlantAPI repair CV-104 contactor (LC1D09BD)",
+{"calendar_id":"$PLANTAPI_CALENDAR_ID","summary":"Sarah Chen: PlantAPI repair CV-104 contactor (LC1D09BD)",
  "start_datetime":"2026-10-07T18:00:00-04:00","end_datetime":"2026-10-07T19:00:00-04:00","timezone":"America/New_York",
  "description":"PlantAPI <incident_id> | Fiix WO <code> | LOTO-CV104 required | approved by <by>",
  "send_updates":"none","create_meeting_room":false,"transparency":"opaque"}
 ```
-   Add `attendees` only if the lead gives a real deliverable address (seed emails `@plantapi.example` do not deliver).
+   Invites go **only** to `$PLANTAPI_NOTICE_EMAIL` — the connected Google account's own address (read it at runtime with
+   `GMAIL_GET_PROFILE` `{"user_id":"me"}` → `emailAddress` if the env var is missing). Add it as the single attendee:
+   `"attendees":["<that address>"]`. Sarah Chen / the supervisor are named in `summary`/`description` only — no other attendees, ever.
 4. Return the event `id` and `htmlLink` from the response — never invent them.
 
 Never delete, move or edit other events. Max 2 retries per call.

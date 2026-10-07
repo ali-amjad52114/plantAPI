@@ -117,3 +117,53 @@ NOTE: live policy was switched full_access → branch_specific at ~15:08 by S4 o
 NEXT (human/lead terminal): `insta agent approvals deny 05f384af-2ced-4f15-9d7c-f905469cc00a` · `insta agent approvals approve 9d6f239c-d666-48fd-acbd-3f77ff73b329` (branch.delete of analysis-20261007222046, cleanup) · `insta agent policy protect-branch main`.
 D3: real deploy to branch slice-preview in progress; URL will follow here.
 SPEND: Agent37 ≈ minutes of one instance (< $0.05) · Monid $0 · OpenAI $0
+
+## Verifier (S2-UI) — 15:28 · WAVE A partial · FAIL at execution fan-out
+Incident 2d9b4671-b220-40f3-acfb-cee63725d6ef, :3000, lead's worker (PLANTAPI_FULL_TEAM=1).
+1. PASS triage (15:21–15:22).
+2. PASS 4 planners in parallel (15:22:34–35 created; UI "PLAN · 4 PARALLEL", 4 lit windows). Sources: reliability = SOP file (Fiix history unavailable); materials = Monid dataforseo /google-shopping → RS - America $152.64, lead time unknown; production = LIVE sheets:1nfpZ5f4… → 07:00 tomorrow; workforce = LIVE calendar:primary, no events → availability unverified.
+3. PASS coordinator → 18:00 today (-04:00), explains disagreement. ISSUE (REAL ONLY): rationale cites "seed schedule" and "seed calendar" (Sarah's arc-flash training) — coordinator prompt still gets seed files; the live calendar has no such event.
+4. PASS risk: APPROVAL + LOTO required.
+5. PASS Approve clicked in UI (15:27:10).
+6. FAIL fan-out: only erp queued; no procurement / dispatch task rows. Likely flow.ts:107 `fullTeam` read from env in the Next server (approve route), which lacks PLANTAPI_FULL_TEAM=1 (only the worker has it).
+UI (s/ui 59e8df7, dc6ba6f, d87d45d, 61ae1e5): planner positions with sources (seed labelled), DISAGREE flag, resolution block (losers struck through, coordinator pick), risk line, procurement/dispatch details; monitor wall groups one engine step (30 s). Screenshots 07–09 in s/ui docs/screenshots/ui/.
+NEXT: rerun fresh wave A incident once the flag is set for the Next server.
+
+## S4/W1 — 15:31 · done
+DONE: template plantapi-agent@1 (build tb_68b3d93031d974774143). "Add plant" = lib/agent37/provision/add-plant.ts addPlant({name}) / removePlant(id). Live proof: instance hdizdrdslv (plantapi-agent rev 1, auto-sleep 300s, $1 cap) + plants row 90097efc-3d33-49b5-b486-9ffaef8aa7bd; exec showed ~/plantapi/skills and monid 0.1.7 at /usr/local/bin/monid; files API upload verified; then instance deleted (404) and row removed. Evidence infra/evidence/add-plant.txt (s/platform 1fdc9e1).
+NEXT: re-run when agent/skills/** exists (S2) to sync real skills; UI "Add plant" button can call addPlant.
+BLOCKER: none.
+SPEND: Agent37 < $0.01
+
+## S4/W3 — 15:32 · done
+DONE: migration 020_infra_actions applied to real Supabase (Realtime on, RLS off, anon select). 3 REAL governance rows backfilled from the live run: ALLOW e8a4477b-350e-4b73-a2ac-43e81f6af103 · APPROVE d804ba6d-58ed-420e-a48b-526f315a5fdb (approval 05f384af…) · DENY 08ec0f21-6c5d-40a9-abce-43cf06bec7b7; anon REST select = 200. governance-demo.ts --live now writes each step via lib/infra/infra-actions.ts recordInfraAction. s/platform a9a958e.
+NEXT: S3 governance panel per infra/governance/UI_NOTES.md (order by created_at, raw->step; Realtime INSERT). Note: migration 020 lives in s/platform supabase/migrations — merge alongside S1 migrations.
+BLOCKER: none.
+SPEND: $0
+
+## S4/W2 — 15:32 · done
+DONE: lib/agent37/provision/budget.ts getBudget/setBudget + backup.ts createCheckpoint/listBackups + platform-cli.ts + README.md (signatures for S1/S3). Live on pfd5d7eukw: cap $3 → $3 (unchanged), spent $0.399 this month, $2.60 left; on-demand backup 1d7078da8512977edbf0 (259.7 MB, ~20s). s/platform 5a7790e, evidence infra/evidence/budget-backup.txt.
+NEXT: S1 calls createCheckpoint(instanceId, label) before execution and stores id/status on the incident (limit: 1 manual backup per 15 min, newest replaces previous; returns status "rate_limited" instead of throwing). S3 shows spend vs cap via getBudget.
+BLOCKER: none.
+SPEND: $0
+
+## S3 UI wave B (S2-UI) — 15:33 · done on s/ui (tip f0d4be4), real data only
+- /plant: Agent37 instance (pfd5d7eukw running), budget $0.40/$3.00, usage by integration (llm $0.39 / 693 calls, composio, brave), metrics sparklines + log tail, sessions (agent memory), crons (empty), backups (empty), workspace files via read-only exec find (env files excluded); incidents.cost per incident; connected systems = agent_events per system last 24 h (Agent37 has NO integrations/connections endpoint: 404). Screenshot 10.
+- /governance (app/(admin)/governance): infra_actions live — ALLOW branch.create, APPROVE service.scale (approval 05f384af-2ced-4f15-9d7c-f905469cc00a), DENY project.delete (HTTP 403); expected vs platform shown. Screenshot 11.
+- Animated agent graph in the control room (FLAGS.agentGraph, or auto for full-team incidents), driven by agent_tasks + agent_events. Screenshot 12.
+- Plan card disagreement + resolution: done earlier (dc6ba6f, d87d45d).
+FINDINGS for core: incidents.cost is null on all incidents (panel shows "—"); 2d9b4671 erp RUNNING since 15:27 (>6 min) with procurement/dispatch never queued.
+
+## Integration evidence (S2 tools — real runs on 2026-10-07, for the README)
+| Sponsor / system | Real proof |
+|---|---|
+| Agent37 | Instance `pfd5d7eukw`; all 11 role skills return schema-valid ROLE_OUTPUT as real turns (`scripts/smoke-roles-agent37.ts`, `scripts/smoke-roles-waveA-agent37.ts`); built-in browser drives Fiix; exec + files API (screenshot download in 0.5 s); managed Composio connections ACTIVE: googlecalendar `ca_f-8GUBAQAeDo`, googlesheets `ca_LfMFRqjxat29`, gmail `ca_mypGGgP3S7oQ`, slack `ca_zZ1ZSqkFoLXB` |
+| OpenAI | Verification vision on seed photos: `completion-wrong-part.jpg` → reject (label CHNT NCH8-63 63 A), `completion-correct-part.jpg` → accept (`scripts/smoke-roles.ts`) |
+| Monid | Search `litescrape /google/shopping` "LC1D09BD RS Components" → RS - America $152.64 (`scripts/fixtures/monid-LC1D09BD.json`); AgentMail inbox `rs-supplier-demo@agentmail.to`, procurement email message id `<010001a11880c893-5da8f24f-4feb-40ec-8282-3054065a0d97-000000@email.amazonses.com>` (idempotent rerun, not resent) |
+| Fiix (CMMS) | WOs created on CV-104 through the Agent37 browser: WO 4 (create), WO 5 (create → assign "ali amjad" → close), screenshots `/home/node/shots/fiix-wo-5-*.png`; history reads WO 1–8 |
+| Odoo (ERP) | JSON-2 API: LC1D09BD = `product.product:1` qty 0; Crushing Line 2 = `mrp.workcenter:1` blocked via `mrp.workcenter.productivity:2` (loss "Equipment Failure") then unblocked (`scripts/smoke-odoo.ts`) |
+| Google Sheets | "PlantAPI Production Schedule" `1nfpZ5f4aiz70jXyk4dkks5XMLzVdbiANkekRliePUNw` (10 rows) — read live by Production (`source: sheets:<id>`) |
+| Google Calendar | "PlantAPI Technicians" `8d5f45e4b9f2e1b57fda80a5724243eeffdb91c53d9ce10382e40158df050e92@group.calendar.google.com` (5 events) — read live by Workforce (`source: calendar:<id>`) |
+| Slack | `#plant-ops` `C0C7DT5EBFV` created through Composio |
+| RS (browser) | Honest negative: RS blocks the datacenter IP (DataDome CAPTCHA / Akamai Access Denied) — screenshot `evidence/rs-LC1D09BD-1791412430802.png`; not bypassed, step dropped |
+| Supabase, InstaCloud | (lead / S1 / S4 to add) |

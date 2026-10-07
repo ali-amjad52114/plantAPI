@@ -11,6 +11,9 @@ import { PAGE_URL } from "../data/mock";
 import { useIncident, type SourceConfig } from "../data/useIncident";
 import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
+import { disagree, positions, wall } from "./proposals";
+import { AgentGraph } from "./AgentGraph";
+import { FLAGS } from "@/lib/contracts/flags";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
 type Pri = 0 | 1 | 2 | "a";
@@ -80,7 +83,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
     const started = (Object.values(tasks) as AgentTask[]).filter(t => t.started_at);
     if (!started.length) return [] as AgentRole[];
     const latest = Math.max(...started.map(t => +new Date(t.started_at!)));
-    return LANES.flatMap(l => l.roles).filter(r => tasks[r]?.started_at && latest - +new Date(tasks[r]!.started_at!) < 3 * 60e3);
+    return LANES.flatMap(l => l.roles).filter(r => tasks[r]?.started_at && latest - +new Date(tasks[r]!.started_at!) < 30e3);
   }, [tasks]);
   useEffect(() => {
     if (pinned || manual) return;
@@ -98,6 +101,10 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   const gateApproval = status === "WAITING_APPROVAL";
   const gateRepair = status === "WAITING_REPAIR";
   const riskDone = !tasks.risk || tasks.risk.status === "COMPLETE";
+  // the graph earns its place when the full team runs (more than the 5 slice agents)
+  const showGraph = (Object.keys(tasks) as AgentRole[]).some(r => !["triage", "materials", "coordinator", "erp", "verification"].includes(r));
+  const pos = positions(inc, tasks);
+  const riskOut = tasks.risk?.output as { decision?: string; loto_required?: boolean; hazards?: string[]; summary?: string } | null | undefined;
   const ctx = { triaged: !!tri, wo: !!mockFlags?.wo || !!inc.erp, closed: closed || !!mockFlags?.closed, basket: 0 };
   const asset104 = tri?.asset_id ?? "ASSET";
 
@@ -160,6 +167,8 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     </button>); })}</div>
               </div>); })}</div>
 
+          {(FLAGS.agentGraph || showGraph) && <AgentGraph tasks={tasks} events={events} focus={focus} onPick={focusOn} />}
+
           <div className="cols">
             {/* ---------------- procedure ---------------- */}
             <div className="pane">
@@ -179,20 +188,28 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {status === "NEW" && mock && !mock.started && <div className="sec"><p className="note act">Press <b>Run agents</b>. Eleven agents take this failure from the photo to a closed work order. You make one decision.</p></div>}
 
               {(status === "PLANNING" || gateApproval) && (
-                <div className="sec"><div className="cap"><span>Planner proposals</span><span className="c-agent">AGENT</span></div>
+                <div className="sec"><div className="cap"><span>Planner positions</span><span className="c-agent">{pos.length && disagree(pos) ? "DISAGREE" : "AGENT"}</span></div>
                   {(["reliability", "materials", "production", "workforce"] as AgentRole[]).filter(r => r === "materials" || tasks[r]).map(r => {
-                    const o = tasks[r]?.output as { headline?: string; detail?: string; summary?: string } | null | undefined;
-                    const m = r === "materials" && inc.materials ? `${inc.materials.suppliers[inc.materials.recommended_index]?.supplier ?? ""} $${inc.materials.suppliers[inc.materials.recommended_index]?.price ?? ""}` : null;
-                    return <Ln key={r} k={ROLE_LABEL[r]} v={o?.headline ?? m ?? (tasks[r]?.status === "COMPLETE" ? "DONE" : <span className="dim pulse">WORKING</span>)} cls="c-agent" why={o?.detail ?? o?.summary ?? (r === "materials" ? inc.materials?.summary : undefined)} />;
+                    const p = pos.find(x => x.role === r);
+                    return (<div key={r}>
+                      <Ln k={ROLE_LABEL[r]} v={p ? p.want : tasks[r]?.status === "FAILED" ? "FAILED" : <span className="dim pulse">WORKING</span>} cls={tasks[r]?.status === "FAILED" ? "c-warn" : "c-agent"} />
+                      {p && <div className="why">{p.why}{p.source && <><br /><span className={p.seed ? "c-caut" : "dim"}>source: {p.source}{p.seed ? " (seed file, not live)" : ""}</span></>}</div>}
+                    </div>);
                   })}
                 </div>)}
 
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
                   <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                  {pos.length > 1 && <div className="resolve">
+                    <span className="cap">Resolution</span>
+                    {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
+                    <div className="rv rv-win"><b>Coordinator</b> {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                  </div>}
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
                   <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
                   <Ln k="Technician" v={plan.technician} />
+                  {riskOut && <Ln k="Risk" v={`${riskOut.decision ?? "—"}${riskOut.loto_required ? " · LOTO" : ""}`} cls={riskOut.decision === "DENY" ? "c-warn" : "c-act"} why={(riskOut.hazards ?? []).join(" · ") || riskOut.summary} />}
                   {plan.safety.length > 0 && <ul className="safety">{plan.safety.map(x => <li key={x}>{x}</li>)}</ul>}
                   <div className="why" style={{ marginTop: 6 }}>{plan.rationale}</div>
                   {gateApproval && modify && (
@@ -211,6 +228,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {(status === "APPROVED" || status === "EXECUTING") && (
                 <div className="sec"><div className="cap">Approved · executing</div>
                   {(["procurement", "erp", "dispatch"] as AgentRole[]).filter(r => tasks[r]).map(r => <Ln key={r} k={ROLE_LABEL[r]} v={tasks[r]!.status} cls={tasks[r]!.status === "RUNNING" ? "c-agent" : tasks[r]!.status === "FAILED" ? "c-warn" : ""} />)}
+                  <ExecDetails tasks={tasks} />
                   {inc.erp && <Ln k="Work order" v={inc.erp.fiix_wo_code || "NOT CREATED"} cls={inc.erp.fiix_wo_code ? "" : "c-warn"} />}
                 </div>)}
 
@@ -365,4 +383,18 @@ function Trend({ tasks, manualRole, now }: { tasks: Partial<Record<AgentRole, Ag
       <div className="axis"><span>{hhmm(new Date(segs[0][0]).toISOString())}</span><span>{segs.length > 1 ? `${segs.length - 1} idle gap${segs.length > 2 ? "s" : ""} folded` : ""}</span><span>{hhmm(new Date(segs[segs.length - 1][1]).toISOString())}</span></div>
     </div>
   );
+}
+
+// Procurement + Dispatch results (real outputs): expedite email, supplier record, notices with their refs, technician ack.
+function ExecDetails({ tasks }: { tasks: Partial<Record<AgentRole, AgentTask>> }) {
+  const pr = tasks.procurement?.output as { supplier?: string; supplier_record_ref?: string | null; expedite_email?: { to: string; sent: boolean; message_id: string | null } | null; blocked?: string[] } | null | undefined;
+  const dp = tasks.dispatch?.output as { technician?: string; booked_start?: string; notices?: { channel: string; to: string; ref: string | null; status: string }[]; ack_received?: boolean; follow_up?: string | null } | null | undefined;
+  return (<>
+    {pr?.supplier_record_ref && <Ln k="Supplier record" v={pr.supplier_record_ref} />}
+    {pr?.expedite_email && <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />}
+    {pr?.blocked?.map(b => <Ln key={b} k="Procurement" v="BLOCKED" cls="c-caut" why={b} />)}
+    {dp?.booked_start && <Ln k="Booked" v={`${dp.technician ?? ""} ${wall(dp.booked_start) ?? ""}`} />}
+    {dp?.notices?.map((n, i) => <Ln key={i} k={`${n.channel} → ${n.to}`} v={`${n.status.toUpperCase()}${n.ref ? " · " + n.ref : ""}`} cls={n.status === "failed" ? "c-warn" : n.status === "blocked" ? "c-caut" : ""} />)}
+    {dp && <Ln k="Technician ack" v={dp.ack_received ? "RECEIVED" : dp.follow_up ? `FOLLOW-UP ${dp.follow_up}` : "WAITING"} cls={dp.ack_received ? "c-ok" : "c-caut"} />}
+  </>);
 }

@@ -114,7 +114,7 @@ button { cursor: pointer }
 .ln .v.tag { flex: none; max-width: none; white-space: nowrap }
 .safety { margin: 4px 0 2px; padding: 6px 8px 6px 22px; background: #efe3c2; border-left: 3px solid var(--caution); color: var(--caution-ink); font-size: 12px }
 .safety li + li { margin-top: 3px }
-.why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair) }
+.why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair); overflow-wrap: anywhere }
 .bigplan { font: 700 clamp(18px, 1.7vw, 26px)/1.1 var(--fm); overflow-wrap: anywhere; color: var(--agent); letter-spacing: -.01em; margin: 2px 0 6px }
 .evid { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; align-items: start; margin-bottom: 6px }
 .shot { aspect-ratio: 4/3; max-width: 100%; display: grid; place-items: end start; padding: 4px; font: 9.5px var(--fm); color: #fff; border: 1px solid var(--bezel);
@@ -257,3 +257,30 @@ table.j { width: 100%; border-collapse: collapse; font-size: 11.5px }
 .cr .modal form, .sv-modal form { width: min(440px, 100%); background: var(--panel); border: 1px solid var(--ink); padding: 14px; display: grid; gap: 10px }
 .cr .err { color: var(--warn); font-size: 12px }
 .cr a.pb { text-decoration: none; color: inherit }
+
+/* plan card: how the coordinator resolved the planners' disagreement */
+.resolve { display: grid; gap: 2px; margin: 0 0 8px; padding: 6px 8px; background: var(--well); border-left: 3px solid var(--agent) }
+.resolve .cap { color: var(--muted); margin-bottom: 3px }
+.resolve .rv { font: 11.5px/1.35 var(--fm); text-transform: uppercase }
+.resolve .rv b { display: inline-block; min-width: 92px; font-weight: 700 }
+.resolve .rv.lost { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule) }
+.resolve .rv.rv-win { color: var(--agent); font-weight: 700; border-top: 1px dotted var(--rule); padding-top: 3px; margin-top: 2px }
+
+/* animated agent graph */
+.agraph { background: var(--bezel); padding: 6px 8px; overflow-x: auto }
+.agraph svg { display: block; min-width: 680px }
+.agraph .e { fill: none; stroke: #3d423f; stroke-width: 1.4 }
+.agraph .e.ready { stroke: #6f7570; stroke-dasharray: 3 4 }
+.agraph .e.done { stroke: #6f7570 }
+.agraph .e.run { stroke: #e0a100; stroke-width: 2; stroke-dasharray: 6 6; animation: flow .6s linear infinite }
+@keyframes flow { to { stroke-dashoffset: -12 } }
+.agraph .n { cursor: pointer }
+.agraph .n rect { fill: var(--unlit); stroke: #111; transition: fill .3s }
+.agraph .n text { font: 700 10.5px var(--f); letter-spacing: .06em; fill: var(--unlit-ink) }
+.agraph .n text.s { font: 9.5px var(--fm); letter-spacing: 0; font-weight: 400 }
+.agraph .n.run rect { fill: var(--lit) } .agraph .n.run text { fill: var(--lit-ink) }
+.agraph .n.done rect { fill: #3a3f3c } .agraph .n.done text { fill: #c9cec9 }
+.agraph .n.fail rect { fill: var(--warn) } .agraph .n.fail text { fill: #fff }
+.agraph .n.queued rect { stroke: #e0a100; stroke-dasharray: 3 3 }
+.agraph .n.flash rect { fill: #fff6d6 } .agraph .n.flash text { fill: #1c1a12 }
+.agraph .n.focus rect { stroke: #fff; stroke-width: 2 }
