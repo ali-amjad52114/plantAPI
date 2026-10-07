@@ -131,6 +131,7 @@ export function buildTaskText(role: AgentRole, incident: Incident, extra: Record
           "Run `source ~/plantapi/plant.env` before any Odoo/Monid/Fiix command (ODOO_*, MONID_API_KEY, FIIX_* are set there; the `monid` CLI is installed and logged in).",
           "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; SOP files at `~/plantapi/seed/sop/`. Fiix browser helper: `~/plantapi/fiix-browser.sh`.",
           "Only use values from your own tool runs or from the incident context below — if a tool is unavailable, say so and report BLOCKED rather than filling in seed or example values.",
+          "Write time ranges with a plain ASCII hyphen (18:00-19:00), not an en dash, in every message you send.",
         ];
   return [
     ...setup,

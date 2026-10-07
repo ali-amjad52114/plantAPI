@@ -95,7 +95,9 @@ export function nextSteps(role: AgentRole, output: unknown, fullTeam: boolean, s
   // erp ∥ procurement ∥ dispatch: wait for all three, then the technician repairs.
   if (EXECUTORS.includes(role)) {
     const all = EXECUTORS.every((p) => settled.includes(p));
-    return { status: all ? "WAITING_REPAIR" : "EXECUTING", next: [] };
+    // Dispatch waits for ERP so its notice + calendar event carry the real Fiix WO code.
+    const next: AgentRole[] = role === "erp" && !settled.includes("dispatch") ? ["dispatch"] : [];
+    return { status: all ? "WAITING_REPAIR" : "EXECUTING", next };
   }
   const t = afterTask(role as Slice1Role, output as { verdict?: string });
   return { status: t.status, next: t.next ? [t.next] : [] };
@@ -105,7 +107,8 @@ export function nextSteps(role: AgentRole, output: unknown, fullTeam: boolean, s
 export function approvalSteps(decision: "approve" | "reject", fullTeam: boolean): Steps {
   const t = afterApproval(decision);
   if (!t.next) return { status: t.status, next: [] };
-  return { status: t.status, next: fullTeam ? [...EXECUTORS] : [t.next] };
+  // erp ∥ procurement now; dispatch follows erp (nextSteps).
+  return { status: t.status, next: fullTeam ? ["erp", "procurement"] : [t.next] };
 }
 
 /** A failed planner doesn't stop the team (allSettled), except Materials: no part, no plan. */
