@@ -81,7 +81,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
     const started = (Object.values(tasks) as AgentTask[]).filter(t => t.started_at);
     if (!started.length) return [] as AgentRole[];
     const latest = Math.max(...started.map(t => +new Date(t.started_at!)));
-    return LANES.flatMap(l => l.roles).filter(r => tasks[r]?.started_at && latest - +new Date(tasks[r]!.started_at!) < 3 * 60e3);
+    return LANES.flatMap(l => l.roles).filter(r => tasks[r]?.started_at && latest - +new Date(tasks[r]!.started_at!) < 30e3);
   }, [tasks]);
   useEffect(() => {
     if (pinned || manual) return;
