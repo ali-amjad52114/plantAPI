@@ -1,6 +1,7 @@
 // Demo reset (real systems): closes every open CV-104 WO in Fiix (Agent37 browser), unblocks Crushing Line 2 in Odoo,
 // and reports/archives non-closed Supabase incidents. Never deletes anything. Never prints secrets.
 // Run: npx tsx --env-file=.env --env-file=.env.local scripts/demo-reset.ts
+// LEAD ONLY: refuses (exit 2) while any non-archived incident is EXECUTING/WAITING_REPAIR/VERIFYING, unless --force.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { createClient } from "@supabase/supabase-js";
@@ -100,7 +101,31 @@ async function safe<T>(name: string, fn: () => Promise<T>) {
   try { return await fn(); } catch (e) { return { error: `${name}: ${String((e as Error).message ?? e).slice(0, 300)}` }; }
 }
 
+const ACTIVE = ["EXECUTING", "WAITING_REPAIR", "VERIFYING"];
+
+/** Refuse to reset while a live run is in flight (lead rule): returns the active, non-archived incidents. */
+async function activeIncidents(): Promise<Array<{ id: string; status: string }>> {
+  const url = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL, sk = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !sk) throw new Error("missing SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY — cannot check for live runs");
+  const db = createClient(url, sk, { auth: { persistSession: false } });
+  let r: { data: unknown; error: { message: string } | null } = await db.from("incidents").select("id,status,archived").in("status", ACTIVE);
+  if (r.error && /archived/.test(r.error.message)) r = await db.from("incidents").select("id,status").in("status", ACTIVE);
+  if (r.error) throw new Error(r.error.message);
+  return (r.data as Array<{ id: string; status: string; archived?: boolean }>).filter((i) => i.archived !== true);
+}
+
 async function main() {
+  // Lead rule: run only by the lead (or on the lead's instruction), never during a live run.
+  if (!process.argv.includes("--force")) {
+    let live: Array<{ id: string; status: string }>;
+    try { live = await activeIncidents(); }
+    catch (e) { console.error(`REFUSED: could not check for live incidents (${(e as Error).message}); rerun with --force only if the lead says so`); process.exitCode = 2; return; }
+    if (live.length) {
+      console.error(`REFUSED: ${live.length} live incident(s) — ${live.map((i) => `${i.id} ${i.status}`).join(", ")}. Reset would close their Fiix WO / Odoo block. Use --force only on the lead's instruction.`);
+      process.exitCode = 2;
+      return;
+    }
+  }
   const [fx, od, sb] = await Promise.all([safe("fiix", fiix), safe("odoo", odooReset), safe("supabase", supabaseReset)]);
   console.log("=== DEMO RESET — FINAL STATE ===");
   console.log(JSON.stringify({ fiix_cv104: fx, odoo_crushing_line_2: od, supabase_incidents: sb }, null, 2));
