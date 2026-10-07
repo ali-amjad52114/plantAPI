@@ -1,5 +1,5 @@
 // Slice 1 state machine: pure, no I/O (unit-tested).
-import type { IncidentStatus, Slice1Role } from "../contracts/types";
+import type { Incident, IncidentStatus, Slice1Role } from "../contracts/types";
 
 export type Transition = { status: IncidentStatus; next: Slice1Role | null };
 
@@ -44,3 +44,19 @@ export const OUTPUT_COLUMN: Record<Slice1Role, "triage" | "materials" | "plan" |
   erp: "erp",
   verification: "verification",
 };
+
+/** REAL ONLY guards: reject outputs that claim results the agent did not actually produce. Returns the problem or null. */
+export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials">): string | null {
+  const o = output as Record<string, any>;
+  if (role === "coordinator") {
+    const s = o.supplier ?? {};
+    const found = (incident.materials?.suppliers ?? []).some(
+      (m) => (m.url && m.url === s.url) || (m.supplier === s.supplier && m.price === s.price),
+    );
+    if (!found) return `plan supplier "${s.supplier}" ${s.price} is not one of the suppliers Materials actually found`;
+  }
+  if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
+  if (role === "erp" && !o.odoo_block_ref) return `Crushing Line 2 not blocked in Odoo: ${o.summary ?? ""}`;
+  if (role === "verification" && o.verdict === "accept" && !o.fiix_closed) return "verdict accept but the Fiix WO was not closed";
+  return null;
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { afterApproval, afterTask } from "./flow";
+import { afterApproval, afterTask, checkOutput } from "./flow";
 import { buildTaskText } from "./prompts";
 import type { Incident } from "../contracts/types";
 
@@ -22,5 +22,20 @@ describe("slice 1 flow", () => {
     const text = buildTaskText("triage", { id: "i1", alarm_text: "CV-104 trip", photo_url: null } as unknown as Incident);
     expect(text).toContain("CV-104 trip");
     expect(text).toContain("failure_category");
+  });
+});
+
+describe("real-only guards", () => {
+  const materials = { suppliers: [{ supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }] } as any;
+  it("rejects a plan supplier that Materials never found", () => {
+    expect(checkOutput("coordinator", { supplier: { supplier: "RS Components", price: 29.49, url: "https://rs/x" } }, { materials })).toMatch(/not one of/);
+    expect(checkOutput("coordinator", { supplier: { supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" } }, { materials })).toBeNull();
+  });
+  it("rejects ERP without a Fiix WO and accept without close", () => {
+    expect(checkOutput("erp", { fiix_wo_code: "" }, { materials: null })).toMatch(/no Fiix/);
+    expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: null }, { materials: null })).toMatch(/not blocked/);
+    expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: "42" }, { materials: null })).toBeNull();
+    expect(checkOutput("verification", { verdict: "accept", fiix_closed: false }, { materials: null })).toMatch(/not closed/);
+    expect(checkOutput("verification", { verdict: "reject", fiix_closed: false }, { materials: null })).toBeNull();
   });
 });

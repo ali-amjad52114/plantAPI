@@ -14,7 +14,7 @@ import {
 import { agent37 } from "@/lib/agent37";
 import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
-import { afterApproval, afterTask, CAN_APPROVE, CAN_COMPLETE, OUTPUT_COLUMN, RUNNING_STATUS } from "./flow";
+import { afterApproval, afterTask, checkOutput, CAN_APPROVE, CAN_COMPLETE, OUTPUT_COLUMN, RUNNING_STATUS } from "./flow";
 import { postStepHooks } from "./hooks";
 import { buildTaskText } from "./prompts";
 
@@ -69,9 +69,11 @@ async function observePhoto(incidentId: string, agent: AgentRole, url: string | 
 
 // ---------- Task runner (worker) ----------
 
-/** Atomically claims the oldest QUEUED task (null if none). */
-export async function claimNextTask(): Promise<AgentTask | null> {
-  const { data } = await db().from("agent_tasks").select("id").eq("status", "QUEUED").order("created_at").limit(1);
+/** Atomically claims the oldest QUEUED task (null if none); optionally only for one incident. */
+export async function claimNextTask(incidentId?: string): Promise<AgentTask | null> {
+  let q = db().from("agent_tasks").select("id").eq("status", "QUEUED");
+  if (incidentId) q = q.eq("incident_id", incidentId);
+  const { data } = await q.order("created_at").limit(1);
   if (!data?.length) return null;
   const res = await db()
     .from("agent_tasks")
@@ -99,7 +101,7 @@ export async function runTask(task: AgentTask): Promise<void> {
       extra.completion_photo_observation = await observePhoto(
         incidentId,
         role,
-        task.input.photo_url as string | undefined,
+        (task.input.completion as { photo?: string } | undefined)?.photo,
         "This is a technician's repair-completion photo. Describe the installed component: type, number of poles, whether it looks new, and every brand/model/rating label you can read.",
       );
     }
@@ -112,6 +114,8 @@ export async function runTask(task: AgentTask): Promise<void> {
     );
 
     const output = await ai.parseAgentOutput(role, turn.outputText);
+    const problem = checkOutput(role, output, incident);
+    if (problem) throw new Error(`${role} output rejected: ${problem}`);
     must(
       await db()
         .from("agent_tasks")
@@ -171,7 +175,7 @@ export const engine: Engine = {
     const t = afterApproval(decision);
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    if (t.next) await enqueue(incidentId, t.next);
+    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() } });
   },
 
   async complete(incidentId, input) {
@@ -186,6 +190,6 @@ export const engine: Engine = {
     );
     await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: `Technician reported done: ${input.notes.slice(0, 120)}` });
     await setStatus(incidentId, "VERIFYING");
-    await enqueue(incidentId, "verification", { notes: input.notes, actual_downtime_minutes: input.actualDowntimeMinutes, photo_url: input.photoUrl });
+    await enqueue(incidentId, "verification", { completion: { notes: input.notes, actual_downtime_minutes: input.actualDowntimeMinutes, photo: input.photoUrl } });
   },
 };

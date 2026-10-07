@@ -86,7 +86,6 @@ export function createAgent37Client(opts: Agent37ClientOptions = {}): Agent37Cli
   return {
     async runTurn(req: Agent37TurnRequest, onEvent: (e: Omit<AgentEvent, "incident_id">) => void): Promise<Agent37TurnResult> {
       const started = Date.now();
-      const system = guessSystem(req.input);
       onEvent({
         agent: req.role,
         kind: "status",
@@ -123,7 +122,7 @@ export function createAgent37Client(opts: Agent37ClientOptions = {}): Agent37Cli
         onEvent({
           agent: req.role,
           kind: "output",
-          system,
+          system: "agent37" as SystemName,
           message: `${req.role} finished in ${(durationMs / 1000).toFixed(1)}s: ${short(outputText, 120)}`,
           data: { responseId: j.id, sessionId: j.session_id, usage: j.usage ?? null, durationMs },
         });
