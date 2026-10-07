@@ -1,0 +1,51 @@
+# D3 build evidence — Wed Oct  7 14:59:03 PDT 2026
+## docker build -t plantapi:local .  => BLOCKED
+failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine; check if the path is correct and if the daemon is running: open //./pipe/dockerDesktopLinuxEngine: The system cannot find the file specified.
+
+## npm run build (repo as-is, TypeScript 7.0.2) => exit 1
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 15.0s
+   Skipping linting
+   Checking validity of types ...
+Failed to compile.
+
+TypeScript 7.0.2 is not supported by this version of Next.js. The TypeScript 7 native compiler does not provide the JavaScript compiler API that Next.js requires. Install TypeScript 6 (e.g. npm install --save-dev typescript@^6) or upgrade to a Next.js v16.2.11 or later to get support for TypeScript 7.
+Next.js build worker exited with code: 1 and signal: null
+
+## Same steps as the Dockerfile build stage, in a scratch copy (npm ci; npm i --no-save typescript@^6; temp next.config standalone+ignoreBuildErrors; next build) => exit 0
+   	- include was updated to add '.next/types/**/*.ts'
+
+   Collecting page data ...
+   Generating static pages (0/4) ...
+   Generating static pages (1/4) 
+   Generating static pages (2/4) 
+   Generating static pages (3/4) 
+ ✓ Generating static pages (4/4)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                                 Size  First Load JS
+┌ ○ /                                      127 B         103 kB
+└ ○ /_not-found                            993 B         104 kB
++ First Load JS shared by all             103 kB
+  ├ chunks/255-ce8c7c75002f810b.js       46.5 kB
+  ├ chunks/4bd1b696-c023c6e3521b1417.js  54.2 kB
+  └ other shared chunks (total)          1.95 kB
+
+
+○  (Static)  prerendered as static content
+
+
+## .next/standalone contents
+node_modules/
+package.json
+server.js
+## smoke: PORT=8099 node .next/standalone/server.js -> GET / 200
+## smoke: tsx worker/index.ts -> 'worker: not implemented yet', exit 0
+
+## npx tsc --noEmit (repo, TS 7.0.2) => FAIL
+lib/contracts/interfaces.ts(25,57): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+lib/contracts/interfaces.ts(26,55): error TS2591: Cannot find name 'Buffer'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+lib/contracts/interfaces.ts(32,9): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+lib/contracts/interfaces.ts(33,10): error TS2591: Cannot find name 'process'. Do you need to install type definitions for node? Try `npm i --save-dev @types/node` and then add 'node' to the types field in your tsconfig.
+## npx tsc --noEmit with TS 6.0.3 (scratch copy) => exit 0
