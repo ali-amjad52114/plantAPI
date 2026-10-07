@@ -147,4 +147,4 @@ Wikimedia Commons (see `seed/photos/CREDITS.md`):
 
 ## License
 
-TODO
+MIT — see [LICENSE](LICENSE). Photo credits: [seed/photos/CREDITS.md](seed/photos/CREDITS.md) (CC BY-SA photos keep their own licence).
