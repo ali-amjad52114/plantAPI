@@ -13,6 +13,7 @@ import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
 import { disagree, positions, wall } from "./proposals";
 import { AgentGraph } from "./AgentGraph";
+import { AssetPip } from "./AssetPip";
 import { FLAGS } from "@/lib/contracts/flags";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
@@ -148,7 +149,18 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
       <Header q={q} clock={clock} onReport={() => setReport(true)} />
       <main className="wrap">
         <section className="stack">
-          <div className="banner">
+          <div className="ihead">
+            <div>
+              <div className="eyebrow">Incident · {inc.id.slice(0, 8)}</div>
+              <h1>{tri?.asset_id ?? "Asset pending"}<small>{tri ? tri.suspected_component : "Triage in progress"}</small></h1>
+            </div>
+            <div className="chips">
+              <span className={"chipx " + (closed ? "s-ok" : gateApproval || gateRepair ? "s-act" : status === "FAILED" || status === "REJECTED" ? "s-bad" : "s-run")}>State <b>{status.replace(/_/g, " ")}</b></span>
+              {tri && <span className={"chipx " + (tri.severity === "high" || tri.severity === "critical" ? "s-bad" : tri.severity === "medium" ? "s-caut" : "s-ok")}>Severity <b>{tri.severity}</b></span>}
+              <span className={"chipx " + (closed ? "s-ok" : "s-bad")}>Line <b>{closed ? "Running" : "Stopped"}</b></span>
+            </div>
+          </div>
+          <div className={"banner b-" + bpri}>
             <div className="msg"><Glyph p={bpri} /><span className={"m " + (bpri === 1 ? "c-warn" : bpri === "a" ? "c-act" : "")} style={{ fontWeight: 700 }}>{bmsg}</span></div>
             {mock && <div className="ctrls">
               <button className={"pb" + (mock.playing ? " on" : "")} disabled={gateApproval || gateRepair || closed} onClick={() => mock.playing ? mock.pause() : mock.play()}>{mock.playing ? "Hold" : mock.started ? "Resume" : "Run agents"}</button>
@@ -224,9 +236,11 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
                     <div className="rv rv-win"><b>Coordinator</b> {plan.window_start ? `${plantHHMM(plan.window_start)} ${dayWord(plan.window_start, inc.created_at)}` : "no window yet: conditions not all met"}</div>
                   </div>}
-                  {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
-                  <Ln k="Window" v={plan.window_start ? `${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "PENDING CONFIRMATION"} cls={plan.window_start ? "" : "c-caut"} />
-                  <Ln k="Technician" v={plan.technician} />
+                  <div className="plan-meta">
+                    <div><span className="cap">Window</span><b className={plan.window_start ? "" : "c-caut"}>{plan.window_start ? `${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "Pending confirmation"}</b></div>
+                    <div><span className="cap">Technician</span><b>{plan.technician}</b></div>
+                  </div>
+                  {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={<span className={"rule r-" + a.rule}>{a.rule}</span>} cls="tag" />)}
                   {riskOut && <Ln k="Risk" v={`${riskOut.decision ?? "—"}${riskOut.loto_required ? " · LOTO" : ""}`} cls={riskOut.decision === "DENY" ? "c-warn" : "c-act"} why={(riskOut.hazards ?? []).join(" · ") || riskOut.summary} />}
                   {plan.safety.length > 0 && <ul className="safety">{plan.safety.map(x => <li key={x}>{x}</li>)}</ul>}
                   <div className="why" style={{ marginTop: 6 }}>{plan.rationale}</div>
@@ -253,11 +267,11 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {(gateRepair || status === "VERIFYING") && (
                 <div className="sec"><div className="cap"><span>Technician report</span><span>{inc.erp?.fiix_wo_code || ""}</span></div>
                   {plan && <Ln k="Technician" v={plan.technician} />}
-                  {rejected && <p className="note warn" style={{ margin: "6px 0" }}>Evidence rejected: {ver?.reason}</p>}
+                  {rejected && <div className="vbanner bad" role="alert"><span className="ico">✗</span><div>Rejected<small>{ver?.reason}</small></div></div>}
                   <label className="cap dim" htmlFor="technote" style={{ marginTop: 6 }}>Repair notes</label>
                   <textarea id="technote" value={notes} disabled={!gateRepair} onChange={e => setNotes(e.target.value)} />
                   <label className="cap dim" htmlFor="downtime" style={{ marginTop: 6 }}>Actual downtime (minutes)</label>
-                  <input id="downtime" type="number" min={0} value={downtime} disabled={!gateRepair} onChange={e => setDowntime(e.target.value)} style={{ padding: 6, border: "1px solid var(--rule)", background: "#f2f3f1", font: "12px var(--fm)" }} />
+                  <input id="downtime" type="number" min={0} value={downtime} disabled={!gateRepair} onChange={e => setDowntime(e.target.value)} className="fld" />
                   <span className="cap dim" style={{ marginTop: 6 }}>Completion photo</span>
                   {mock ? (
                     <div className="choices">
@@ -276,6 +290,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {closed && (
                 <div className="sec"><div className="cap"><span>Closed</span><span className="c-ok">{hhmm(inc.updated_at)}</span></div>
+                  {ver && ver.verdict !== "reject" && <div className="vbanner ok" role="status"><span className="ico">✓</span><div>Accepted<small>Repair verified. Work order closed.</small></div></div>}
                   {ver?.checks.map(c => <Ln key={c.name} k={c.name} v={c.pass ? "PASS" : "FAIL"} cls={c.pass ? "c-ok" : "c-warn"} />)}
                   <Ln k="Fiix WO" v={ver?.fiix_closed ? "CLOSED" : "OPEN"} cls={ver?.fiix_closed ? "c-ok" : "c-warn"} />
                   <Ln k="Line" v={ver?.odoo_unblocked ? "RELEASED" : "BLOCKED"} cls={ver?.odoo_unblocked ? "c-ok" : "c-warn"} />
@@ -286,7 +301,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {/* real evidence from each system, as written by the engine */}
               {(inc.materials || inc.erp || Object.values(tasks).some(t => t?.agent37_response_id)) && (
-                <div className="sec"><div className="cap">Evidence</div>
+                <div className="sec ev"><div className="cap">Evidence</div>
                   {inc.materials?.monid_tool && <Ln k="Monid tool" v={inc.materials.monid_tool} />}
                   {inc.materials && (() => { const sp = inc.materials.suppliers[inc.materials.recommended_index]; return sp ? <Ln k="Supplier" v={sp.url ? <a href={sp.url} target="_blank" rel="noreferrer">{sp.supplier} {sp.currency} {sp.price}</a> : `${sp.supplier} ${sp.currency} ${sp.price}`} /> : null; })()}
                   {inc.materials?.odoo_product_id != null && <Ln k="Odoo product" v={`#${inc.materials.odoo_product_id} · stock ${inc.materials.internal_stock}`} />}
@@ -339,7 +354,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               <div className="pane"><h2>Event journal <span>{journal.length} events</span></h2>
                 <div className="jwrap"><table className="j"><thead><tr><th>TIME</th><th>PRI</th><th>SRC</th><th>MESSAGE</th></tr></thead>
                   <tbody>{journal.map((e, i) => { const p = priOf(e); return (
-                    <tr key={e.id ?? i}><td>{hhmm(e.created_at)}</td><td><Glyph p={p} /></td><td>{e.system ? SYSTEM_LABEL[e.system] ?? e.system.toUpperCase() : e.agent.toUpperCase()}</td>
+                    <tr key={e.id ?? i}><td>{hhmm(e.created_at)}</td><td><Glyph p={p} /></td><td>{e.system ? <span className="src">{SYSTEM_LABEL[e.system] ?? e.system.toUpperCase()}</span> : <span className="src agent">{e.agent.toUpperCase()}</span>}</td>
                       <td className={p === 1 ? "c-warn" : p === "a" ? "c-act" : ""}>{e.message}</td></tr>); })}</tbody></table></div>
               </div>
             </div>
@@ -349,6 +364,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
         </section>
       </main>
       {report && <ReportFailure mock={cfg.mock} onClose={() => setReport(false)} />}
+      <AssetPip inc={inc} mock={!!cfg.mock} />
       {toast && <div className="toast" role="status">{toast}</div>}
     </div>
   );

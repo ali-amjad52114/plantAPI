@@ -4,7 +4,9 @@
 export function buildScene(root, deps, opts) {
 const { THREE, OrbitControls, CSS2DRenderer, CSS2DObject } = deps;
 
-const $ = s => root.querySelector(s);
+// missing HUD nodes (embed mode renders only #host) resolve to detached divs so wiring below stays simple
+const $ = s => root.querySelector(s) || document.createElement('div');
+const EMBED = !!opts.embed, FOCUS = opts.focus;
 
 /* ------------------------------------------------------------ assets (Fiix seed + example plant equipment) */
 const ASSETS = opts.assets;
@@ -15,27 +17,35 @@ const host = $('#host');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
 host.append(renderer.domElement);
 const css = new CSS2DRenderer(); css.domElement.className = 'css2d'; host.append(css.domElement);
 
+// "Control Room" look: night-shift hall on deep steel, blueprint grid, safety-orange alarms.
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xc3c9ce);
-scene.fog = new THREE.Fog(0xc3c9ce, 90, 190);
+scene.background = new THREE.Color(0x0b0f14);
+scene.fog = new THREE.FogExp2(0x0b0f14, .0085);
 const camera = new THREE.PerspectiveCamera(40, 1, .1, 500);
 const HOME = { pos: new THREE.Vector3(-20, 58, 64), target: new THREE.Vector3(0, 0, -1) };
-camera.position.copy(HOME.pos);
+camera.position.set(56, 72, 84);   // intro: start wide on the other side, then fly in to HOME
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.target.copy(HOME.target);
-Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: 1.42, minDistance: 5, maxDistance: 130, screenSpacePanning: false, zoomToCursor: true });
+controls.target.set(0, 2, -4);
+Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: 1.42, minDistance: 5, maxDistance: 130, screenSpacePanning: false, zoomToCursor: true, autoRotateSpeed: .35 });
 
-scene.add(new THREE.HemisphereLight(0xf2f5f8, 0x7c7468, 1.1));
-const sun = new THREE.DirectionalLight(0xfff1dc, 2.4);
+// hemisphere (cool sky / warm floor bounce) + warm key with shadows + blue rim from behind
+scene.add(new THREE.HemisphereLight(0xb8cde6, 0x2a2118, .9));
+const sun = new THREE.DirectionalLight(0xffe6c8, 2.6);
 sun.position.set(-30, 60, 35); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 35, bottom: -35, near: 10, far: 160 });
 sun.shadow.bias = -.0005; sun.shadow.normalBias = .04;
 scene.add(sun);
-const fill = new THREE.DirectionalLight(0xcfe0f2, .6); fill.position.set(30, 25, -20); scene.add(fill);
+const rim = new THREE.DirectionalLight(0x4da3ff, 1.6); rim.position.set(25, 30, -60); scene.add(rim);
+const fill = new THREE.DirectionalLight(0xcfe0f2, .35); fill.position.set(30, 25, 40); scene.add(fill);
+// blueprint grid on the yard around the hall (theme blue, 2 m cells, fades into fog)
+const grid = new THREE.GridHelper(260, 130, 0x4da3ff, 0x4da3ff);
+grid.material.transparent = true; grid.material.opacity = .14; grid.material.depthWrite = false; grid.position.y = -.02; scene.add(grid);
+const yard = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0x10161d, roughness: .95, metalness: 0 }));
+yard.rotation.x = -Math.PI / 2; yard.position.y = -.05; yard.receiveShadow = true; scene.add(yard);
 
 /* ------------------------------------------------------------ textures and materials */
 function canvasTex(w, h, draw, rx = 1, ry = 1) {
@@ -69,13 +79,13 @@ const signTex = (text, sub, bg = '#e9ecee', fg = '#1b232b') => canvasTex(512, 16
 
 const std = (color, rough = .6, metal = .1, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra });
 const M = {
-  floor: std(0xffffff, .85, .02, { map: concreteTex }),
+  floor: std(0x6f7882, .82, .05, { map: concreteTex }),
   steel: std(0x8f979e, .45, .6), steelDark: std(0x3d454c, .55, .5), struct: std(0x6b7680, .5, .55),
   machine: std(0x5f7489, .5, .35), machine2: std(0x8a8f86, .55, .3),
   yellow: std(0xf0b400, .45, .2), orange: std(0xe0601a, .5, .1), red: std(0xb3261e, .45, .2),
   white: std(0xe8ebec, .55, .1), concrete: std(0xa8a6a0, .9, 0), ore: std(0x2e2a27, .95, 0), oreLight: std(0x4a443e, .95, 0),
   rubber: std(0x1c1c1d, .9, 0), pipe: std(0xb3b9be, .35, .7), mill: std(0xffffff, .55, .25, { map: millTex }),
-  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0xbfc4c8, .85, .1), glassWin: std(0xdff0ff, .2, 0, { emissive: 0xcfe6ff, emissiveIntensity: .55 }),
+  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0x2a3644, .7, .35), glassWin: std(0x9fc8ff, .2, 0, { emissive: 0x4da3ff, emissiveIntensity: .8 }),
   asphalt: std(0x7d7f80, .9, 0), skin: std(0xc99a76, .8, 0), vest: std(0xff6a13, .7, 0, { emissive: 0x401400, emissiveIntensity: .4 }), helmet: std(0xf7f7f2, .4, 0),
   helmetY: std(0xf2c200, .4, 0), dark: std(0x222629, .7, .2), beacon: std(0xff2a1a, .3, 0, { emissive: 0xff2a1a, emissiveIntensity: 2 }),
   amberLight: std(0xffa500, .3, 0, { emissive: 0xffa000, emissiveIntensity: 1.6 }),
@@ -414,6 +424,28 @@ for (const [id, g] of assetGroups) {
 // CV-104 belt glows red while down
 const cvMats = []; cvGroup.traverse(o => { if (o.isMesh) cvMats.push(o.material); });
 if (BY_ID['CV-104']?.status === 'down') anim.push((dt, t) => { const k = .35 + .35 * Math.sin(t * 5); for (const m of cvMats) { if (hovered === 'CV-104') continue; m.emissive.setRGB(k * .55, k * .05, 0); } });
+// every asset that is down (real open incident) gets a pulsing safety-orange ring + light column on the floor
+const ringGeo = new THREE.RingGeometry(.86, 1, 64), discGeo = new THREE.CircleGeometry(1, 64);
+for (const [id, g] of assetGroups) {
+  const isDown = BY_ID[id]?.status === 'down';
+  if (!isDown && !(EMBED && id === FOCUS)) continue;   // embed: the focused asset always gets a ring (blue when healthy)
+  const hot = isDown ? 0xff7a1a : 0x4da3ff, hot2 = isDown ? 0xff5a5a : 0x4da3ff;
+  const c = g.userData.center, r = Math.max(3, Math.min(9, g.userData.size * .45));
+  const mk = (geo, color, op) => { const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.rotation.x = -Math.PI / 2; m.position.set(c.x, .06, c.z); m.scale.setScalar(r); m.renderOrder = 2; m.userData.keepFor = id; scene.add(m); return m; };
+  const disc = mk(discGeo, isDown ? 0xff5a1a : 0x4da3ff, .16), ring = mk(ringGeo, hot, .9), wave = mk(ringGeo, hot2, .6);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(r * .92, r * .92, 14, 48, 1, true), new THREE.MeshBasicMaterial({ color: hot, transparent: true, opacity: .07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+  beam.position.set(c.x, 7, c.z); beam.userData.keepFor = id; beam.visible = !EMBED; scene.add(beam);
+  const glowL = new THREE.PointLight(isDown ? 0xff6a1a : 0x4da3ff, 18, r * 3.2, 1.8); glowL.position.set(c.x, 2.5, c.z); scene.add(glowL);
+  if (isDown && EMBED && id === FOCUS) {   // fault pulse on the hero object (orange/red emissive)
+    const mats = []; g.traverse(o => { if (o.isMesh && o.material.emissive) mats.push(o.material); });
+    anim.push((dt, t) => { const k = .2 + .2 * Math.sin(t * 4); for (const m of mats) if (m !== M.beacon) m.emissive.setRGB(k * .55, k * .08, 0); });
+  }
+  anim.push((dt, t) => {
+    const k = .5 + .5 * Math.sin(t * 4);
+    ring.material.opacity = .55 + .4 * k; disc.material.opacity = .08 + .12 * k; beam.material.opacity = .04 + .06 * k; glowL.intensity = 10 + 16 * k;
+    const u = (t * .6) % 1; wave.scale.setScalar(r * (1 + u * .9)); wave.material.opacity = .7 * (1 - u);
+  });
+}
 
 /* ------------------------------------------------------------ asset list panel */
 const panel = $('#panel');
@@ -462,7 +494,7 @@ function pick(e) {
 let down = null;
 renderer.domElement.addEventListener('pointerdown', e => { down = { x: e.clientX, y: e.clientY, t: performance.now() }; });
 renderer.domElement.addEventListener('pointermove', e => {
-  if (e.buttons || flight) return;
+  if (EMBED || e.buttons || flight) return;
   const id = pick(e); hover(id); if (id) showTip(id, e.clientX, e.clientY);
 });
 renderer.domElement.addEventListener('pointerleave', () => hover(null));
@@ -475,27 +507,32 @@ renderer.domElement.addEventListener('pointerup', e => {
 let flight = null;
 const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
 function flyTo(pos, target, dur, done) {
+  controls.autoRotate = false;
   flight = { fp: camera.position.clone(), ft: controls.target.clone(), pos, target, dur, t: 0, done };
 }
-controls.addEventListener('start', () => { if (flight && !flight.locked) flight = null; });
-function viewOf(id) {
-  const g = assetGroups.get(id), c = g.userData.center, s = Math.max(6, g.userData.size);
+// gentle auto-orbit after the intro, until the first user interaction
+let touched = false;
+controls.addEventListener('start', () => { touched = true; controls.autoRotate = false; if (flight && !flight.locked) flight = null; });
+function viewOf(id, k = 1) {
+  const g = assetGroups.get(id), c = g.userData.center, s = Math.max(6, g.userData.size) * k;
   return { pos: c.clone().add(new THREE.Vector3(s * .55, s * .45, s * .75)), target: c.clone() };
 }
 const stage = $('#stage'), fade = $('#fade');
 function openAsset(id) {
+  if (EMBED) return;   // embed (iframe): never navigate
   if (flight && flight.locked) return;
   hover(null);
   const v = viewOf(id);
   stage.textContent = `Opening ${id}…`; stage.classList.add('on');
   flyTo(v.pos, v.target, 1.3, () => {
-    fade.classList.add('on');
-    setTimeout(() => opts.onOpen(id), 450);
+    // fade canvas + HUD out (~350ms) before routing, so the view doesn't just vanish
+    root.classList.add('leaving'); fade.classList.add('on');
+    setTimeout(() => opts.onOpen(id), 350);
   });
   flight.locked = true;
 }
-function showAsset(id) { const v = viewOf(id); flyTo(v.pos, v.target, 1.4); }
-function home() { flyTo(HOME.pos.clone(), HOME.target.clone(), 1.4); }
+function showAsset(id) { if (!assetGroups.has(id)) return; const v = viewOf(id, EMBED ? .95 : 1); flyTo(v.pos, v.target, 1.4, EMBED && !reduce ? () => { controls.autoRotate = true; } : undefined); }
+function home() { if (EMBED && assetGroups.has(FOCUS)) return showAsset(FOCUS); flyTo(HOME.pos.clone(), HOME.target.clone(), 1.4); }
 
 $('#homeBtn').onclick = home;
 $('#labelsBtn').onclick = () => { const on = root.classList.toggle('nolabels'); $('#labelsBtn').setAttribute('aria-pressed', String(!on)); };
@@ -514,6 +551,23 @@ function resize() {
 addEventListener('resize', resize); resize();
 const clock = new THREE.Clock();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if (EMBED && assetGroups.has(FOCUS)) {
+  // embed: one "levitating" hero object. Hide everything except the focused asset, its ring, lights, grid and dark ground.
+  const fg = assetGroups.get(FOCUS), c = fg.userData.center, lift = .7;
+  for (const o of [...scene.children]) { if (o === fg || o.isLight || o === grid || o === yard || o.userData.keepFor === FOCUS) continue; o.visible = false; }
+  const pivot = new THREE.Group(); pivot.position.set(c.x, 0, c.z); scene.add(pivot); pivot.attach(fg);
+  pivot.position.y = lift;
+  anim.push((dt, t) => {   // slow bob (~0.2 u, 3 s period), yaw ~10 deg/s, slight sway
+    pivot.position.y = lift + Math.sin(t * Math.PI * 2 / 3) * .2;
+    pivot.rotation.y += dt * .1745;
+    pivot.rotation.z = Math.sin(t * .8) * .025; pivot.rotation.x = Math.sin(t * .6 + 1) * .02;
+  });
+  const v = viewOf(FOCUS, 1.3); const up = new THREE.Vector3(0, lift, 0);
+  camera.position.copy(v.pos.add(up)); controls.target.copy(v.target.add(up));
+  controls.enabled = false; controls.autoRotate = false;   // camera fixed on the hero object
+}
+else if (reduce || EMBED) { camera.position.copy(HOME.pos); controls.target.copy(HOME.target); controls.autoRotate = EMBED && !reduce; }
+else flyTo(HOME.pos.clone(), HOME.target.clone(), 3.2, () => { if (!touched) controls.autoRotate = true; });
 renderer.setAnimationLoop(() => {
   const dt = Math.min(.05, clock.getDelta()), t = clock.elapsedTime;
   if (!reduce) {
