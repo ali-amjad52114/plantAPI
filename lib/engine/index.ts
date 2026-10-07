@@ -69,9 +69,11 @@ async function observePhoto(incidentId: string, agent: AgentRole, url: string | 
 
 // ---------- Task runner (worker) ----------
 
-/** Atomically claims the oldest QUEUED task (null if none). */
-export async function claimNextTask(): Promise<AgentTask | null> {
-  const { data } = await db().from("agent_tasks").select("id").eq("status", "QUEUED").order("created_at").limit(1);
+/** Atomically claims the oldest QUEUED task (null if none); optionally only for one incident. */
+export async function claimNextTask(incidentId?: string): Promise<AgentTask | null> {
+  let q = db().from("agent_tasks").select("id").eq("status", "QUEUED");
+  if (incidentId) q = q.eq("incident_id", incidentId);
+  const { data } = await q.order("created_at").limit(1);
   if (!data?.length) return null;
   const res = await db()
     .from("agent_tasks")

@@ -14,15 +14,23 @@ async function main() {
   const t0 = Date.now();
   const log = (s: string) => console.log(`[${((Date.now() - t0) / 1000).toFixed(0)}s] ${s}`);
 
+  // Runs this incident's tasks until it rests at a human step. The lead's worker may claim some
+  // of them first (claims are atomic) — then we just wait for its result.
+  const RESTING = ["WAITING_APPROVAL", "WAITING_REPAIR", "CLOSED", "REJECTED", "FAILED"];
   async function drain() {
+    let last = "";
     for (;;) {
-      const task = await claimNextTask();
-      if (!task) return;
-      log(`run ${task.role}`);
-      await runTask(task);
+      const task = await claimNextTask(id);
+      if (task) {
+        log(`run ${task.role}`);
+        await runTask(task);
+      }
       const inc = await getIncident(id);
-      log(`→ ${inc.status}`);
+      if (inc.status !== last) log(`→ ${inc.status}`), (last = inc.status);
       if (inc.status === "FAILED") throw new Error("incident FAILED — see agent_events");
+      const open = await db.from("agent_tasks").select("id").eq("incident_id", id).in("status", ["QUEUED", "RUNNING"]);
+      if (!open.data?.length && RESTING.includes(inc.status)) return;
+      if (!task) await new Promise((r) => setTimeout(r, 3000));
     }
   }
   async function photo(file: string) {
