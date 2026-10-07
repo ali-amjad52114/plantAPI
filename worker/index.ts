@@ -47,8 +47,13 @@ async function main() {
       if (Date.now() - lastControl > 5_000) {
         lastControl = Date.now();
         const ctl = await supabaseAdmin().from("worker_control").select("drain").eq("id", "global").maybeSingle();
-        const want = signalled || process.env.PLANTAPI_WORKER_DRAIN === "1" || ctl.data?.drain === true;
-        if (want !== draining) console.log(want ? `worker: draining — no new tasks, ${running} running` : "worker: drain off — claiming tasks again");
+        // Table missing / transient error: keep the current state (from S5's infra/deploy/worker-drain.patch).
+        const flag = ctl.error ? draining : ctl.data?.drain === true;
+        const want = signalled || process.env.PLANTAPI_WORKER_DRAIN === "1" || flag;
+        if (want !== draining) {
+          console.log(want ? `worker: draining — no new tasks, ${running} running` : "worker: drain off — claiming tasks again");
+          lastBeat = 0; // publish the new state right away
+        }
         draining = want;
       }
       if (signalled && running === 0) {
@@ -63,7 +68,7 @@ async function main() {
         console.log(`worker: ${task.role} for incident ${task.incident_id}`);
         runTask(task).finally(() => running--);
       }
-      if (Date.now() - lastBeat > 15_000) {
+      if (Date.now() - lastBeat > (draining ? 3_000 : 15_000)) {
         lastBeat = Date.now();
         await heartbeat(running, draining);
       }
