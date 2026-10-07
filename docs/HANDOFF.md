@@ -146,3 +146,10 @@ DONE: lib/agent37/provision/budget.ts getBudget/setBudget + backup.ts createChec
 NEXT: S1 calls createCheckpoint(instanceId, label) before execution and stores id/status on the incident (limit: 1 manual backup per 15 min, newest replaces previous; returns status "rate_limited" instead of throwing). S3 shows spend vs cap via getBudget.
 BLOCKER: none.
 SPEND: $0
+
+## S3 UI wave B (S2-UI) — 15:33 · done on s/ui (tip f0d4be4), real data only
+- /plant: Agent37 instance (pfd5d7eukw running), budget $0.40/$3.00, usage by integration (llm $0.39 / 693 calls, composio, brave), metrics sparklines + log tail, sessions (agent memory), crons (empty), backups (empty), workspace files via read-only exec find (env files excluded); incidents.cost per incident; connected systems = agent_events per system last 24 h (Agent37 has NO integrations/connections endpoint: 404). Screenshot 10.
+- /governance (app/(admin)/governance): infra_actions live — ALLOW branch.create, APPROVE service.scale (approval 05f384af-2ced-4f15-9d7c-f905469cc00a), DENY project.delete (HTTP 403); expected vs platform shown. Screenshot 11.
+- Animated agent graph in the control room (FLAGS.agentGraph, or auto for full-team incidents), driven by agent_tasks + agent_events. Screenshot 12.
+- Plan card disagreement + resolution: done earlier (dc6ba6f, d87d45d).
+FINDINGS for core: incidents.cost is null on all incidents (panel shows "—"); 2d9b4671 erp RUNNING since 15:27 (>6 min) with procurement/dispatch never queued.
