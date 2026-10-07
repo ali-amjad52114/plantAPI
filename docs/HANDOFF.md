@@ -180,3 +180,14 @@ error: agent_policy.update, branch.protection.update denied by agent policy (HTT
 ```
 The user then ran the same three commands in their own terminal (~15:43). Verified with `insta agent approvals list` / `insta agent policy get`: 05f384af service.scale [denied], 9d6f239c branch.delete [granted], protected branches: ab51b9c2 (main).
 SPEND: none
+
+## Verifier (S2-UI) — 15:45 · WAVE A reached CLOSED (real) · 2 findings
+Incident ed54ca93-9b88-4c09-b0cf-72c7d1940d88, :3000, PLANTAPI_FULL_TEAM=1. 15:34 upload → 15:44:57 CLOSED. Agent37 cost $0.13 (incidents.cost, not shared).
+1. PASS triage → 2. PASS 4 planners parallel (15:35:29), ALL REAL: production = live sheet Schedule!A1:K50 (07:00 tmrw), workforce = live "PlantAPI Technicians" calendar (Sarah free 18:35 today, arc-flash training tmrw 07:00–12:00), reliability = real Fiix WO 1/2/6/8 + SOP, materials = Monid → RS - America $152.64 (stock/lead time unverified).
+3. PASS (real-only) coordinator rationale names planners only, no seed wording. FAIL "must pick 18:00": window_start left BLANK — "materials does not establish part arrival". Lead decision: option (b), core fixing.
+4. PASS risk. 5. PASS Approve (UI). 6. PASS fan-out: erp ∥ procurement ∥ dispatch RUNNING together at 15:38:40.
+7. PASS erp: Fiix WO 9 (assigned ali amjad, Sarah in description) + Odoo mrp.workcenter.productivity:5.
+8. PASS procurement: real expedite email via Monid AgentMail to rs-supplier-demo@agentmail.to, SES message id <010001a11885342a-…>; nothing purchased.
+9. BLOCKED dispatch (consequence of 3): calendar + Slack notices "blocked — approved plan has blank window"; no booking.
+10. PASS correct-part photo → ACCEPT, fiix_closed + odoo_unblocked → CLOSED.
+UI (s/ui up to 62e2476): WINDOW NOT SET state, execution results kept in evidence, real cost in closed summary, archived filter (migration 004). Screenshot 13.
