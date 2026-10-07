@@ -15,7 +15,9 @@ import { ReportFailure } from "../ReportFailure";
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
 type Pri = 0 | 1 | 2 | "a";
 const hhmm = (iso?: string | null) => (iso ? new Date(iso).toTimeString().slice(0, 5) : "—");
-const dayWord = (iso: string) => (new Date(iso).toDateString() === new Date().toDateString() ? "TODAY" : "TMRW");
+// Plan times are written in the plant's own offset (e.g. -04:00); show that wall-clock time, not the browser's.
+const plantHHMM = (iso?: string | null) => iso?.match(/T(\d\d:\d\d)/)?.[1] ?? hhmm(iso);
+const dayWord = (iso: string, ref: string) => (iso.slice(0, 10) === ref.slice(0, 10) ? "TODAY" : iso.slice(0, 10) > ref.slice(0, 10) ? "TMRW" : iso.slice(0, 10));
 const roleState = (t?: AgentTask) => !t ? "idle" : t.status === "RUNNING" ? "run" : t.status === "COMPLETE" ? "done" : t.status === "FAILED" ? "fail" : "queued";
 
 export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig; asset?: string }) {
@@ -119,7 +121,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   let bpri: Pri = 1, bmsg = `${hhmm(inc.created_at)} · ${inc.alarm_text.replace(/^\d\d:\d\d:\d\d\s*/, "")} · ${tri?.asset_id ?? "ASSET"} DOWN`;
   if (closed) { bpri = 0; bmsg = `${hhmm(inc.updated_at)} · INCIDENT CLOSED · ${asset104} RUNNING · LINE RELEASED`; }
   else if (gateApproval) { bpri = "a"; bmsg = `ACTION · APPROVE REPAIR PLAN FOR ${asset104}`; }
-  else if (gateRepair) { bpri = "a"; bmsg = rejected ? "ACTION · EVIDENCE REJECTED · SEND PHOTO OF INSTALLED PART" : `ACTION · TECHNICIAN TO REPORT REPAIR${inc.erp ? " ON " + inc.erp.fiix_wo_code : ""}`; }
+  else if (gateRepair) { bpri = "a"; bmsg = rejected ? "ACTION · EVIDENCE REJECTED · SEND PHOTO OF INSTALLED PART" : `ACTION · TECHNICIAN TO REPORT REPAIR${inc.erp?.fiix_wo_code ? " ON " + inc.erp.fiix_wo_code : ""}`; }
   else if (manual) { bpri = "a"; bmsg = `MANUAL · YOU HAVE THE ${ROLE_LABEL[manual.role].toUpperCase()} BROWSER · OTHER SESSIONS RUNNING`; }
 
   const idx = STATES.indexOf(status);
@@ -187,9 +189,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
-                  <div className="bigplan">REPAIR {hhmm(plan.window_start)} {dayWord(plan.window_start)}</div>
+                  <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action.replace(/\s*\(.*\)$/, "")} v={a.rule} cls={a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : ""} />)}
-                  <Ln k="Window" v={`${hhmm(plan.window_start)}–${hhmm(plan.window_end)}`} />
+                  <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
                   <Ln k="Technician" v={plan.technician} />
                   {plan.safety.map(s => <Ln key={s} k="Safety" v={s} cls="c-caut" />)}
                   <div className="why" style={{ marginTop: 6 }}>{plan.rationale}</div>
@@ -209,11 +211,11 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {(status === "APPROVED" || status === "EXECUTING") && (
                 <div className="sec"><div className="cap">Approved · executing</div>
                   {(["procurement", "erp", "dispatch"] as AgentRole[]).filter(r => tasks[r]).map(r => <Ln key={r} k={ROLE_LABEL[r]} v={tasks[r]!.status} cls={tasks[r]!.status === "RUNNING" ? "c-agent" : tasks[r]!.status === "FAILED" ? "c-warn" : ""} />)}
-                  {inc.erp && <Ln k="Work order" v={inc.erp.fiix_wo_code} />}
+                  {inc.erp && <Ln k="Work order" v={inc.erp.fiix_wo_code || "NOT CREATED"} cls={inc.erp.fiix_wo_code ? "" : "c-warn"} />}
                 </div>)}
 
               {(gateRepair || status === "VERIFYING") && (
-                <div className="sec"><div className="cap"><span>Technician report</span><span>{inc.erp?.fiix_wo_code ?? ""}</span></div>
+                <div className="sec"><div className="cap"><span>Technician report</span><span>{inc.erp?.fiix_wo_code || ""}</span></div>
                   {plan && <Ln k="Technician" v={plan.technician} />}
                   {rejected && <p className="note warn" style={{ margin: "6px 0" }}>Evidence rejected: {ver?.reason}</p>}
                   <label className="cap dim" htmlFor="technote" style={{ marginTop: 6 }}>Repair notes</label>
@@ -251,7 +253,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   {inc.materials?.monid_tool && <Ln k="Monid tool" v={inc.materials.monid_tool} />}
                   {inc.materials && (() => { const sp = inc.materials.suppliers[inc.materials.recommended_index]; return sp ? <Ln k="Supplier" v={sp.url ? <a href={sp.url} target="_blank" rel="noreferrer">{sp.supplier} {sp.currency} {sp.price}</a> : `${sp.supplier} ${sp.currency} ${sp.price}`} /> : null; })()}
                   {inc.materials?.odoo_product_id != null && <Ln k="Odoo product" v={`#${inc.materials.odoo_product_id} · stock ${inc.materials.internal_stock}`} />}
-                  {inc.erp && <Ln k="Fiix WO" v={`${inc.erp.fiix_wo_code} · ${inc.erp.fiix_wo_status}`} />}
+                  {inc.erp && (inc.erp.fiix_wo_code
+                    ? <Ln k="Fiix WO" v={`${inc.erp.fiix_wo_code} · ${inc.erp.fiix_wo_status}`} />
+                    : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
                   {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={inc.erp.odoo_block_ref} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
