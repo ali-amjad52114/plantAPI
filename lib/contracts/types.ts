@@ -167,6 +167,14 @@ export interface Incident {
   erp: ErpOutput | null;
   verification: VerificationOutput | null;
   agent37_session_ids: Record<string, string>; // role -> Agent37 session id
+  cost?: {
+    agent37_usd: number;
+    agent37_micros: number;
+    periods: number;
+    shared_instance: boolean;
+    source: string;
+    updated_at: string;
+  } | null; // real Agent37 instance usage delta (lib/engine/cost.ts, migration 003)
   created_at: string;
   updated_at: string;
 }
