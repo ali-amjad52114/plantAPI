@@ -239,3 +239,12 @@ DONE: scripts/deploy-safe.sh --branch slice-preview --skip-drain-check (s/platfo
 NEXT: future deploys: scripts/deploy-safe.sh --branch slice-preview (no skip flag; worker now honours worker_control).
 BLOCKER: none.
 SPEND: InstaCloud preview build/compute
+
+## S4 — 16:27 · done: drain deploy of main 532853b (window rule + phone fix)
+DONE: scripts/deploy-safe.sh --branch slice-preview (full drain check, s/platform 5c0020a, image sha256:12db62dd…): drain=true → draining=true running=0 → rollout → /api/health 200 → drain=false. / 200 · /plant 200 · /governance 200 · /api/health 200.
+NEXT: HOLD — no deploys/secrets changes during the user's live trial until the lead says "deploy now".
+BLOCKER: none.
+
+## S4 — 16:32 · done: drain deploy of main 0441341 (light theme)
+DONE: deploy-safe.sh --branch slice-preview (s/platform 53471a8, image sha256:a03c6035…), drain respected, 0 in flight. / 200 · /plant 200 · /governance 200 · /api/health 200. Light theme: computed body bg rgb(233,237,241)=#E9EDF1. Screenshot docs/screenshots/platform/preview-0441341-light.jpg.
+NEXT: hold until "deploy now".
