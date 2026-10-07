@@ -1,4 +1,4 @@
-// Coordinator eval: 6 variants of the seeded disagreement, each run as a REAL Agent37 coordinator turn
+// Coordinator eval: 7 variants of the seeded disagreement, each run as a REAL Agent37 coordinator turn
 // (no DB writes). Pass = plan window starts 18:00 today and the supplier is one Materials found.
 // Run: npx tsx lib/engine/eval/coordinator-eval.ts
 import { loadEnv } from "../../db/env";
@@ -25,12 +25,21 @@ const production = {
 };
 const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "calendar:eval", summary: "Sarah free today 18:00, busy tomorrow morning" };
 
-const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials; noLeadTime?: boolean }> = [
+const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials; noLeadTime?: boolean; expect?: string }> = [
   { name: "baseline seeded disagreement", team: { reliability, production, workforce } },
   { name: "production insists on tomorrow 07:00", team: { workforce, production: { ...production, summary: "STRONGLY prefer tomorrow 07:00 — zero production impact" }, reliability } },
   { name: "reliability unavailable", team: { reliability: { unavailable: "Fiix timeout" }, production, workforce } },
   { name: "part could arrive tomorrow instead", team: { reliability, production, workforce }, materials: { ...materials, suppliers: [rs, { ...rs, supplier: "Mouser", price: 27.1, lead_time: "tomorrow 10:00", url: "https://www.mouser.com/x" }] } },
   { name: "no confirmed lead time → earliest feasible today, conditional + expedite", team: { reliability, production, workforce }, materials: { ...materials, suppliers: [{ ...rs, lead_time: "unknown", stock: null }] }, noLeadTime: true },
+  {
+    name: "today's only window is 28 min for a 45 min repair → tomorrow 07:00",
+    team: {
+      reliability,
+      production: { ...production, recommended: { start: `${today}T19:32:00`, end: `${today}T20:00:00`, impact: "low", note: "only gap today" }, alternatives: [{ start: `${tomorrow}T07:00:00`, end: `${tomorrow}T09:00:00`, impact: "none", note: "planned stop" }], summary: "Today only 19:32-20:00; tomorrow 07:00-09:00 planned stop" },
+      workforce: { ...workforce, available_from: `${today}T18:00:00`, conflicts: [] , summary: "Sarah free from today 18:00, no conflicts tomorrow" },
+    },
+    expect: `${tomorrow}T07:00`,
+  },
   { name: "reliability says next window is fine", team: { reliability: { ...reliability, urgency: "next_window", recommendation: "Replace at next planned stop" }, production, workforce } },
 ];
 
@@ -47,7 +56,7 @@ async function main() {
       const t0 = Date.now();
       const turn = await agent37.runTurn({ instanceId, role: "coordinator", incidentId: incident.id, input: buildTaskText("coordinator", incident, { team: c.team }), reasoningEffort: "medium" }, () => {});
       const plan = await ai.parseAgentOutput("coordinator", turn.outputText);
-      const at18 = plan.window_start.startsWith(`${today}T18:00`);
+      const at18 = plan.window_start.startsWith(c.expect ?? `${today}T18:00`);
       const problem = checkOutput("coordinator", plan, incident);
       // Unknown lead time: earliest feasible window today (18:00 here), never blank, marked conditional, expedite needs approval.
       const conditionalOk = !c.noLeadTime || (plan.safety.some((x) => /conditional/i.test(x)) && plan.actions.some((a) => /expedite/i.test(a.action) && a.rule === "APPROVAL"));
@@ -61,7 +70,7 @@ async function main() {
       console.log(`${r.value.pass ? "PASS" : "FAIL"}  ${CASES[i].name}: window ${r.value.window}, ${r.value.supplier}${r.value.problem ? `, ${r.value.problem}` : ""} (${r.value.seconds}s, ${r.value.response})`);
     } else console.log(`FAIL  ${CASES[i].name}: ${String(r.reason).slice(0, 200)}`);
   });
-  console.log(`coordinator eval: ${passed}/${CASES.length} chose the earliest feasible window (18:00 today)`);
+  console.log(`coordinator eval: ${passed}/${CASES.length} chose the earliest feasible window long enough for the repair`);
   process.exit(passed === CASES.length ? 0 : 1);
 }
 

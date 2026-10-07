@@ -46,7 +46,7 @@ export const OUTPUT_COLUMN: Record<Slice1Role, "triage" | "materials" | "plan" |
 };
 
 /** REAL ONLY guards: reject outputs that claim results the agent did not actually produce. Returns the problem or null. */
-export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials">): string | null {
+export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials"> & Partial<Pick<Incident, "triage">>): string | null {
   const o = output as Record<string, any>;
   if (role === "coordinator") {
     const s = o.supplier ?? {};
@@ -55,6 +55,9 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
     );
     if (!found) return `plan supplier "${s.supplier}" ${s.price} is not one of the suppliers Materials actually found`;
     for (const k of ["window_start", "window_end"]) if (!o[k] || Number.isNaN(Date.parse(o[k]))) return `plan ${k} is blank or not a timestamp (${JSON.stringify(o[k])})`;
+    const need = incident.triage?.estimated_repair_minutes;
+    const have = Math.round((Date.parse(o.window_end) - Date.parse(o.window_start)) / 60_000);
+    if (need && have < need) return `plan window is ${have} min but triage estimates ${need} min of repair`;
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
   // odoo_block_ref is verified against the real Odoo record (window bounds) in odoo-check.ts.
