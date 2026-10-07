@@ -8,18 +8,18 @@ const FONTS =
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" style={{ background: "#0B0F14", colorScheme: "dark" }}>
+    <html lang="en" style={{ background: "#E9EDF1", colorScheme: "light" }}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link rel="stylesheet" href={FONTS} />
-        <meta name="theme-color" content="#0B0F14" />
+        <meta name="theme-color" content="#E9EDF1" />
       </head>
       <body
         style={{
           margin: 0,
-          background: "#0B0F14",
-          color: "#F3EFE7",
+          background: "#E9EDF1",
+          color: "#14181D",
           fontFamily: "'Rubik', Arial, sans-serif",
           WebkitFontSmoothing: "antialiased",
           MozOsxFontSmoothing: "grayscale",
