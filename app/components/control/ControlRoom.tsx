@@ -132,7 +132,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
   /* ----- banner ----- */
   let bpri: Pri = 1, bmsg = `${hhmm(inc.created_at)} · ${inc.alarm_text.replace(/^\d\d:\d\d:\d\d\s*/, "")} · ${tri?.asset_id ?? "ASSET"} DOWN`;
-  if (closed) { bpri = 0; bmsg = `${hhmm(inc.updated_at)} · INCIDENT CLOSED · ${asset104} RUNNING · LINE RELEASED`; }
+  const failedTasks = (Object.values(tasks) as AgentTask[]).filter(t => t.status === "FAILED");
+  if (status === "FAILED") { bpri = 1; const f = failedTasks[0]; bmsg = `INCIDENT FAILED${f ? ` · ${ROLE_LABEL[f.role].toUpperCase()} · ${(f.error ?? "no error recorded").slice(0, 140)}` : ""}`; }
+  else if (closed) { bpri = 0; bmsg = `${hhmm(inc.updated_at)} · INCIDENT CLOSED · ${asset104} RUNNING · LINE RELEASED`; }
   else if (gateApproval) { bpri = "a"; bmsg = `ACTION · APPROVE REPAIR PLAN FOR ${asset104}`; }
   else if (gateRepair) { bpri = "a"; bmsg = rejected ? "ACTION · EVIDENCE REJECTED · SEND PHOTO OF INSTALLED PART" : `ACTION · TECHNICIAN TO REPORT REPAIR${inc.erp?.fiix_wo_code ? " ON " + inc.erp.fiix_wo_code : ""}`; }
   else if (manual) { bpri = "a"; bmsg = `MANUAL · YOU HAVE THE ${ROLE_LABEL[manual.role].toUpperCase()} BROWSER · OTHER SESSIONS RUNNING`; }
@@ -191,6 +193,14 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                 <Ln k="Trade" v={tri ? tri.required_trade : "—"} />
                 <Ln k="Line" v={closed ? "RUNNING" : "STOPPED"} cls={closed ? "" : "c-warn"} />
               </div>
+              {(status === "FAILED" || failedTasks.length > 0) && (
+                <div className="sec"><div className="cap"><span className="c-warn">{status === "FAILED" ? "Incident failed" : "Agent failure"}</span><span>{failedTasks.length} task{failedTasks.length === 1 ? "" : "s"}</span></div>
+                  {failedTasks.map(t => (<div key={t.id}>
+                    <Ln k={ROLE_LABEL[t.role]} v={`FAILED ${hhmm(t.finished_at)}`} cls="c-warn" />
+                    <p className="note warn" style={{ margin: "4px 0 8px", whiteSpace: "pre-wrap", overflowWrap: "anywhere" }}>{t.error ?? "No error recorded."}</p>
+                  </div>))}
+                  {status === "FAILED" && failedTasks.length === 0 && <p className="note warn">The engine marked this incident FAILED without a failing task. Check the event journal.</p>}
+                </div>)}
               {status === "NEW" && mock && !mock.started && <div className="sec"><p className="note act">Press <b>Run agents</b>. Eleven agents take this failure from the photo to a closed work order. You make one decision.</p></div>}
 
               {(status === "PLANNING" || gateApproval) && (
