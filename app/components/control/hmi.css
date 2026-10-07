@@ -265,3 +265,22 @@ table.j { width: 100%; border-collapse: collapse; font-size: 11.5px }
 .resolve .rv b { display: inline-block; min-width: 92px; font-weight: 700 }
 .resolve .rv.lost { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule) }
 .resolve .rv.rv-win { color: var(--agent); font-weight: 700; border-top: 1px dotted var(--rule); padding-top: 3px; margin-top: 2px }
+
+/* animated agent graph */
+.agraph { background: var(--bezel); padding: 6px 8px; overflow-x: auto }
+.agraph svg { display: block; min-width: 680px }
+.agraph .e { fill: none; stroke: #3d423f; stroke-width: 1.4 }
+.agraph .e.ready { stroke: #6f7570; stroke-dasharray: 3 4 }
+.agraph .e.done { stroke: #6f7570 }
+.agraph .e.run { stroke: #e0a100; stroke-width: 2; stroke-dasharray: 6 6; animation: flow .6s linear infinite }
+@keyframes flow { to { stroke-dashoffset: -12 } }
+.agraph .n { cursor: pointer }
+.agraph .n rect { fill: var(--unlit); stroke: #111; transition: fill .3s }
+.agraph .n text { font: 700 10.5px var(--f); letter-spacing: .06em; fill: var(--unlit-ink) }
+.agraph .n text.s { font: 9.5px var(--fm); letter-spacing: 0; font-weight: 400 }
+.agraph .n.run rect { fill: var(--lit) } .agraph .n.run text { fill: var(--lit-ink) }
+.agraph .n.done rect { fill: #3a3f3c } .agraph .n.done text { fill: #c9cec9 }
+.agraph .n.fail rect { fill: var(--warn) } .agraph .n.fail text { fill: #fff }
+.agraph .n.queued rect { stroke: #e0a100; stroke-dasharray: 3 3 }
+.agraph .n.flash rect { fill: #fff6d6 } .agraph .n.flash text { fill: #1c1a12 }
+.agraph .n.focus rect { stroke: #fff; stroke-width: 2 }

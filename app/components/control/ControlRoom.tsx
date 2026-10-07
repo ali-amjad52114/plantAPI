@@ -12,6 +12,8 @@ import { useIncident, type SourceConfig } from "../data/useIncident";
 import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
 import { disagree, positions, wall } from "./proposals";
+import { AgentGraph } from "./AgentGraph";
+import { FLAGS } from "@/lib/contracts/flags";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
 type Pri = 0 | 1 | 2 | "a";
@@ -99,6 +101,8 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   const gateApproval = status === "WAITING_APPROVAL";
   const gateRepair = status === "WAITING_REPAIR";
   const riskDone = !tasks.risk || tasks.risk.status === "COMPLETE";
+  // the graph earns its place when the full team runs (more than the 5 slice agents)
+  const showGraph = (Object.keys(tasks) as AgentRole[]).some(r => !["triage", "materials", "coordinator", "erp", "verification"].includes(r));
   const pos = positions(inc, tasks);
   const riskOut = tasks.risk?.output as { decision?: string; loto_required?: boolean; hazards?: string[]; summary?: string } | null | undefined;
   const ctx = { triaged: !!tri, wo: !!mockFlags?.wo || !!inc.erp, closed: closed || !!mockFlags?.closed, basket: 0 };
@@ -162,6 +166,8 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                       <small>{s.state === "idle" ? (tasks[r] ? "queued" : "idle") : s.note + (s.calls ? " · " + s.calls : "")}</small>
                     </button>); })}</div>
               </div>); })}</div>
+
+          {(FLAGS.agentGraph || showGraph) && <AgentGraph tasks={tasks} events={events} focus={focus} onPick={focusOn} />}
 
           <div className="cols">
             {/* ---------------- procedure ---------------- */}
