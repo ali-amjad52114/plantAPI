@@ -46,14 +46,46 @@ export function workforceBrief(): string {
 }
 
 /** Role skill from S2 if it exists locally (uploaded to the instance at ~/plantapi/skills/), else the inline brief. */
+// Coordinator is REAL ONLY: it decides from the planners' outputs, never from seed files. The S2 skill
+// (coordinator.md) carries seed facts and examples, so the engine uses this brief instead of it.
+export const COORDINATOR_BRIEF = [
+  "You are the Coordinator of a plant maintenance team. Merge the planners' findings into ONE repair plan a human approves with one click.",
+  "Decide ONLY from the facts in the incident context: `triage`, `materials`, and `team` (the reliability, production and workforce agents' outputs).",
+  "- Technician: from `team.workforce` (technician, qualifications, available_from, conflicts).",
+  "- Part: `supplier` must be copied exactly from one entry of `materials.suppliers`; its lead time decides when the part is on site.",
+  '- Window: the earliest window where the part is on site AND the technician is free AND production allows it (`team.production` recommended/alternatives). If `team.reliability.urgency` is "asap", prefer the earliest such window over the lowest-impact one.',
+  '- Every fact in `rationale` must name which planner it came from (e.g. "workforce (calendar:…): …"). If a planner is unavailable or a fact is missing, say so in `rationale` and lower `confidence` — never fill the gap yourself.',
+  "- Tag every action AUTO or APPROVAL: purchase, block production, schedule outage and safety-critical work need APPROVAL; reading/searching/drafting is AUTO. LOTO goes in `safety` for electrical work.",
+  "RULES: never read any file under ~/plantapi/seed (or any other file) and never use example or seed values. You do not need tools for this step.",
+].join("\n");
+
 export function roleInstructions(role: AgentRole): string {
+  if (role === "coordinator") return COORDINATOR_BRIEF;
   for (const dir of [path.join(process.cwd(), "agent/skills/roles")]) {
     const file = path.join(dir, `${role}.md`);
-    if (existsSync(file)) return readFileSync(file, "utf8");
+    if (existsSync(file)) return readFileSync(file, "utf8") + roleOverrides(role);
   }
   if (role === "production") return productionBrief();
   if (role === "workforce") return workforceBrief();
   return ROLE_BRIEF[role] ?? `You are the ${role} agent of the plant maintenance team.`;
+}
+
+/** Engine-side rules appended to an S2 skill (they win over the skill text). */
+export function roleOverrides(role: AgentRole): string {
+  const cal = process.env.PLANTAPI_CALENDAR_ID;
+  const sheet = process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+  const head = "\n\n## Engine override (wins over the text above)\n";
+  if (role === "workforce" && cal) {
+    return (
+      head +
+      `Read availability ONLY from Google Calendar id \`${cal}\` (NOT \`primary\`). \`allow_seed_fallback\` is false: if that calendar cannot be read, report BLOCKED with the exact error. ` +
+      `An empty calendar means the technician is free — do not add conflicts from anywhere else. \`source\` = \`calendar:${cal}\`.`
+    );
+  }
+  if (role === "production" && sheet) {
+    return head + `Read the schedule ONLY from Google Sheet id \`${sheet}\`; no seed fallback — if it cannot be read, report BLOCKED with the exact error. \`source\` = \`sheets:${sheet}\`.`;
+  }
+  return "";
 }
 
 export function outputSchemaText(role: AgentRole): string {
@@ -61,21 +93,31 @@ export function outputSchemaText(role: AgentRole): string {
 }
 
 export function buildTaskText(role: AgentRole, incident: Incident, extra: Record<string, unknown> = {}): string {
-  const context = {
-    incident_id: incident.id,
-    alarm_text: incident.alarm_text,
-    photo_url: incident.photo_url,
-    triage: incident.triage,
-    materials: incident.materials,
-    plan: incident.plan,
-    erp: incident.erp,
-    ...extra,
-  };
+  // Coordinator sees only triage + materials + the planners' outputs.
+  const context =
+    role === "coordinator"
+      ? { incident_id: incident.id, alarm_text: incident.alarm_text, triage: incident.triage, materials: incident.materials, team: extra.team ?? null }
+      : {
+          incident_id: incident.id,
+          alarm_text: incident.alarm_text,
+          photo_url: incident.photo_url,
+          triage: incident.triage,
+          materials: incident.materials,
+          plan: incident.plan,
+          erp: incident.erp,
+          ...extra,
+        };
+  const setup =
+    role === "coordinator"
+      ? ["## Rules", "Use only the incident context below. Never read ~/plantapi/seed or any other file."]
+      : [
+          "## Setup on this instance",
+          "Run `source ~/plantapi/plant.env` before any Odoo/Monid/Fiix command (ODOO_*, MONID_API_KEY, FIIX_* are set there; the `monid` CLI is installed and logged in).",
+          "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; SOP files at `~/plantapi/seed/sop/`. Fiix browser helper: `~/plantapi/fiix-browser.sh`.",
+          "Only use values from your own tool runs or from the incident context below — if a tool is unavailable, say so and report BLOCKED rather than filling in seed or example values.",
+        ];
   return [
-    "## Setup on this instance",
-    "Run `source ~/plantapi/plant.env` before any Odoo/Monid/Fiix command (ODOO_*, MONID_API_KEY, FIIX_* are set there; the `monid` CLI is installed and logged in).",
-    "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; seed/SOP files at `~/plantapi/seed/`. Fiix browser helper: `~/plantapi/fiix-browser.sh`.",
-    "Only use values from your own tool runs or from the incident context below — if a tool is unavailable, say so and report BLOCKED rather than filling in seed or example values.",
+    ...setup,
     "",
     roleInstructions(role),
     "",
@@ -83,7 +125,9 @@ export function buildTaskText(role: AgentRole, incident: Incident, extra: Record
     JSON.stringify(context, null, 2),
     "",
     "## Output",
-    "Do the work with your real tools. Never invent record ids, prices or WO codes — only report what you actually saw.",
+    role === "coordinator"
+      ? "Only report facts from the context above."
+      : "Do the work with your real tools. Never invent record ids, prices or WO codes — only report what you actually saw.",
     "End your reply with exactly one JSON object matching this JSON Schema (no text after it):",
     outputSchemaText(role),
   ].join("\n");

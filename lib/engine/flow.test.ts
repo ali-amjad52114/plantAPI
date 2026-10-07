@@ -112,3 +112,18 @@ describe("production/workforce sources", () => {
     delete process.env.PLANTAPI_CALENDAR_ID;
   });
 });
+
+describe("coordinator is real only", () => {
+  it("never mentions seed files and carries only triage, materials and team", () => {
+    const text = buildTaskText("coordinator", { id: "i", alarm_text: "a", photo_url: "p", triage: { t: 1 }, materials: { m: 1 }, plan: { x: 1 } } as unknown as Incident, { team: { workforce: { technician: "Sarah Chen" } } });
+    expect(text).not.toMatch(/seed_file|calendar_events|production_schedule|Seed:/);
+    expect(text).toContain("Never read ~/plantapi/seed");
+    expect(text).toContain("Sarah Chen");
+    expect(text).not.toContain('"plan"');
+  });
+  it("workforce must read the configured calendar, not primary, with no seed fallback", () => {
+    process.env.PLANTAPI_CALENDAR_ID = "cal@group.calendar.google.com";
+    expect(buildTaskText("workforce", { id: "i" } as unknown as Incident)).toContain("ONLY from Google Calendar id `cal@group.calendar.google.com` (NOT `primary`)");
+    delete process.env.PLANTAPI_CALENDAR_ID;
+  });
+});

@@ -21,9 +21,9 @@ const production = {
   workcenter: "Crushing Line 2",
   recommended: { start: `${tomorrow}T07:00:00`, end: `${tomorrow}T08:00:00`, impact: "none", note: "planned stop, lowest impact" },
   alternatives: [{ start: `${today}T18:00:00`, end: `${today}T20:00:00`, impact: "low", note: "reduced production" }],
-  source: "~/plantapi/seed/production_schedule.csv", summary: "Lowest impact tomorrow 07:00; today 18:00–20:00 is low impact",
+  source: "sheets:eval", summary: "Lowest impact tomorrow 07:00; today 18:00–20:00 is low impact",
 };
-const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "~/plantapi/seed/calendar_events.json", summary: "Sarah free today 18:00, busy tomorrow morning" };
+const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "calendar:eval", summary: "Sarah free today 18:00, busy tomorrow morning" };
 
 const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials }> = [
   { name: "baseline seeded disagreement", team: { reliability, production, workforce } },
