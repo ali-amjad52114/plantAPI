@@ -34,7 +34,7 @@ If `monid` still is not found, call it by absolute path: `~/.npm-global/bin/moni
 4. Map `shopping_results[]` to SupplierOption. Keep only rows whose title contains the part number (ignore `-`/spaces/case), that have `extracted_price`, and no `second_hand_condition`:
    - `supplier` = `source` · `part` = the part · `price` = `extracted_price` · `currency` = "USD"
    - `stock` = null (Google Shopping has no stock count; the browser step reads it on the product page)
-   - `lead_time` = `delivery` or "unknown" · `url` = `product_link` or null · `source` = "monid"
+   - `lead_time` = verbatim delivery/shipping text with a time span (quoted, from `delivery`, `shipping`, `extensions`, `tag`), else `"unknown (<raw field or: no delivery field in Monid result>)"` — never invent · `url` = `product_link` or null · `source` = "monid"
 5. Order: RS rows first (source matches `RS`, `RS Components`, `RS Online`, `RS - America`), then rows with a URL, then lowest price. `recommended_index` = 0.
 6. Report `monid_tool: "litescrape /google/shopping"` in MaterialsOutput and log the run cost.
 
