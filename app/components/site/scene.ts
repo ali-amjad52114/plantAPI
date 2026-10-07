@@ -438,7 +438,7 @@ for (const [id, g] of assetGroups) {
   const glowL = new THREE.PointLight(isDown ? 0xff6a1a : 0x4da3ff, 18, r * 3.2, 1.8); glowL.position.set(c.x, 2.5, c.z); scene.add(glowL);
   if (isDown && EMBED && id === FOCUS) {   // fault pulse on the hero object (orange/red emissive)
     const mats = []; g.traverse(o => { if (o.isMesh && o.material.emissive) mats.push(o.material); });
-    anim.push((dt, t) => { const k = .3 + .3 * Math.sin(t * 4); for (const m of mats) if (m !== M.beacon) m.emissive.setRGB(k * .7, k * .12, 0); });
+    anim.push((dt, t) => { const k = .2 + .2 * Math.sin(t * 4); for (const m of mats) if (m !== M.beacon) m.emissive.setRGB(k * .55, k * .08, 0); });
   }
   anim.push((dt, t) => {
     const k = .5 + .5 * Math.sin(t * 4);
@@ -562,7 +562,7 @@ if (EMBED && assetGroups.has(FOCUS)) {
     pivot.rotation.y += dt * .1745;
     pivot.rotation.z = Math.sin(t * .8) * .025; pivot.rotation.x = Math.sin(t * .6 + 1) * .02;
   });
-  const v = viewOf(FOCUS, 1.05); const up = new THREE.Vector3(0, lift, 0);
+  const v = viewOf(FOCUS, 1.3); const up = new THREE.Vector3(0, lift, 0);
   camera.position.copy(v.pos.add(up)); controls.target.copy(v.target.add(up));
   controls.enabled = false; controls.autoRotate = false;   // camera fixed on the hero object
 }
