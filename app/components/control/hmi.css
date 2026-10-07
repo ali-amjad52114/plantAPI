@@ -114,7 +114,7 @@ button { cursor: pointer }
 .ln .v.tag { flex: none; max-width: none; white-space: nowrap }
 .safety { margin: 4px 0 2px; padding: 6px 8px 6px 22px; background: #efe3c2; border-left: 3px solid var(--caution); color: var(--caution-ink); font-size: 12px }
 .safety li + li { margin-top: 3px }
-.why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair) }
+.why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair); overflow-wrap: anywhere }
 .bigplan { font: 700 clamp(18px, 1.7vw, 26px)/1.1 var(--fm); overflow-wrap: anywhere; color: var(--agent); letter-spacing: -.01em; margin: 2px 0 6px }
 .evid { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; align-items: start; margin-bottom: 6px }
 .shot { aspect-ratio: 4/3; max-width: 100%; display: grid; place-items: end start; padding: 4px; font: 9.5px var(--fm); color: #fff; border: 1px solid var(--bezel);
@@ -264,4 +264,4 @@ table.j { width: 100%; border-collapse: collapse; font-size: 11.5px }
 .resolve .rv { font: 11.5px/1.35 var(--fm); text-transform: uppercase }
 .resolve .rv b { display: inline-block; min-width: 92px; font-weight: 700 }
 .resolve .rv.lost { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule) }
-.resolve .rv.win { color: var(--agent); font-weight: 700; border-top: 1px dotted var(--rule); padding-top: 3px; margin-top: 2px }
+.resolve .rv.rv-win { color: var(--agent); font-weight: 700; border-top: 1px dotted var(--rule); padding-top: 3px; margin-top: 2px }

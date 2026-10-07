@@ -198,7 +198,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   {pos.length > 1 && <div className="resolve">
                     <span className="cap">Resolution</span>
                     {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
-                    <div className="rv win"><b>Coordinator</b> {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    <div className="rv rv-win"><b>Coordinator</b> {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
                   </div>}
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
                   <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />

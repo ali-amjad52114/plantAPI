@@ -33,7 +33,7 @@ export function positions(inc: Incident, tasks: Partial<Record<AgentRole, AgentT
     const rec = (pro.recommended ?? {}) as { start?: string; impact?: string };
     const t = wall(rec.start ?? null);
     out.push({ role: "production", want: t ? `${t} ${day(rec.start ?? null, ref)}` : "—", when: rec.start ?? null,
-      why: `${rec.impact ? rec.impact + " impact. " : ""}${str(pro.summary)}`, source: str(pro.source) || null, seed: isSeed(str(pro.source)) });
+      why: `${rec.impact ? "Impact " + rec.impact + ". " : ""}${str(pro.summary)}`, source: str(pro.source) || null, seed: isSeed(str(pro.source)) });
   }
 
   const wrk = tasks.workforce?.output as O | undefined;
