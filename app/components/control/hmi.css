@@ -257,3 +257,11 @@ table.j { width: 100%; border-collapse: collapse; font-size: 11.5px }
 .cr .modal form, .sv-modal form { width: min(440px, 100%); background: var(--panel); border: 1px solid var(--ink); padding: 14px; display: grid; gap: 10px }
 .cr .err { color: var(--warn); font-size: 12px }
 .cr a.pb { text-decoration: none; color: inherit }
+
+/* plan card: how the coordinator resolved the planners' disagreement */
+.resolve { display: grid; gap: 2px; margin: 0 0 8px; padding: 6px 8px; background: var(--well); border-left: 3px solid var(--agent) }
+.resolve .cap { color: var(--muted); margin-bottom: 3px }
+.resolve .rv { font: 11.5px/1.35 var(--fm); text-transform: uppercase }
+.resolve .rv b { display: inline-block; min-width: 92px; font-weight: 700 }
+.resolve .rv.lost { color: var(--muted); text-decoration: line-through; text-decoration-color: var(--rule) }
+.resolve .rv.win { color: var(--agent); font-weight: 700; border-top: 1px dotted var(--rule); padding-top: 3px; margin-top: 2px }
