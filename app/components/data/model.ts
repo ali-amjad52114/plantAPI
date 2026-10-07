@@ -6,6 +6,7 @@ export interface IncidentView {
   incident: Incident;
   tasks: Partial<Record<AgentRole, AgentTask>>;
   events: AgentEvent[]; // oldest first
+  followUp?: AgentTask; // dispatch ack-follow-up watch row (Agent37 cron), if any
 }
 
 export interface IncidentActions {

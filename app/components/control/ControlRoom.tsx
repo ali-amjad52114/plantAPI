@@ -104,6 +104,12 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   // the graph earns its place when the full team runs (more than the 5 slice agents)
   const showGraph = (Object.keys(tasks) as AgentRole[]).some(r => !["triage", "materials", "coordinator", "erp", "verification"].includes(r));
   const pos = positions(inc, tasks);
+  // Agent37 depth: backup checkpoint before execution, cron that checks the technician's ack
+  const cpEv = [...events].reverse().find(e => e.agent === "system" && /^Checkpoint/.test(e.message));
+  const checkpoint = cpEv ? { id: (cpEv.data as { id?: string } | undefined)?.id ?? null, status: String((cpEv.data as { status?: string } | undefined)?.status ?? ""), msg: cpEv.message } : null;
+  const cronEv = [...events].reverse().find(e => (e.data as { cron_id?: string } | undefined)?.cron_id);
+  const cron = cronEv ? { id: String((cronEv.data as { cron_id: string }).cron_id), fires: (cronEv.data as { fires_at?: string }).fires_at ?? null } : null;
+  const fu = view?.followUp;
   const riskOut = tasks.risk?.output as { decision?: string; loto_required?: boolean; hazards?: string[]; summary?: string } | null | undefined;
   const ctx = { triaged: !!tri, wo: !!mockFlags?.wo || !!inc.erp, closed: closed || !!mockFlags?.closed, basket: 0 };
   const asset104 = tri?.asset_id ?? "ASSET";
@@ -279,6 +285,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
                   {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={`${inc.erp.odoo_block_ref}${ver?.odoo_unblocked ? " · RELEASED" : ""}`} cls={ver?.odoo_unblocked ? "c-ok" : ""} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
+                  {checkpoint && <Ln k="Agent37 checkpoint" v={checkpoint.id ? `backup ${checkpoint.id}` : checkpoint.status} cls={checkpoint.status === "completed" ? "c-ok" : "c-caut"} why={checkpoint.msg} />}
+                  {cron && <Ln k="Ack follow-up" v={`cron ${cron.id}${cron.fires ? " · " + hhmm(cron.fires) : ""}`} cls={fu?.status === "COMPLETE" ? ((fu.output as { ack_received?: boolean } | null)?.ack_received ? "c-ok" : "c-caut") : ""}
+                    why={fu?.status === "COMPLETE" ? `Ack ${(fu.output as { ack_received?: boolean } | null)?.ack_received ? "received" : "not received"}: ${String((fu.output as { evidence?: string } | null)?.evidence ?? "")}` : "Agent37 cron checks Slack for the technician's ack"} />}
                   {!(status === "APPROVED" || status === "EXECUTING") && <ExecDetails tasks={tasks} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
                 </div>)}

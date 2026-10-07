@@ -39,7 +39,8 @@ export function useIncident(id: string, cfg: SourceConfig) {
         sb.from("agent_events").select("*").eq("incident_id", id).order("created_at").limit(2000),
       ]);
       if (inc.error) { setError(`Incident ${id} not found (${inc.error.message}).`); return; }
-      set({ incident: inc.data as Incident, tasks: latestTasks((tasks.data ?? []) as AgentTask[]), events: (events.data ?? []) as AgentEvent[] });
+      const rows = (tasks.data ?? []) as AgentTask[];
+      set({ incident: inc.data as Incident, tasks: latestTasks(rows), events: (events.data ?? []) as AgentEvent[], followUp: rows.filter(isWatch).pop() });
     })();
 
     const ch = sb.channel("incident-" + id)
@@ -49,6 +50,7 @@ export function useIncident(id: string, cfg: SourceConfig) {
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "agent_tasks", filter: `incident_id=eq.${id}` }, p => {
         const t = p.new as AgentTask;
+        if (state && t?.role && isWatch(t)) { set({ ...state, followUp: t }); return; }
         if (state && t?.role) { const prev = state.tasks[t.role]; set({ ...state, tasks: { ...state.tasks, [t.role]: prev && prev.id === t.id ? mergeRow(prev, t) : t } }); }
       })
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "agent_events", filter: `incident_id=eq.${id}` }, p => {
@@ -89,9 +91,11 @@ export function useIncident(id: string, cfg: SourceConfig) {
 // agent_tasks can hold several rows per role (retries, re-runs); show the latest.
 function latestTasks(rows: AgentTask[]) {
   const out: Partial<Record<AgentRole, AgentTask>> = {};
-  for (const t of rows) out[t.role] = t;
+  for (const t of rows) if (!isWatch(t)) out[t.role] = t;
   return out;
 }
+// Dispatch's ack follow-up is a second agent_tasks row (status WAITING, input.watch_cron); it must not replace the dispatch turn.
+export const isWatch = (t: AgentTask) => !!(t.input as { watch_cron?: string } | null)?.watch_cron;
 
 function mergeRow<T extends object>(prev: T, next: Partial<T>): T {
   const out = { ...prev };
