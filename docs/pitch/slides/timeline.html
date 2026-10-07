@@ -1,0 +1,41 @@
+<section id="timeline" data-transition="push" style="background:#10141A;color:#F3EFE7;font-family:'Rubik', Arial, sans-serif;padding:128px">
+<p data-build-in="fade order 1 auto" style="position:absolute;left:128px;top:128px;width:1200px;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#FF7A1A;font-weight:500">What actually happened</p>
+<h2 data-build-in="rise order 2 auto" style="position:absolute;left:128px;top:180px;width:1664px;font-family:'Oswald', Arial, sans-serif;font-size:80px;font-weight:600;line-height:1.1;color:#F3EFE7">They found it. Five weeks later, it exploded.</h2>
+<x-embed data-build-in="fade order 3 auto" style="position:absolute;left:128px;top:340px;width:1664px;height:470px"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#F3EFE7}
+svg{width:100%;height:100%}
+.lbl{font-size:28px;fill:#F3EFE7}.sub{font-size:24px;fill:#A9B4C2}.big{font-size:64px;font-weight:700;fill:#FF7A1A}
+.drip{animation:dr 1.2s ease-in infinite}@keyframes dr{from{transform:translateY(0);opacity:1}to{transform:translateY(60px);opacity:0}}
+.boom{transform-box:fill-box;transform-origin:center;opacity:0}
+.go .boom{animation:bm 1.2s ease-out forwards}@keyframes bm{0%{opacity:1;transform:scale(.2)}60%{opacity:1;transform:scale(1.4)}100%{opacity:.85;transform:scale(1.2)}}
+.shake{animation:sh .5s linear}@keyframes sh{0%,100%{transform:translate(0)}20%{transform:translate(-8px,4px)}40%{transform:translate(8px,-4px)}60%{transform:translate(-6px,-2px)}80%{transform:translate(6px,2px)}}
+.dot{transform-box:fill-box;transform-origin:center;animation:pd 1.6s ease-in-out infinite}@keyframes pd{50%{transform:scale(1.35)}}
+</style>
+<svg viewBox="0 0 1664 470" id="s">
+<line x1="60" y1="200" x2="1600" y2="200" stroke="#2A3442" stroke-width="14" stroke-linecap="round"/>
+<line id="bar" x1="60" y1="200" x2="60" y2="200" stroke="#FF7A1A" stroke-width="14" stroke-linecap="round"/>
+<g><circle class="dot" cx="60" cy="200" r="22" fill="#4DA3FF"/><text class="lbl" x="20" y="130">Jul 8</text><text class="sub" x="20" y="290">Leak found</text><text class="sub" x="20" y="325">in a 1953 valve</text></g>
+<g id="m2" opacity="0"><circle cx="420" cy="200" r="16" fill="#4DA3FF"/><text class="sub" x="370" y="290">Cracked valve</text><text class="sub" x="370" y="325">patched</text></g>
+<g id="m3" opacity="0"><circle cx="800" cy="200" r="16" fill="#4DA3FF"/><text class="sub" x="740" y="290">Replacement</text><text class="sub" x="740" y="325">planned</text></g>
+<g id="m4" opacity="0"><text class="sub" x="1060" y="290">…not scheduled</text><text class="sub" x="1060" y="325">in time</text></g>
+<g><path d="M60 220 Q60 250 60 250" stroke="none"/><circle class="drip" cx="60" cy="236" r="7" fill="#4DA3FF"/></g>
+<g id="bx"><circle class="boom" cx="1600" cy="200" r="70" fill="#FF7A1A"/><circle class="boom" cx="1600" cy="200" r="40" fill="#FFD9B8" style="animation-delay:.1s"/></g>
+<text class="lbl" x="1520" y="130">Aug 11</text>
+<text id="ex" class="sub" x="1470" y="310" opacity="0">Explosion</text>
+<text class="sub" x="60" y="430">Days waiting</text>
+<text id="d" class="big" x="250" y="440">0</text>
+</svg>
+<script>
+const bar=document.getElementById('bar'),d=document.getElementById('d'),s=document.getElementById('s'),ex=document.getElementById('ex');
+const ms=[['m2',0.18],['m3',0.42],['m4',0.65]];
+function run(){let t0=null;s.classList.remove('go');ex.setAttribute('opacity',0);ms.forEach(m=>document.getElementById(m[0]).setAttribute('opacity',0));
+function f(ts){if(!t0)t0=ts;const p=Math.min((ts-t0)/5500,1);bar.setAttribute('x2',60+1540*p);d.textContent=Math.round(34*p);
+ms.forEach(m=>{if(p>=m[1])document.getElementById(m[0]).setAttribute('opacity',1)});
+if(p<1)requestAnimationFrame(f);else{s.classList.add('go');document.body.classList.add('shake');ex.setAttribute('opacity',1);setTimeout(()=>document.body.classList.remove('shake'),600);setTimeout(run,4200)}}
+requestAnimationFrame(f)}
+setTimeout(run,600);
+</script></x-embed>
+<div data-build-in="rise order 4 auto" style="position:absolute;left:128px;top:840px;width:1664px;height:112px;background:#1A2029;border-left:8px solid #FF7A1A;border-radius:8px;padding:24px 40px;display:flex;align-items:center">
+<p style="font-size:40px;font-style:italic;color:#F3EFE7">“The problem was found. The replacement was planned. It just never got scheduled in time.”</p>
+</div>
+<aside>A worker found a leak in a gas valve on July 8. The cracked valve was patched, and the company planned to take the section offline and replace it. The valve was made in 1953 and refurbished in 2013. Thirty-four days later, before the replacement happened, it exploded. The safety board called it an informal procedure and a weak safety system — and said it should never have happened. The problem was found. The replacement was planned. It just never got scheduled in time.</aside>
+</section>

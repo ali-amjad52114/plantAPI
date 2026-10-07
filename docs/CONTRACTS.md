@@ -6,6 +6,10 @@ Code lives in `lib/contracts/types.ts` (domain types, statuses, role output sche
 
 Every sponsor and system call is real: Agent37 turns run on the real instance, OpenAI calls hit the real API, Monid runs a real search, Fiix and Odoo records are really created/changed, Supabase holds the real state. **No mocks, stubs, canned responses or hard-coded results in the product path** — not for "now", not as a fallback. If something cannot work for real by the deadline, mark it `BLOCKED` in `docs/HANDOFF.md` with the error; never fake it. UI fixture mode (`?mock=1`) is for development only and must never be the demo path. Tests may use fakes; the product may not.
 
+## Who to ask
+
+Anything your lead task names is **pre-authorized** (e.g. Agent37 turns on `pfd5d7eukw`, generating Agent37 app-connection links, Monid searches within cap, Fiix/Odoo demo records). Do not ask the user. If unsure, message the lead session; the lead escalates real user decisions (money beyond caps, accounts, deleting real data, policy changes). The old pre-hackathon "ask before any create" memory rule is expired.
+
 ## Time boxes and limits (apply to every session and every subagent)
 
 - Every task has a **time box**. At the box: stop, commit what works, write the 5-line report in `docs/HANDOFF.md`, mark unfinished items `BLOCKED` or `TODO`. Never keep going silently.

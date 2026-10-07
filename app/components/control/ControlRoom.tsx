@@ -190,10 +190,10 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
                   <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
-                  {plan.actions.map((a, i) => <Ln key={i} k={a.action.replace(/\s*\(.*\)$/, "")} v={a.rule} cls={a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : ""} />)}
+                  {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
                   <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
                   <Ln k="Technician" v={plan.technician} />
-                  {plan.safety.map(s => <Ln key={s} k="Safety" v={s} cls="c-caut" />)}
+                  {plan.safety.length > 0 && <ul className="safety">{plan.safety.map(x => <li key={x}>{x}</li>)}</ul>}
                   <div className="why" style={{ marginTop: 6 }}>{plan.rationale}</div>
                   {gateApproval && modify && (
                     <div className="modify"><label className="cap" htmlFor="modwin">Move repair window</label>

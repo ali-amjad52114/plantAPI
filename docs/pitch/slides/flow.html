@@ -1,0 +1,39 @@
+<section id="flow" data-transition="push" style="background:#10141A;color:#F3EFE7;font-family:'Rubik', Arial, sans-serif;padding:128px">
+<p data-build-in="fade order 1 auto" style="position:absolute;left:128px;top:128px;width:1200px;font-size:28px;letter-spacing:6px;text-transform:uppercase;color:#FF7A1A;font-weight:500">One failure, end to end</p>
+<h2 data-build-in="rise order 2 auto" style="position:absolute;left:128px;top:180px;width:1664px;font-family:'Oswald', Arial, sans-serif;font-size:80px;font-weight:600;line-height:1.1;color:#F3EFE7">Conveyor CV-104 trips. Here is what happens next.</h2>
+<x-embed data-build-in="fade order 3 auto" style="position:absolute;left:128px;top:330px;width:1664px;height:640px"><style>html,body{margin:0;height:100%;background:transparent;overflow:hidden;font-family:Arial,Helvetica,sans-serif;color:#F3EFE7}
+.st{position:absolute;width:370px;height:150px;border-radius:18px;background:#1A2029;border:2px solid #2A3442;padding:18px 22px;box-sizing:border-box;transition:all .4s}
+.st b{display:block;font-size:30px;margin-bottom:6px}.st span{font-size:24px;color:#A9B4C2}
+.st i{position:absolute;right:16px;top:14px;font-style:normal;font-size:22px;color:#4DA3FF;letter-spacing:1px}
+.on{border-color:#FF7A1A;background:#2A1C12;box-shadow:0 0 36px rgba(255,122,26,.45);transform:translateY(-6px)}
+.done{border-color:#4DA3FF}
+.bad{border-color:#FF4D4D;background:#2A1414}
+#pk{position:absolute;width:26px;height:26px;border-radius:50%;background:#FF7A1A;box-shadow:0 0 22px #FF7A1A;transition:left .55s ease-in-out,top .55s ease-in-out}
+#cl{position:absolute;left:560px;top:250px;width:540px;height:140px;border-radius:24px;background:#4DA3FF;color:#10141A;font-size:76px;font-weight:800;text-align:center;line-height:140px;opacity:0;transform:scale(.3);transition:all .5s cubic-bezier(.3,1.6,.5,1)}
+#cl.show{opacity:1;transform:scale(1)}
+</style>
+<div class="st" id="s0" style="left:0;top:0"><i>OPENAI VISION</i><b>1 Triage</b><span>CV-104 · contactor LC1D09BD · high</span></div>
+<div class="st" id="s1" style="left:430px;top:0"><i>ODOO · MONID</i><b>2 Materials</b><span>Stock 0 → RS Online, in stock</span></div>
+<div class="st" id="s2" style="left:860px;top:0"><i>OPENAI JSON</i><b>3 Coordinator</b><span>Agents disagree → one plan</span></div>
+<div class="st" id="s3" style="left:1290px;top:0"><i>HUMAN</i><b>4 Approve</b><span>One click</span></div>
+<div class="st" id="s4" style="left:1290px;top:240px"><i>AGENT37 BROWSER</i><b>5 Work order</b><span>Fiix WO on CV-104</span></div>
+<div class="st" id="s5" style="left:860px;top:480px"><i>ODOO API</i><b>6 Block line</b><span>Crushing Line 2 held</span></div>
+<div class="st" id="s6" style="left:430px;top:480px"><i>OPENAI VISION</i><b>7 Verify photo</b><span id="vt">Checking the fitted part…</span></div>
+<div class="st" id="s7" style="left:0;top:480px"><i>FIIX · ODOO</i><b>8 Close</b><span>WO closed · line unblocked</span></div>
+<div id="cl">CLOSED</div><div id="pk"></div>
+<script>
+const C=[[185,75],[615,75],[1045,75],[1475,75],[1475,315],[1045,555],[615,555],[185,555]];
+const pk=document.getElementById('pk'),cl=document.getElementById('cl'),vt=document.getElementById('vt');
+const el=i=>document.getElementById('s'+i);let i=0,phase=0;
+function mv(k){pk.style.left=(C[k][0]-13)+'px';pk.style.top=(C[k][1]+60)+'px'}
+function reset(){for(let k=0;k<8;k++)el(k).className='st';cl.className='';vt.textContent='Checking the fitted part…';i=0;phase=0;mv(0)}
+function tick(){
+ if(i<8){if(i>0)el(i-1).className='st done';el(i).className='st on';mv(i);
+  if(i==6){if(phase==0){vt.textContent='Wrong part (63A) — REJECTED';el(6).className='st bad';phase=1;return setTimeout(tick,1500)}
+   vt.textContent='LC1D09BD fitted — ACCEPTED'}
+  i++;setTimeout(tick,i==4?1500:1000)}
+ else{el(7).className='st done';cl.className='show';setTimeout(()=>{reset();setTimeout(tick,700)},3200)}}
+reset();setTimeout(tick,800);
+</script></x-embed>
+<aside>A conveyor, CV-104, trips. Triage reads the photo with OpenAI vision and names the failed contactor. Materials finds stock is zero in Odoo and Monid sources it from RS Online. The coordinator resolves the agents' disagreement into one plan. A human approves once. The ERP agent opens the Fiix work order through the Agent37 browser and blocks the line in Odoo. When the technician sends a photo, verification rejects the wrong part and accepts the right one. Then the work order closes and the line is unblocked.</aside>
+</section>
