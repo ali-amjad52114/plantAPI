@@ -6,8 +6,9 @@ const POLL_MS = Number(process.env.WORKER_POLL_MS ?? 2000);
 const CONCURRENCY = Number(process.env.WORKER_CONCURRENCY ?? 4);
 
 async function main() {
-  const { claimNextTask, runTask, checkFollowUps } = await import("@/lib/engine");
+  const { claimNextTask, runTask, checkFollowUps, reapStaleTasks } = await import("@/lib/engine");
   let lastFollowUpCheck = 0;
+  let lastReap = 0;
   // Merged skill/seed/env changes reach the plant instance only via this sync — run it on every start.
   try {
     const { syncInstance } = await import("@/lib/agent37/sync-instance");
@@ -29,6 +30,11 @@ async function main() {
         running++;
         console.log(`worker: ${task.role} for incident ${task.incident_id}`);
         runTask(task).finally(() => running--);
+      }
+      if (Date.now() - lastReap > 60_000) {
+        lastReap = Date.now();
+        const n = await reapStaleTasks();
+        if (n) console.log(`worker: reaped ${n} stale RUNNING task(s)`);
       }
       if (Date.now() - lastFollowUpCheck > 30_000) {
         lastFollowUpCheck = Date.now();

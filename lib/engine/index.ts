@@ -123,7 +123,56 @@ export async function claimNextTask(incidentId?: string): Promise<AgentTask | nu
   return (res.data?.[0] as AgentTask | undefined) ?? null;
 }
 
+/** Tasks this process is running right now (the reaper never touches these). */
+const inFlight = new Set<string>();
+
 export async function runTask(task: AgentTask): Promise<void> {
+  inFlight.add(task.id);
+  try {
+    await runTaskInner(task);
+  } finally {
+    inFlight.delete(task.id);
+  }
+}
+
+/** RUNNING longer than STALE_MIN and not running in this process = orphaned by a worker restart. */
+const STALE_MIN = Number(process.env.PLANTAPI_STALE_TASK_MIN ?? 10);
+export async function reapStaleTasks(): Promise<number> {
+  const cutoff = new Date(Date.now() - STALE_MIN * 60_000).toISOString();
+  const res = await db().from("agent_tasks").select("*").eq("status", "RUNNING").lt("started_at", cutoff);
+  let n = 0;
+  for (const task of (res.data ?? []) as AgentTask[]) {
+    if (inFlight.has(task.id)) continue;
+    const upd = await db()
+      .from("agent_tasks")
+      .update({ status: "FAILED", error: "worker restarted mid-turn", finished_at: new Date().toISOString() })
+      .eq("id", task.id)
+      .eq("status", "RUNNING")
+      .select("id");
+    if (!upd.data?.length) continue;
+    n++;
+    await emit({ incident_id: task.incident_id, agent: task.role, kind: "error", system: "agent37", message: `${task.role} was interrupted (worker restarted mid-turn) — marked FAILED` });
+    await afterFailure(task, "worker restarted mid-turn", false);
+  }
+  return n;
+}
+
+/** Same consequences as a failed turn: fatal roles fail the incident, others let the team carry on. */
+async function afterFailure(task: AgentTask, _message: string, _emitted: boolean): Promise<void> {
+  const role = task.role as AgentRole;
+  const team = fullTeam();
+  if (task.input?.follow_up === true) return;
+  if (plannerFailureIsFatal(role, team)) {
+    await setStatus(task.incident_id, "FAILED").catch(() => {});
+  } else {
+    const t = nextSteps(role, null, team, await settledRoles(task.incident_id).catch(() => []));
+    const cur = await getIncident(task.incident_id).catch(() => null);
+    if (cur && cur.status !== t.status && cur.status !== "FAILED") await setStatus(task.incident_id, t.status).catch(() => {});
+    for (const next of t.next) await enqueue(task.incident_id, next).catch(() => {});
+  }
+}
+
+async function runTaskInner(task: AgentTask): Promise<void> {
   const role = task.role as AgentRole;
   const incidentId = task.incident_id;
   const team = fullTeam();
@@ -226,15 +275,8 @@ export async function runTask(task: AgentTask): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     await db().from("agent_tasks").update({ status: "FAILED", error: message, finished_at: new Date().toISOString() }).eq("id", task.id);
     await emit({ incident_id: incidentId, agent: role, kind: "error", system: "agent37", message: `${role} failed: ${message.slice(0, 300)}` });
-    if (plannerFailureIsFatal(role, team)) {
-      await setStatus(incidentId, "FAILED").catch(() => {});
-    } else {
-      // allSettled: the team goes on without this planner; coordinator starts once all four settled.
-      const t = nextSteps(role, null, team, await settledRoles(incidentId).catch(() => []));
-      const cur = await getIncident(incidentId).catch(() => null);
-      if (cur && cur.status !== t.status && cur.status !== "FAILED") await setStatus(incidentId, t.status).catch(() => {});
-      for (const next of t.next) await enqueue(incidentId, next).catch(() => {});
-    }
+    // allSettled: non-fatal planners/executors fail alone; the team goes on once all settled.
+    await afterFailure(task, message, true);
   }
 }
 
@@ -256,7 +298,11 @@ export const engine: Engine = {
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
     const approval = { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() };
-    for (const next of t.next) await enqueue(incidentId, next, { approval });
+    for (const next of t.next) {
+      // Procurement really sends the expedite email only with approved:true and dry_run:false (S2 skill, idempotent by subject).
+      const input = next === "procurement" ? { approval, approved: decision === "approve", dry_run: false } : { approval };
+      await enqueue(incidentId, next, input);
+    }
   },
 
   async complete(incidentId, input) {

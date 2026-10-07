@@ -3,7 +3,7 @@
 //    (S4's createCheckpoint). The parallel executors all await the same checkpoint.
 // 2. Ack follow-up: after Dispatch, a real one-shot Agent37 platform cron fires N min later on the plant
 //    instance and checks Slack for the technician's ack. The worker reads the firing's session; no ack →
-//    a dispatch follow-up task is queued (call via Monid). The cron is deleted after it fired.
+//    a dispatch follow-up task is queued (one Slack reminder — no phone calls). The cron is deleted after it fired.
 import { FLAGS } from "@/lib/contracts/flags";
 import type { AgentEvent, AgentTask, Incident } from "@/lib/contracts/types";
 import { supabaseAdmin } from "@/lib/db";
@@ -123,5 +123,10 @@ async function finish(
     return;
   }
   await emit({ incident_id: w.incident_id, agent: "dispatch", kind: "error", system: "agent37", message: `No ack after ${ACK_DELAY_MIN()} min (${result.evidence ?? ""}) — follow-up queued`.slice(0, 300), data: result });
-  await enqueue(w.incident_id, { follow_up: true, reason: `no Slack ack within ${ACK_DELAY_MIN()} min`, ack_check: result });
+  await enqueue(w.incident_id, {
+    follow_up: true,
+    reason: `no Slack ack within ${ACK_DELAY_MIN()} min`,
+    action: "Send ONE Slack reminder to the technician about this job. No phone call (dropped), no other channel.",
+    ack_check: result,
+  });
 }
