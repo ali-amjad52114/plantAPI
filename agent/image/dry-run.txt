@@ -1,0 +1,55 @@
+# D1 dry-run: exact Agent37 requests. NO network calls were made; nothing was created.
+# base: https://api.agent37.com/v1
+
+## template plantapi-agent  (context agent/image/plantapi-agent, 899 bytes gz, sha256 6cd604a91fd8ae437a5012f700e3979ba18fabe27a37dda367dc85ebd455d06f)
+#   .dockerignore (16 B)
+#   Dockerfile (968 B)
+#   plantapi-entrypoint.sh (436 B)
+0.  GET https://api.agent37.com/v1/templates/plantapi-agent
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY"}
+    note: precheck; 404 today (verified read-only)
+1.  POST https://api.agent37.com/v1/template-builds
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {"name":"plantapi-agent","size_bytes":899,"default_port":3737,"description":"PlantAPI: Hermes + Monid CLI + ~/plantapi/skills"}
+2.  PUT <upload_url from step 1>
+    body: <899 bytes gzipped tar>
+    note: presigned upload_url from create build (no Agent37 key sent; Expect header not sent)
+3.  POST https://api.agent37.com/v1/template-builds/<build.id from step 1>/start
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {}
+4.  GET https://api.agent37.com/v1/template-builds/<build.id>/logs?offset=0
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY"}
+    note: poll every 5 s, pass back `offset`, until status succeeded|failed -> template {name, revision, image_digest}
+
+## template hermes-vnc-desktop  (context agent/image/hermes-vnc-desktop, 2081 bytes gz, sha256 da20881342bee304f64625bd218a3d96d4e4a72c38643c7bd98d3d4b2b705ae7)
+#   .dockerignore (16 B)
+#   Dockerfile (1585 B)
+#   desktop-entrypoint.sh (2239 B)
+0.  GET https://api.agent37.com/v1/templates/hermes-vnc-desktop
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY"}
+    note: precheck; 404 today (verified read-only)
+1.  POST https://api.agent37.com/v1/template-builds
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {"name":"hermes-vnc-desktop","size_bytes":2081,"default_port":3737,"description":"Hermes + noVNC live desktop on 6901"}
+2.  PUT <upload_url from step 1>
+    body: <2081 bytes gzipped tar>
+    note: presigned upload_url from create build (no Agent37 key sent; Expect header not sent)
+3.  POST https://api.agent37.com/v1/template-builds/<build.id from step 1>/start
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {}
+4.  GET https://api.agent37.com/v1/template-builds/<build.id>/logs?offset=0
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY"}
+    note: poll every 5 s, pass back `offset`, until status succeeded|failed -> template {name, revision, image_digest}
+
+## live-view test (after hermes-vnc-desktop build succeeds; max 1 instance)
+5.  POST https://api.agent37.com/v1/instances
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {"template":"hermes-vnc-desktop","auto_sleep":true,"budget":{"monthly_cap_micros":1000000},"idle_timeout_seconds":300,"name":"plantapi-liveview-test","metadata":{"project":"plantapi","purpose":"d1-live-view-test","delete_after":"true"}}
+    note: budget = $1 managed-usage cap; compute is ~$4.76/mo 2vCPU/4GB metered per minute, sleeps after 300 s idle
+6.  POST https://api.agent37.com/v1/instances/<instance.id>/signed-url
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY","Content-Type":"application/json"}
+    body: {"port":6901,"ttl_seconds":300}
+    note: open https://<id>-6901.agent37.app/vnc.html?a37_token=<token>&autoconnect=1&resize=scale ; screenshot it
+7.  DELETE https://api.agent37.com/v1/instances/<instance.id>
+    headers: {"Authorization":"Bearer $AGENT37_API_KEY"}
+    note: delete right after the screenshot; pfd5d7eukw is refused by code
