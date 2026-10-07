@@ -1,6 +1,6 @@
 # PlantAPI — 90-second demo script
 
-**URL:** deployed **TODO (lead)** · fallback **http://localhost:3000**. Keep both open in tabs.
+**URL:** deployed **https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.com** · fallback **http://localhost:3000**. Keep both open in tabs.
 
 **Closing line:** *One failure. Eleven agents. One Agent37 plant team. Five sponsors. One approval. Closed.*
 
@@ -14,6 +14,7 @@
 | 4 Composio connections | `GET https://api.agent37.com/v1/instances/pfd5d7eukw/integrations/connections` | googlecalendar, googlesheets, gmail and slack all **ACTIVE** |
 | Agent37 instance | `/plant` page, or `GET /v1/instances/pfd5d7eukw` | Status running. Budget has room left (cap $3). |
 | Live data | Open the "PlantAPI Technicians" calendar | Sarah: busy 14:00–17:30, free 18:00–20:00, arc-flash training tomorrow 07:00–12:00 |
+| Site view warm | Open `/` about 1 min before the demo. The 3D plant loads three.js from esm.sh and takes about 3 s on first load. | The plant renders with CV-104 marked down. |
 | Files ready | `seed/photos/failure-burned-contactor.jpg`, `completion-wrong-part.jpg`, `completion-correct-part.jpg` on the desktop | — |
 | Backup | Backup video and screenshots in `docs/screenshots/` | — |
 
