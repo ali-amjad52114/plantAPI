@@ -59,11 +59,11 @@ body { margin: 0 }
 .sv #panel .fiix { font: 10px var(--f-mono); color: var(--dim); margin: 10px 0 0 }
 
 /* 3D labels */
-.sv .lbl { pointer-events: auto; cursor: pointer; white-space: nowrap; font: 600 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: #fff;
+.sv .lbl { pointer-events: auto; cursor: pointer; white-space: nowrap; font: 600 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--fg);
   background: rgba(255, 255, 255, .94); padding: 5px 9px 5px 8px; border: 1px solid #D9DEE4; border-left: 3px solid var(--ok); border-radius: 6px; transition: transform .15s, border-color .15s }
 .sv .lbl:hover, .sv .lbl.hov { transform: translateY(-2px); border-left-color: var(--amber) }
 .sv .lbl small { font: 10px var(--f-mono); color: var(--dim); margin-left: 5px; text-transform: none; letter-spacing: 0 }
-.sv .lbl.down { background: rgba(232, 101, 10, .96); border-color: #E8650A; border-left-color: #fff; box-shadow: 0 0 24px rgba(232, 101, 10, .55); animation: lblp 1.2s infinite }
+.sv .lbl.down { color: #fff; background: rgba(232, 101, 10, .96); border-color: #E8650A; border-left-color: #fff; box-shadow: 0 0 24px rgba(232, 101, 10, .55); animation: lblp 1.2s infinite }
 .sv .lbl.down small { color: #FFE2CC }
 .sv .lbl.warn { border-left-color: var(--amber) }
 @keyframes lblp { 50% { background: rgba(232, 101, 10, .95) } }
