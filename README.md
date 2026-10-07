@@ -93,7 +93,7 @@ The same model applies to the infrastructure through InstaCloud agent policy, wi
 
 ```bash
 npm ci
-cp .env.example .env.local   # fill keys: see docs/CONTRACTS.md "Environment"
+# create .env + .env.local with the keys listed in docs/CONTRACTS.md "Environment" (never committed)
 npx tsx supabase/apply.ts     # migrations + seed
 npm run dev                   # app on :3000
 npm run worker                # engine (separate terminal)
