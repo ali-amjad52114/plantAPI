@@ -14,7 +14,7 @@ import {
 import { agent37 } from "@/lib/agent37";
 import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
-import { afterApproval, afterTask, CAN_APPROVE, CAN_COMPLETE, OUTPUT_COLUMN, RUNNING_STATUS } from "./flow";
+import { afterApproval, afterTask, checkOutput, CAN_APPROVE, CAN_COMPLETE, OUTPUT_COLUMN, RUNNING_STATUS } from "./flow";
 import { postStepHooks } from "./hooks";
 import { buildTaskText } from "./prompts";
 
@@ -101,7 +101,7 @@ export async function runTask(task: AgentTask): Promise<void> {
       extra.completion_photo_observation = await observePhoto(
         incidentId,
         role,
-        task.input.photo_url as string | undefined,
+        (task.input.completion as { photo?: string } | undefined)?.photo,
         "This is a technician's repair-completion photo. Describe the installed component: type, number of poles, whether it looks new, and every brand/model/rating label you can read.",
       );
     }
@@ -114,6 +114,8 @@ export async function runTask(task: AgentTask): Promise<void> {
     );
 
     const output = await ai.parseAgentOutput(role, turn.outputText);
+    const problem = checkOutput(role, output, incident);
+    if (problem) throw new Error(`${role} output rejected: ${problem}`);
     must(
       await db()
         .from("agent_tasks")
@@ -173,7 +175,7 @@ export const engine: Engine = {
     const t = afterApproval(decision);
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    if (t.next) await enqueue(incidentId, t.next);
+    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null } });
   },
 
   async complete(incidentId, input) {
@@ -188,6 +190,6 @@ export const engine: Engine = {
     );
     await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: `Technician reported done: ${input.notes.slice(0, 120)}` });
     await setStatus(incidentId, "VERIFYING");
-    await enqueue(incidentId, "verification", { notes: input.notes, actual_downtime_minutes: input.actualDowntimeMinutes, photo_url: input.photoUrl });
+    await enqueue(incidentId, "verification", { completion: { notes: input.notes, actual_downtime_minutes: input.actualDowntimeMinutes, photo: input.photoUrl } });
   },
 };
