@@ -28,7 +28,7 @@ async function main() {
   const inboxes = (await run("/list-inboxes")).inboxes ?? [];
   const inbox = inboxes.find((b: any) => JSON.stringify(b).includes(INBOX_PREFIX));
   if (!inbox) throw new Error(`no inbox like ${INBOX_PREFIX} (have ${inboxes.length}); create it once with /create-inboxes ($1, needs approval)`);
-  const inboxId: string = inbox.inboxId ?? inbox.inbox_id ?? inbox.address ?? inbox.email;
+  const inboxId: string = inbox.inboxId ?? inbox.inbox_id ?? inbox.email;
   if (process.argv.includes("--send")) {
     await run("/send-messages", { inboxId, to: inboxId, subject: SUBJECT, text: "Please quote 1x Schneider LC1D09BD, 24VDC coil. Need by today 17:00." });
   }

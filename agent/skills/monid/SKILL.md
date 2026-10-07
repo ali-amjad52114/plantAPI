@@ -53,7 +53,7 @@ Code equivalent: `lib/tools/monid.ts` → `searchSuppliers(part)`; smoke test `s
 
 ## AgentMail (procurement email)
 
-Status 2026-10-07: commands below are from `monid inspect` (schemas verified); **send + read-back NOT yet proven** because `/create-inboxes` costs **$1/call**, above the $0.50 session cap. Needs lead approval to create the inbox once.
+Status: **PROVEN 2026-10-07.** Inbox `rs-supplier-demo@agentmail.to` (display name "RS Supplier Demo") created once ($1). One RFQ sent to itself and read back: message_id `<010001a11873fd6f-75072f43-6673-4db0-b9c8-7cda96feae77-000000@email.amazonses.com>`, labels `["sent","received","unread"]`. Do NOT create more inboxes; the inbox already exists.
 
 Recipient rule: send ONLY to the demo supplier inbox we own (`rs-supplier-demo@agentmail.to`). Never email real RS or any personal address.
 
@@ -63,9 +63,9 @@ On the Agent37 instance first: `export PATH="$HOME/.npm-global/bin:$PATH" NO_COL
 |---|---|---|
 | Discover | `monid discover -q "agentmail inbox"` | free |
 | List inboxes | `monid run -p agentmail -e /list-inboxes -w 60 -j` | $0 |
-| Create inbox (once, approval needed) | `monid run -p agentmail -e /create-inboxes -i '{"username":"rs-supplier-demo","displayName":"RS Supplier (demo)"}' -w 60 -j` | $1 |
+| Create inbox (DONE, never rerun) | `monid run -p agentmail -e /create-inboxes -i '{"username":"rs-supplier-demo","displayName":"RS Supplier Demo"}' -w 60 -j` | $1 |
 | Send RFQ | `monid run -p agentmail -e /send-messages -i '{"inboxId":"rs-supplier-demo@agentmail.to","to":"rs-supplier-demo@agentmail.to","subject":"PlantAPI RFQ test LC1D09BD","text":"Please quote 1x Schneider LC1D09BD, 24VDC coil. Need by today 17:00."}' -w 60 -j` | $0.001 |
 | List messages | `monid run -p agentmail -e /list-messages -i '{"inboxId":"rs-supplier-demo@agentmail.to","limit":10}' -w 60 -j` | $0 |
 | Read one | `monid run -p agentmail -e "/messages/{id}" -i '{"inboxId":"rs-supplier-demo@agentmail.to","messageId":"<id>"}' -w 60 -j` | $0 |
 
-A taken username fails with `already_exists` (the error suggests alternatives); use the address `/create-inboxes` returns as `inboxId`. Smoke test: `scripts/smoke-agentmail.ts`.
+Gotchas: `displayName` rejects `(` `)` (HTTP 400 validation_error, not charged). Outputs use snake_case (`inbox_id`, `message_id`); pass `messageId` = the `message_id` from `/list-messages`. A self-sent message carries labels sent+received. Smoke test: `scripts/smoke-agentmail.ts`.
