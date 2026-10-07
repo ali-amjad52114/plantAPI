@@ -32,7 +32,8 @@ Never print `$AGENT37_MANAGED_TOKEN`.
 
 ## The sheet (mirrors `seed/production_schedule.csv`)
 
-- Spreadsheet title: **PlantAPI Production Schedule**; worksheet **Schedule**. If `$PLANTAPI_SCHEDULE_SHEET_ID` is set, use it as `spreadsheet_id`.
+- Spreadsheet title: **PlantAPI Production Schedule**; worksheet **Schedule**. Use `$PLANTAPI_SCHEDULE_SHEET_ID` as `spreadsheet_id`.
+  IDs live in `~/plantapi/plant.env` on the instance — run `set -a; . ~/plantapi/plant.env; set +a` (or `grep PLANTAPI_ ~/plantapi/plant.env`) first; never echo other keys from that file.
 - Row 1 headers, columns A–K, exactly as the CSV:
   `Date | Line | Asset | Window Start | Window End | Status | Planned Throughput (t/h) | Production Impact If Down | Available Downtime | Maintenance Reserved | Notes`
 - Times are plant local time (America/New_York, UTC-04:00 on 2026-10-07/08).
