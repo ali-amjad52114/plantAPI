@@ -7,7 +7,7 @@ import { isOpen, siteAssets, type SiteIncident } from "../data/assets";
 import { ReportFailure } from "../ReportFailure";
 import { buildScene } from "./scene";
 
-// three is loaded from a CDN until the lead adds it to package.json (then: import * as THREE from "three").
+// three comes from node_modules (package.json); the CDN copy is only a fallback if the local chunk fails to load.
 const THREE_URL = "https://esm.sh/three@0.170.0";
 const ADDONS = "https://esm.sh/three@0.170.0/examples/jsm";
 const load = (u: string) => import(/* webpackIgnore: true */ u);
@@ -33,7 +33,8 @@ export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock:
     let cancelled = false;
     (async () => {
       try {
-        const [THREE, oc, css2d] = await Promise.all([load(THREE_URL), load(`${ADDONS}/controls/OrbitControls.js`), load(`${ADDONS}/renderers/CSS2DRenderer.js`)]);
+        const [THREE, oc, css2d] = await Promise.all([import("three"), import("three/examples/jsm/controls/OrbitControls.js"), import("three/examples/jsm/renderers/CSS2DRenderer.js")])
+          .catch(() => Promise.all([load(THREE_URL), load(`${ADDONS}/controls/OrbitControls.js`), load(`${ADDONS}/renderers/CSS2DRenderer.js`)]));
         if (cancelled || !root.current) return;
         scene.current = buildScene(root.current, { THREE, OrbitControls: oc.OrbitControls, CSS2DRenderer: css2d.CSS2DRenderer, CSS2DObject: css2d.CSS2DObject }, {
           assets,
@@ -56,14 +57,15 @@ export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock:
   return (
     <div className="sv" ref={root}>
       <div id="host" />
+      <div className="hz" aria-hidden="true" />
       <div id="top">
-        <div className="glass brand"><i aria-hidden="true" /><div><b>PlantAPI</b><small>Crushing Plant · site view</small></div></div>
+        <div className="glass brand"><i aria-hidden="true" /><div><span className="eyebrow">Digital twin · Site view</span><b>PlantAPI</b><small>Crushing Plant · Line 2 · Grinding · Wash</small></div></div>
         <div className="glass stat"><div className="k">Assets</div><div className="v">{assets.length}</div></div>
         <div className="glass stat"><div className="k">Running</div><div className="v" style={{ color: "var(--ok)" }}>{running}</div></div>
         <div className={"glass stat" + (down ? " bad" : "")}><div className="k">Down</div><div className="v">{down}</div></div>
         <div className="glass stat opt"><div className="k">Open incidents</div><div className="v" style={{ color: open.length ? "var(--crit)" : undefined }}>{open.length}</div></div>
         <div className="sp" />
-        {mock && <span className="tag">Demo replay · example data</span>}
+        {mock ? <span className="tag">Demo replay · example data</span> : <span className={"chip" + (down ? " alarm" : "")}>{down ? `Live · ${down} down` : "Live · all running"}</span>}
         <button className="glass hbtn" onClick={() => setReport("")}>Report failure</button>
         <button className="glass hbtn" id="assetsBtn">Assets</button>
         <button className="glass hbtn" id="labelsBtn" aria-pressed="true">Labels<kbd>L</kbd></button>
@@ -86,7 +88,14 @@ export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock:
           <button className="go" onClick={() => setReport("")}>Report failure</button>
         </div>
       )}
-      <div id="keys" className="glass"><span><b>Drag</b>orbit</span><span><b>Right-drag</b>pan</span><span><b>Wheel</b>zoom</span><span><b>Click</b>open machine</span></div>
+      <div id="keys" className="glass"><span><b>Drag</b>orbit</span><span><b>Right-drag</b>pan</span><span><b>Wheel</b>zoom</span><span><b>Click</b>a machine to open its incident</span></div>
+      <div id="legend" className="glass" aria-label="Legend">
+        <h4>Asset status</h4>
+        <span><i className="ok" />Running</span>
+        <span><i className="down" />Down · open incident</span>
+        <span><i className="warn" />Maintenance</span>
+        <em>Click a machine</em>
+      </div>
       <div id="tip" className="glass" />
       <div id="stage" className="glass" />
       <div id="fade" />
