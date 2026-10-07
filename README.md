@@ -26,7 +26,7 @@ A human approves the plan with one click. After approval:
 
 ## Demo (60–90 s)
 
-Deployed app: **TODO (lead): deployed InstaCloud URL**
+Deployed app (InstaCloud): **https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.com**
 
 | Time | What you see |
 |---|---|
