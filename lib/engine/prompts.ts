@@ -54,6 +54,8 @@ export const COORDINATOR_BRIEF = [
   "- Technician: from `team.workforce` (technician, qualifications, available_from, conflicts).",
   "- Part: `supplier` must be copied exactly from one entry of `materials.suppliers`; its lead time decides when the part is on site.",
   '- Window: the earliest window where the part is on site AND the technician is free AND production allows it (`team.production` recommended/alternatives). If `team.reliability.urgency` is "asap", prefer the earliest such window over the lowest-impact one.',
+  "- If the chosen supplier has NO confirmed lead time (missing, \"unknown\", \"not shown\"): never invent one. Choose the EARLIEST window today that satisfies production AND workforce, add \"Conditional on part arrival before window start\" to `safety`, add the action {\"action\": \"Expedite <part> from <supplier>\", \"system\": \"monid\", \"rule\": \"APPROVAL\"}, lower `confidence`, and say in `rationale` that materials gave no confirmed lead time.",
+  "- `window_start` and `window_end` are ALWAYS full ISO 8601 timestamps — never blank.",
   '- Every fact in `rationale` must name which planner it came from (e.g. "workforce (calendar:…): …"). If a planner is unavailable or a fact is missing, say so in `rationale` and lower `confidence` — never fill the gap yourself.',
   "- Tag every action AUTO or APPROVAL: purchase, block production, schedule outage and safety-critical work need APPROVAL; reading/searching/drafting is AUTO. LOTO goes in `safety` for electrical work.",
   "RULES: never read any file under ~/plantapi/seed (or any other file) and never use example or seed values. You do not need tools for this step.",
@@ -84,6 +86,12 @@ export function roleOverrides(role: AgentRole): string {
   }
   if (role === "production" && sheet) {
     return head + `Read the schedule ONLY from Google Sheet id \`${sheet}\`; no seed fallback — if it cannot be read, report BLOCKED with the exact error. \`source\` = \`sheets:${sheet}\`.`;
+  }
+  if (role === "risk") {
+    return (
+      head +
+      "If the plan's `safety` or `actions` say the work is conditional on part arrival (no confirmed lead time), `decision` must be at least APPROVAL and the condition must be listed in `hazards` (\"Part arrival not confirmed before window start\")."
+    );
   }
   return "";
 }
