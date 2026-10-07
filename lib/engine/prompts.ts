@@ -42,6 +42,10 @@ export function buildTaskText(role: Slice1Role, incident: Incident, extra: Recor
     ...extra,
   };
   return [
+    "## Setup on this instance",
+    "Run `source ~/plantapi/plant.env` before any Odoo/Monid/Fiix command (ODOO_*, MONID_API_KEY, FIIX_* are set there; the `monid` CLI is installed and logged in).",
+    "Skill files referenced as `agent/skills/...` live at `~/plantapi/agent/skills/...`; seed/SOP files at `~/plantapi/seed/`. Fiix browser helper: `~/plantapi/fiix-browser.sh` and `~/plantapi/skills/fiix/`.",
+    "",
     roleInstructions(role),
     "",
     "## Incident context (JSON)",
