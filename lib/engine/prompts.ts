@@ -87,6 +87,18 @@ export function roleOverrides(role: AgentRole): string {
   if (role === "production" && sheet) {
     return head + `Read the schedule ONLY from Google Sheet id \`${sheet}\`; no seed fallback — if it cannot be read, report BLOCKED with the exact error. \`source\` = \`sheets:${sheet}\`.`;
   }
+  if (role === "erp") {
+    return (
+      head +
+      "Odoo block = ONE mrp.workcenter.productivity record on Crushing Line 2 with date_start/date_end = the plan window (Odoo stores UTC). For a FUTURE window the line still shows \"normal\" until the window starts — that is expected, not a failure. Always report `odoo_block_ref` = \"mrp.workcenter.productivity:<id>\" of the record you created (the backend re-checks it against the window)."
+    );
+  }
+  if (role === "verification") {
+    return (
+      head +
+      "Unblock = end the SAME Odoo record the ERP agent created (`erp.odoo_block_ref`): write its date_end = now (UTC) if it is still open or ends later. Do not create or close any other record. Set `odoo_unblocked` true only after that write succeeded (the backend re-checks it)."
+    );
+  }
   if (role === "dispatch") {
     const email = process.env.PLANTAPI_NOTICE_EMAIL;
     return (

@@ -57,7 +57,7 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
     for (const k of ["window_start", "window_end"]) if (!o[k] || Number.isNaN(Date.parse(o[k]))) return `plan ${k} is blank or not a timestamp (${JSON.stringify(o[k])})`;
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
-  if (role === "erp" && !o.odoo_block_ref) return `Crushing Line 2 not blocked in Odoo: ${o.summary ?? ""}`;
+  // odoo_block_ref is verified against the real Odoo record (window bounds) in odoo-check.ts.
   if (role === "verification" && o.verdict === "accept" && !o.fiix_closed) return "verdict accept but the Fiix WO was not closed";
   return null;
 }
