@@ -56,6 +56,7 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
     if (!found) return `plan supplier "${s.supplier}" ${s.price} is not one of the suppliers Materials actually found`;
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
+  if (role === "erp" && !o.odoo_block_ref) return `Crushing Line 2 not blocked in Odoo: ${o.summary ?? ""}`;
   if (role === "verification" && o.verdict === "accept" && !o.fiix_closed) return "verdict accept but the Fiix WO was not closed";
   return null;
 }

@@ -175,7 +175,7 @@ export const engine: Engine = {
     const t = afterApproval(decision);
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null } });
+    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() } });
   },
 
   async complete(incidentId, input) {

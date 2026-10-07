@@ -33,6 +33,8 @@ describe("real-only guards", () => {
   });
   it("rejects ERP without a Fiix WO and accept without close", () => {
     expect(checkOutput("erp", { fiix_wo_code: "" }, { materials: null })).toMatch(/no Fiix/);
+    expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: null }, { materials: null })).toMatch(/not blocked/);
+    expect(checkOutput("erp", { fiix_wo_code: "WO-1", odoo_block_ref: "42" }, { materials: null })).toBeNull();
     expect(checkOutput("verification", { verdict: "accept", fiix_closed: false }, { materials: null })).toMatch(/not closed/);
     expect(checkOutput("verification", { verdict: "reject", fiix_closed: false }, { materials: null })).toBeNull();
   });
