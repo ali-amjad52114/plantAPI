@@ -6,7 +6,8 @@ const POLL_MS = Number(process.env.WORKER_POLL_MS ?? 2000);
 const CONCURRENCY = Number(process.env.WORKER_CONCURRENCY ?? 4);
 
 async function main() {
-  const { claimNextTask, runTask } = await import("@/lib/engine");
+  const { claimNextTask, runTask, checkFollowUps } = await import("@/lib/engine");
+  let lastFollowUpCheck = 0;
   // Merged skill/seed/env changes reach the plant instance only via this sync — run it on every start.
   try {
     const { syncInstance } = await import("@/lib/agent37/sync-instance");
@@ -28,6 +29,10 @@ async function main() {
         running++;
         console.log(`worker: ${task.role} for incident ${task.incident_id}`);
         runTask(task).finally(() => running--);
+      }
+      if (Date.now() - lastFollowUpCheck > 30_000) {
+        lastFollowUpCheck = Date.now();
+        await checkFollowUps();
       }
     } catch (err) {
       console.error("worker poll error:", err);
