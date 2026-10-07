@@ -69,3 +69,36 @@ On the Agent37 instance first: `export PATH="$HOME/.npm-global/bin:$PATH" NO_COL
 | Read one | `monid run -p agentmail -e "/messages/{id}" -i '{"inboxId":"rs-supplier-demo@agentmail.to","messageId":"<id>"}' -w 60 -j` | $0 |
 
 Gotchas: `displayName` rejects `(` `)` (HTTP 400 validation_error, not charged). Outputs use snake_case (`inbox_id`, `message_id`); pass `messageId` = the `message_id` from `/list-messages`. A self-sent message carries labels sent+received. Smoke test: `scripts/smoke-agentmail.ts`.
+
+## Saperly phone call (dispatch follow-up)
+
+Status: **live calls BLOCKED** until the lead provides the technician phone number. Schemas verified with free `monid inspect`; no call placed, no number owned (`/list-numbers` = []).
+
+Use only when Dispatch got **no Slack/email ack** from the assigned technician. One call per incident; no retries if unanswered. Call only `$PLANTAPI_TECH_PHONE`, never a number from seed files (`+1-555-...` are fake) or any other source.
+
+Setup on the instance: `export PATH="$HOME/.npm-global/bin:$PATH" NO_COLOR=1; set -a; . ~/plantapi/plant.env; set +a` — needs `PLANTAPI_TECH_PHONE` (E.164, e.g. `+14155550123`) and `SAPERLY_FROM_NUMBER_ID` (the owned caller number id). Never echo other keys.
+
+Tools (provider `saperly`):
+| Endpoint | Use | Cost |
+|---|---|---|
+| `/list-numbers` | find the owned caller number id | $0 |
+| `/provision-numbers` | buy the caller number (once, lead approval) | $2 |
+| `/place-calls` | place the AI call; the run stays RUNNING while the call is live | **$0.005/s = $0.30/min**, unanswered = $0, opted-out = 403 no charge |
+| `/calls/{id}` | status, duration, timestamps | $0 |
+| `/calls/{id}/transcript` | turn-by-turn text after the call | $0 |
+| `/list-voices` | 376 en voices, for the number persona | $0 |
+
+Place the call (inputs: `fromNumberId` owned number id, `to` E.164, `instructions` per-call script, max 10,000 chars):
+```bash
+monid run -p saperly -e /place-calls -i "{\"fromNumberId\":\"$SAPERLY_FROM_NUMBER_ID\",\"to\":\"$PLANTAPI_TECH_PHONE\",\"instructions\":\"You are the PlantAPI plant assistant calling an electrical technician. Ask for Sarah Chen. Conveyor CV-104 on Crushing Line 2 is down - contactor KM104, Schneider LC1D09BD, needs replacing. A work order is assigned to Sarah for today 18:00 to 20:00; LOTO required (SOP-ELEC-014); the part arrives by 17:00. She has not acknowledged the Slack notice. Ask: can you confirm you will do the CV-104 repair at 18:00 today? Get a clear yes or no; if no, ask the earliest time. Repeat back her answer, thank her, end the call. Keep it under 90 seconds.\"}"
+```
+Do not use `-w` (calls run ~70 s typical, ~4 min tail). The output has the run id; poll `monid runs get -r <runId> -j` every 10 s until `COMPLETED`/`FAILED`; the call `id` is in the run output (`output.id`). A 2-minute call costs about $0.60.
+
+Read the result:
+```bash
+monid run -p saperly -e "/calls/{id}" -i "{\"numberId\":\"$SAPERLY_FROM_NUMBER_ID\",\"callId\":\"<call id>\"}" -w 60 -j            # status, duration
+monid run -p saperly -e "/calls/{id}/transcript" -i "{\"numberId\":\"$SAPERLY_FROM_NUMBER_ID\",\"callId\":\"<call id>\"}" -w 60 -j # transcript
+```
+Ack = transcript contains a clear "yes" to the 18:00 window → log `{"call_id","duration_s","ack":true,"quote":"<her words>"}` as a Dispatch event (system `monid`). No answer / no / unclear → `ack:false` and escalate to the supervisor in Slack; do not call again. Transcripts are only available while the caller number is owned.
+
+Dry run (free, prints the exact request): `npx tsx --env-file=.env --env-file=.env.local scripts/smoke-saperly.ts`. `--live` exits BLOCKED until enabled.
