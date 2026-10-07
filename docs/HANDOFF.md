@@ -207,3 +207,9 @@ SPEND: InstaCloud preview branch compute + 3 builds; Agent37/Monid/OpenAI $0
 6. FAIL erp (backend check, not agent): real Fiix WO 10 (ali amjad) + Odoo mrp.workcenter.productivity:6 for 22:47–23:32 UTC created, but workcenterBlocked() checks the current state (normal at 15:53) → "erp output rejected" → incident FAILED. Needs check against the record's bounds.
 Other: dispatch ran before erp finished ("Fiix WO code unavailable"); mojibake "18:47â€“19:32" in dispatch notice text; reliability "Fiix returned no work-order lines on two attempts" this run (previous run read WO 1/2/6/8).
 UI commits this block (s/ui): 6f8d6d7 checkpoint + cron evidence and dispatch watch row, ca5b100/f2d36ca governance WHO + lead-AI-refused 403, 58853ec procurement NOT SENT. Screenshot 14.
+
+## S4 — 16:00 · done: new app on slice-preview
+DONE: https://prod-slice-preview-app-868318-00p2nqk9qcz.compute.instacloud-edge.com — GET / 200 "PlantAPI · Site view", /plant 200, /governance 200; worker running on InstaCloud (synced 25 files to Agent37, polling, processing incident 604da17b). s/platform cf87e13 (main merged) + 9b13cf0 (Dockerfile: agent/ + seed/ in image, NEXT_PUBLIC_* at build from uncommitted infra/deploy/public.env). 9 env vars added on slice-preview.
+NEXT: only ONE worker should run against the shared Supabase/Agent37 — stop local workers or scale preview worker off. Re-generate infra/deploy/public.env before each deploy (not committed).
+BLOCKER: none.
+SPEND: InstaCloud builds/compute on preview branch; Agent37 turns from the worker count against the plant budget
