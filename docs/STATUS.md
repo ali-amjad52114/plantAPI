@@ -15,3 +15,6 @@ Shared quotas: Agent37 instance `pfd5d7eukw` only (no new instances except S4's 
 - Wave A: running (2d9b4671 at WAITING_APPROVAL; fixing coordinator seed-file reasoning, real calendar, Fiix history read, startup sync).
 - Wave B: assigned to all four sessions, queued behind their current wave A task. Done already: live view (hermes-vnc-desktop@1), governance live ALLOW/APPROVE/DENY, cost per incident, AgentMail inbox.
 - Waiting on user: 3 insta governance commands; demo phone number for the Monid call.
+
+## 16:17 — FINAL RUN PASSED on the deployed InstaCloud worker
+Incident 604da17b CLOSED 16:17:12. Real end to end: 11 Agent37 agents (live Google Sheet + Calendar, real Fiix history), Monid RS $152.64, coordinator window today (conditional on part arrival), Agent37 backup checkpoint, Fiix WO 12 + Odoo productivity:8 (referee verified), real AgentMail expedite email, dispatch after erp (Calendar event + Slack @-mention), Agent37 cron ack follow-up → Slack + Gmail reminder, wrong photo REJECTED, correct photo ACCEPTED, Fiix closed + Odoo unblocked, cost $0.124. Next: polished-UI deploy (deploy-safe.sh), demo rehearsal ×3, backup video.

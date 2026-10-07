@@ -219,3 +219,17 @@ DONE: slice-preview serves main @ 2d91057: / 200, /plant 200, /governance 200, /
 INCIDENT: lead asked to hold the redeploy while 604da17b was EXECUTING; the deploy (op ad77668f) had already started at 16:00:47. Killing the local CLI did not cancel it; InstaCloud finished the build remotely and replaced the container at 16:04:10, cutting off in-flight worker turns (604da17b risk/erp, c462b8fc dispatch). Check agent_tasks for stuck RUNNING rows.
 LESSON: an `insta deploy` cannot be cancelled once the remote build starts; check `incidents` status for EXECUTING before starting any deploy.
 SPEND: InstaCloud preview builds
+
+## Verifier (S2-UI) — 16:17 · WAVE A+B GOLDEN PATH PASS (real, deployed worker) · 604da17b-39d6-43f5-bae1-8d6b0d3b9a2d
+Upload 15:56 → CLOSED 16:17:01. UI = polished UI on main (:3000); repair reports submitted through the new "Report repair done" form (real photo files in its file input).
+1. PASS triage → 4 planners parallel (real Sheet, Calendar, Fiix) → coordinator window 19:32 today (-04:00), conditional on part arrival.
+2. PASS risk → Approve (UI) → fan-out; erp/procurement orphaned by local-worker stop at 16:01, requeued 16:04:50, claimed by the deployed worker.
+3. PASS checkpoint: reused backup 0bf72f6cc5ee1c4f538e (Agent37 1 per 15 min, stated in the event).
+4. PASS erp: Fiix WO 12 + Odoo mrp.workcenter.productivity:8 (scheduled block, referee PASS).
+5. PASS procurement: AgentMail SES <010001a118993b50-d174402d-8d58-4a51-9a32-940cb336b846-000000@email.amazonses.com> (found existing, no duplicate). Nothing purchased.
+6. PASS dispatch after erp: Calendar qmdebcghohrmuu0klc6m7fh5eg; Slack 1791414542.736629 with verified @-mention; WO 12 quoted; no mojibake.
+7. PASS ack follow-up: Agent37 cron f9858f61db5e fired 23:12 UTC → no ack → reminders Slack 1791414855.311109 + Gmail 1a118a5447fc3b17.
+8. PASS wrong part (via UI form) → REJECT 16:10:55, UI "✗ Rejected" banner.
+9. PASS correct part (via UI form) → ACCEPT, fiix_closed + odoo_unblocked → CLOSED 16:17:01. Cost $0.124 (not shared).
+Findings: window 28 min < 45-min estimate (dispatch flagged); approve on unknown id → 409 raw message (should 404); complete uploads photo before state check.
+UI (merged UI on main): endpoint matrix PASS (health 200, empty upload 400, bad decision 400, approve CLOSED 409 no change, complete w/o photo 400); report dialog, machine click → incident, PiP dock/expand/min/restore PASS; phone: PiP now starts minimized (s/ui b1eeb4a, needs merge); site-view header buttons overlap the asset list near 800 px.
