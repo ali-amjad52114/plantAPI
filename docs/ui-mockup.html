@@ -1,0 +1,955 @@
+<title>PlantAPI Control Room</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=B612:wght@400;700&family=B612+Mono:wght@400;700&display=swap">
+<style>
+/* Layout: a process-control console. Header + alarm banner, an annunciator panel of the 11 agents, then three columns:
+   procedure (left), monitor wall (centre), trend + event journal (right).
+   Visual rules follow ISA-101 high-performance HMI: a grey console where a healthy state has no colour.
+   Colour is semantic only, using the Airbus ECAM convention: red warning, amber caution, blue = action for a person,
+   magenta = values computed by the agents, green = completed. Deliberately single (light) theme, as the standard prescribes. */
+:root {
+  --bg: #d2d4d1; --panel: #e1e2df; --well: #c7c9c6; --ink: #141715; --muted: #565b57; --rule: #8e928e; --hair: #b4b7b3;
+  --bezel: #1e211f; --unlit: #2d312f; --unlit-ink: #747a75; --lit: #f3e7c4; --lit-ink: #1c1a12;
+  --warn: #c8102e; --caution: #d99a00; --caution-ink: #6f4e00; --act: #0b5fa5; --agent: #a0168a; --ok: #1d7a3a;
+  --f: "B612", "Segoe UI", Arial, sans-serif; --fm: "B612 Mono", Consolas, monospace;
+  color-scheme: light;
+}
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 13px/1.45 var(--f) }
+button, select, textarea, input { font: inherit; color: inherit }
+button { cursor: pointer }
+:focus-visible { outline: 2px solid var(--act); outline-offset: 2px }
+.m { font-family: var(--fm); font-variant-numeric: tabular-nums }
+.cap { font: 700 11px/1 var(--f); letter-spacing: .08em; text-transform: uppercase }
+.dim { color: var(--muted) }
+.c-warn { color: var(--warn) } .c-caut { color: var(--caution-ink) } .c-act { color: var(--act) } .c-agent { color: var(--agent) } .c-ok { color: var(--ok) }
+.blink { animation: blink 1s steps(2, start) infinite }
+@keyframes blink { to { visibility: hidden } }
+.pulse { animation: pulse 1.4s ease-in-out infinite }
+@keyframes pulse { 50% { opacity: .35 } }
+
+/* header */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 6; display: flex; flex-wrap: wrap; align-items: stretch; background: var(--bezel); color: #e6e8e5; border-bottom: 1px solid #000 }
+.top > * { display: flex; align-items: center; padding: 0 14px; min-height: 42px; border-right: 1px solid #3a3e3c }
+.top a, .top button { color: inherit; text-decoration: none; background: none; border: 0 }
+.top .back:hover, .top nav button:hover { background: #2e3230 }
+.word { font: 700 15px/1 var(--f); letter-spacing: .12em }
+.word i { display: inline-block; width: 14px; height: 14px; margin-right: 9px; background: repeating-linear-gradient(-45deg, #e0a100 0 3px, #1e211f 3px 6px); vertical-align: -2px }
+.top select { background: #2a2e2c; border: 1px solid #454a47; color: #e6e8e5; padding: 4px 6px }
+.clock { font: 700 18px/1 var(--fm); letter-spacing: .04em }
+.clock small { font: 10px var(--f); color: #9aa09b; margin-right: 8px; letter-spacing: .1em }
+.top nav { margin-left: auto; padding: 0; border-left: 1px solid #3a3e3c }
+.top nav button { height: 100%; padding: 0 16px; font: 700 11px/1 var(--f); letter-spacing: .1em; color: #9aa09b; border-right: 1px solid #3a3e3c }
+.top nav button[aria-selected="true"] { color: #fff; box-shadow: inset 0 -3px 0 #e0a100 }
+.mock { font: 700 10px/1 var(--fm); letter-spacing: .1em; color: #e0a100 }
+
+.wrap { padding: 12px 16px 24px; display: grid; gap: 12px; max-width: 1640px; margin: 0 auto }
+
+/* alarm banner (latest active alarm, like a DCS alarm line) */
+.banner { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; background: var(--panel); border: 1px solid var(--rule); padding: 8px 10px }
+.banner .msg { flex: 1 1 420px; display: flex; gap: 12px; align-items: center; min-width: 0 }
+.banner .msg span:last-child { overflow-wrap: anywhere }
+.pri { display: inline-grid; place-items: center; width: 20px; height: 20px; font: 700 11px/1 var(--fm); color: #fff; flex: none }
+.pri.p1 { background: var(--warn) }
+.pri.p2 { background: var(--caution); color: #1a1300; clip-path: polygon(50% 0, 100% 100%, 0 100%); padding-top: 5px }
+.pri.pa { background: var(--act); border-radius: 50% }
+.pri.p0 { background: transparent; border: 1px solid var(--rule); color: var(--muted) }
+.ctrls { display: flex; gap: 6px; flex-wrap: wrap }
+
+/* hardware-style pushbuttons */
+.pb { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 12px; background: #eceeeb; border: 1px solid var(--ink); box-shadow: inset 0 -2px 0 var(--hair); font: 700 11px/1 var(--f); letter-spacing: .08em; text-transform: uppercase }
+.pb::before { content: ""; width: 8px; height: 8px; background: var(--hair); border: 1px solid var(--rule); flex: none }
+.pb:hover:not(:disabled) { background: #fff }
+.pb:active:not(:disabled) { box-shadow: inset 0 2px 0 var(--hair) }
+.pb:disabled { opacity: .45; cursor: not-allowed }
+.pb.on::before { background: var(--ok); border-color: var(--ok) }
+.pb.act::before { background: var(--act); border-color: var(--act); animation: blink 1s steps(2, start) infinite }
+.pb.act { border-color: var(--act); color: var(--act) }
+.pb.no::before { background: var(--warn); border-color: var(--warn) }
+.pb.ghost::before { display: none }
+
+/* mode line: incident state machine, like a flight mode annunciator */
+.fma { display: flex; overflow-x: auto; border: 1px solid var(--rule); background: var(--panel) }
+.fma div { flex: 1 0 auto; padding: 6px 10px; font: 700 10.5px/1 var(--f); letter-spacing: .08em; color: var(--unlit-ink); border-right: 1px solid var(--hair); white-space: nowrap; text-align: center }
+.fma div:last-child { border-right: 0 }
+.fma .done { color: var(--ink) }
+.fma .now { background: var(--ink); color: #fff }
+.fma .now.wait { background: var(--act) }
+
+/* annunciator panel: one backlit window per agent */
+.ann { background: var(--bezel); padding: 8px; display: grid; grid-template-columns: 1fr 4fr 2fr 3fr 1fr; gap: 8px; overflow-x: auto }
+.ann-g { display: grid; gap: 4px; grid-template-rows: auto 1fr; min-width: 0 }
+.ann-g > span { font: 700 9.5px/1 var(--f); letter-spacing: .14em; color: #8e948f; padding-left: 2px }
+.ann-g > span.now { color: #e0a100 }
+.ann-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(96px, 1fr); gap: 4px }
+.win { position: relative; text-align: left; border: 1px solid #111; background: var(--unlit); color: var(--unlit-ink); padding: 7px 8px 6px; min-height: 64px; display: grid; align-content: space-between; gap: 4px; transition: background .2s, color .2s }
+.win b { font: 700 12px/1.1 var(--f); letter-spacing: .06em; text-transform: uppercase }
+.win small { font: 10px/1.2 var(--fm); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.win .k { position: absolute; top: 6px; right: 6px; font: 700 8.5px/1 var(--fm); letter-spacing: .06em; opacity: .7 }
+.win.run { background: var(--lit); color: var(--lit-ink); box-shadow: inset 0 0 12px rgba(224, 161, 0, .55) }
+.win.run small { color: #5a4a1c }
+.win.done { color: #c9cec9 }
+.win.done::after { content: ""; position: absolute; right: 7px; bottom: 7px; width: 7px; height: 7px; background: #46b46c }
+.win.fail { background: var(--warn); color: #fff; animation: alarm 1s steps(2, start) infinite }
+.win.ctl { background: #cfe2f5; color: #0b3a66; box-shadow: inset 0 0 0 2px var(--act) }
+.win.focus { outline: 2px solid #fff; outline-offset: -4px }
+@keyframes alarm { 50% { background: #5a0a14 } }
+
+/* panels */
+.cols { display: grid; grid-template-columns: minmax(300px, 340px) minmax(0, 1fr) minmax(300px, 380px); gap: 12px; align-items: start }
+.pane { background: var(--panel); border: 1px solid var(--rule); min-width: 0 }
+.pane > h2 { margin: 0; display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 7px 10px; border-bottom: 1px solid var(--rule); font: 700 11px/1 var(--f); letter-spacing: .1em; text-transform: uppercase; text-wrap: balance }
+.pane > h2 span { font: 10px/1 var(--fm); letter-spacing: .02em; color: var(--muted); text-transform: none }
+.stack { display: grid; gap: 12px; align-content: start }
+
+/* procedure: ECAM-style leader lines */
+.sec { display: grid; gap: 3px; padding: 10px 10px 12px; border-bottom: 1px solid var(--hair) }
+.sec:last-child { border-bottom: 0 }
+.sec > .cap { color: var(--muted); margin-bottom: 4px; display: flex; justify-content: space-between }
+.ln { display: flex; align-items: baseline; gap: 6px; font-size: 12.5px }
+.ln .k { text-transform: uppercase; letter-spacing: .03em; white-space: nowrap }
+.ln .dots { flex: 1; min-width: 12px; border-bottom: 1.5px dotted var(--rule); transform: translateY(-3px) }
+.ln .v { font: 700 12.5px/1.3 var(--fm); text-align: right; text-transform: uppercase; overflow-wrap: anywhere }
+.why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair) }
+.bigplan { font: 700 26px/1.05 var(--fm); color: var(--agent); letter-spacing: -.01em; margin: 2px 0 6px }
+.evid { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; align-items: start; margin-bottom: 6px }
+.shot { aspect-ratio: 4/3; max-width: 100%; display: grid; place-items: end start; padding: 4px; font: 9.5px var(--fm); color: #fff; border: 1px solid var(--bezel);
+  background: radial-gradient(circle at 38% 42%, #2b1a10 0 14%, #5d3a1f 15% 22%, transparent 23%), linear-gradient(160deg, #6d747a, #3a4046 60%, #22272b) }
+.shot.ok { background: linear-gradient(160deg, #e9ecee, #b9c1c7); color: var(--ink) }
+.shot.bad { background: linear-gradient(160deg, #d9dde0, #8d969c); color: var(--ink) }
+.alarmtext { font: 11.5px/1.35 var(--fm); background: var(--bezel); color: #ff6b62; padding: 6px 8px }
+.btnrow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px }
+.modify { display: grid; gap: 6px; margin-top: 8px; padding: 8px; background: var(--well) }
+.modify select { padding: 5px; border: 1px solid var(--rule); background: #f2f3f1 }
+textarea { width: 100%; min-height: 70px; padding: 7px; border: 1px solid var(--rule); background: #f2f3f1; resize: vertical; font: 12px/1.4 var(--fm) }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 6px }
+.choice { border: 2px solid var(--hair); background: #f2f3f1; padding: 4px; display: grid; gap: 4px; text-align: left; font-size: 11px }
+.choice[aria-pressed="true"] { border-color: var(--act) }
+.note { margin: 0; padding: 7px 9px; font-size: 12px; border-left: 3px solid }
+.note.warn { border-color: var(--warn); background: #f3dcdc; color: #7a0718 }
+.note.act { border-color: var(--act); background: #dbe7f2; color: #0b3a66 }
+
+/* monitor wall */
+.mon { background: var(--bezel); padding: 6px; display: grid; gap: 6px }
+.mon-bar { display: flex; gap: 6px; align-items: center; color: #d6dad6 }
+.mon-bar .chip { font: 700 10.5px/1 var(--fm); letter-spacing: .06em; background: #000; padding: 5px 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0 }
+.mon-bar .live { font: 700 10px/1 var(--fm); letter-spacing: .1em; color: #ff4d42; white-space: nowrap }
+.mon-bar .live.off { color: #6f7570 }
+.mon-bar .live::before { content: "● " }
+.mon-bar .sp { flex: 1 }
+.nav { display: flex; gap: 4px; align-items: center }
+.nav button { width: 28px; height: 28px; background: #2d312f; border: 1px solid #454a47; color: #d6dad6; font-size: 15px; line-height: 1 }
+.nav button:disabled { opacity: .35; cursor: not-allowed }
+.burl { flex: 1; min-width: 0; height: 28px; padding: 0 8px; background: #111412; border: 1px solid #454a47; color: #b9beb9; font: 11.5px var(--fm) }
+.burl:not(:read-only) { color: #fff; border-color: var(--act) }
+.bview { position: relative; height: 430px; overflow: auto; background: #fff; color: #1d2329; font-size: 13px }
+.bview.api { background: #0f1210; color: #cfd4cf }
+.bview.user { box-shadow: inset 0 0 0 3px var(--act) }
+.mon-foot { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; color: #9aa09b; font-size: 11.5px; padding: 2px 2px 0 }
+.mon-foot p { margin: 0; flex: 1 1 240px }
+.mon-foot .pb { min-height: 30px }
+
+.wall { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 6px; background: var(--bezel); padding: 6px; border-top: 1px solid #000 }
+.wall .empty { grid-column: 1 / -1; color: #8e948f; font-size: 12px; padding: 18px 8px; text-align: center; margin: 0 }
+.tile { position: relative; padding: 0; border: 1px solid #000; background: #0f1210; text-align: left; display: flex; flex-direction: column; min-width: 0 }
+.tile:hover { border-color: #8e948f }
+.tile.focus { outline: 2px solid #e0a100; outline-offset: -1px }
+.tile.ctl { outline: 2px solid var(--act); outline-offset: -1px }
+.tile .lab { position: absolute; z-index: 4; top: 4px; left: 4px; right: 4px; display: flex; justify-content: space-between; gap: 4px; pointer-events: none }
+.tile .lab span { font: 700 9.5px/1 var(--fm); letter-spacing: .05em; background: rgba(0,0,0,.82); color: #e6e8e5; padding: 4px 5px; white-space: nowrap }
+.tile .lab .st.run { color: #ff4d42 } .tile .lab .st.done { color: #6fd18f } .tile .lab .st.fail { color: #fff; background: var(--warn) } .tile .lab .st.ctl { color: #9cc8f0 }
+.tview { position: relative; height: 150px; overflow: hidden; background: #fff; color: #1d2329 }
+.tview.api { background: #0f1210; color: #cfd4cf }
+.tinner { position: absolute; left: 0; top: 0; transform-origin: 0 0; transition: transform .5s ease }
+.tcap { font: 10.5px/1.3 var(--fm); color: #b9beb9; padding: 5px 6px; border-top: 1px solid #000; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+
+.cursor { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; display: flex; align-items: flex-start; gap: 2px; transition: transform .6s cubic-bezier(.3, .7, .3, 1) }
+.cursor svg { width: 16px; height: 16px; filter: drop-shadow(0 1px 1px rgba(0,0,0,.4)) }
+.cursor span { margin-top: 12px; background: var(--agent); color: #fff; font: 700 9.5px/1 var(--fm); letter-spacing: .04em; text-transform: uppercase; padding: 3px 5px; white-space: nowrap }
+.cursor[hidden] { display: none }
+.hl { outline: 2px solid var(--agent); outline-offset: 2px; background: #f7e3f3 !important }
+
+.console { font: 11.5px/1.55 var(--fm); padding: 8px 10px; white-space: pre-wrap; overflow-wrap: anywhere; color: #9aa09b }
+.console .c-call { color: #8ec5ff } .console .c-res { color: #e6e8e5 } .console .c-okk { color: #6fd18f }
+.console .c-w { color: #ffc24a } .console .c-bad { color: #ff6b62 } .console .c-head { color: #6f7570 }
+.console .caret::after { content: "█"; color: #e6e8e5; animation: blink 1s steps(2, start) infinite; margin-left: 2px }
+.bview .console { font-size: 13px; padding: 12px 14px }
+
+/* trend: session timeline */
+.trend { padding: 10px; display: grid; gap: 3px }
+.tr { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 8px; align-items: center; font: 10.5px/1 var(--fm) }
+.tr > span { text-transform: uppercase; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.track { position: relative; height: 12px; background: var(--well); background-image: repeating-linear-gradient(90deg, transparent 0 calc(10% - 1px), var(--hair) calc(10% - 1px) 10%) }
+.bar { position: absolute; top: 2px; bottom: 2px; background: #6f746f; min-width: 3px }
+.bar.run { background: repeating-linear-gradient(-45deg, var(--ink) 0 3px, #5e635f 3px 6px) }
+.bar.fail { background: var(--warn) }
+.bar.ctl { background: var(--act) }
+.axis { display: flex; justify-content: space-between; margin-left: 92px; font: 9.5px/1 var(--fm); color: var(--muted); padding-top: 3px }
+
+/* event journal (alarm summary table) */
+.jwrap { max-height: 520px; overflow: auto }
+table.j { width: 100%; border-collapse: collapse; font-size: 11.5px }
+.j th { position: sticky; top: 0; background: var(--panel); text-align: left; font: 700 9.5px/1 var(--f); letter-spacing: .1em; color: var(--muted); padding: 6px 6px; border-bottom: 1px solid var(--rule) }
+.j td { padding: 5px 6px; border-bottom: 1px solid var(--hair); vertical-align: top }
+.j td:nth-child(1), .j td:nth-child(3) { font: 10.5px/1.35 var(--fm); white-space: nowrap }
+.j td:nth-child(3) { color: var(--muted) }
+.j tr.new td { animation: newrow 1.2s steps(1) }
+@keyframes newrow { 0% { background: var(--ink); color: #fff } }
+.j .pri { width: 16px; height: 16px; font-size: 9.5px }
+.j .pri.p2 { padding-top: 4px }
+
+/* site pages shown inside agent browsers */
+.site { min-height: 100%; font-family: Arial, Helvetica, sans-serif; font-size: 13px; background: #fff; color: #1d2329 }
+.site button { cursor: pointer }
+.site .lnk { border: 0; background: none; color: #1f5a99; text-decoration: underline; padding: 0; font: inherit }
+.s-top { display: flex; align-items: center; gap: 14px; padding: 9px 14px; flex-wrap: wrap }
+.fx .s-top { background: #25343f; color: #fff } .fx .s-top .lnk { color: #cfe3f3; text-decoration: none }
+.rs .s-top { background: #fff; border-bottom: 3px solid #b01e23 }
+.s-body { padding: 14px; display: grid; gap: 12px }
+.s-body h3 { font: 700 18px/1.2 Arial, sans-serif; margin: 0 }
+.s-crumb { color: #66717b; font-size: 12px }
+.s-tbl { width: 100%; border-collapse: collapse }
+.s-tbl th, .s-tbl td { text-align: left; padding: 7px 8px; border-bottom: 1px solid #e3e7ea; vertical-align: top }
+.s-tbl th { font-size: 11px; text-transform: uppercase; color: #66717b; letter-spacing: .04em }
+.s-kv { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0 } .s-kv dt { color: #66717b } .s-kv dd { margin: 0 }
+.s-tabs { display: flex; gap: 14px; border-bottom: 1px solid #e3e7ea; padding-bottom: 6px }
+.s-tag { display: inline-block; padding: 2px 7px; border-radius: 3px; font-size: 11px; font-weight: 700; text-transform: uppercase }
+.s-tag.down { background: #fde3e1; color: #a3261c } .s-tag.ok { background: #e1f3e8; color: #1f6e43 } .s-tag.open { background: #e2ecf8; color: #1f5a99 }
+.s-form { display: grid; gap: 8px; max-width: 420px } .s-form label { display: grid; gap: 3px; font-size: 12px; color: #66717b }
+.s-form input, .s-form select { padding: 6px 8px; border: 1px solid #c7cfd5; border-radius: 3px; color: #1d2329; background: #fff; font: 13px Arial, sans-serif }
+.s-btn { justify-self: start; border: 0; padding: 8px 14px; border-radius: 3px; background: #1f5a99; color: #fff; font-weight: 700 } .s-btn.red { background: #b01e23 }
+.rs-prod { display: grid; grid-template-columns: 120px minmax(0,1fr); gap: 14px }
+.rs-img { aspect-ratio: 1; border: 1px solid #e3e7ea; display: grid; place-items: center; color: #8a949c; font-size: 11px; text-align: center; background: linear-gradient(160deg, #f3f5f6, #dde2e5) }
+.rs-price { font: 700 24px/1 Arial, sans-serif }
+.bblank { min-height: 300px; display: grid; place-items: center; color: #8a949c; padding: 20px; text-align: center }
+
+/* plant + governance */
+.grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; align-items: start }
+.list { list-style: none; margin: 0; padding: 0 }
+.list li { padding: 6px 10px; border-bottom: 1px solid var(--hair); font-size: 12.5px }
+.list li:last-child { border-bottom: 0 }
+.list .ln { font-size: 12px }
+.govrow { display: grid; grid-template-columns: minmax(0, 1fr) auto 92px; gap: 10px; align-items: center; padding: 10px; border-bottom: 1px solid var(--hair) }
+.govrow:last-child { border-bottom: 0 }
+.govrow b { display: block; font-size: 12.5px } .govrow span { font-size: 11.5px; color: var(--muted) }
+.verdict { font: 700 11px/1 var(--fm); letter-spacing: .08em; text-align: center; padding: 6px 0; border: 1px solid var(--hair); color: var(--muted) }
+.verdict.ALLOW { border-color: var(--ok); color: var(--ok) } .verdict.APPROVE { border-color: var(--act); color: var(--act) } .verdict.DENY { background: var(--warn); border-color: var(--warn); color: #fff }
+.cols2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-items: start }
+
+.toast { position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--bezel); color: #e6e8e5; border-left: 3px solid var(--act); padding: 10px 14px; font-size: 12.5px; max-width: calc(100% - 32px); z-index: 9 }
+
+@media (max-width: 1250px) { .cols { grid-template-columns: minmax(280px, 330px) minmax(0, 1fr) } .cols > .stack:last-child { grid-column: 1 / -1; grid-template-columns: 1fr 1fr } .grid3 { grid-template-columns: 1fr 1fr } }
+@media (max-width: 860px) {
+  .cols, .cols > .stack:last-child, .cols2 { grid-template-columns: minmax(0, 1fr) } .grid3 { grid-template-columns: minmax(0, 1fr) }
+  .ann { grid-template-columns: minmax(0, 1fr) } .ann-row { grid-auto-flow: row; grid-template-columns: repeat(2, minmax(0, 1fr)) }
+  .top nav { margin-left: 0 } .bview { height: 360px }
+}
+@media (max-width: 520px) { .choices, .rs-prod, .evid { grid-template-columns: minmax(0, 1fr) } .govrow { grid-template-columns: minmax(0, 1fr) auto } .govrow .verdict { grid-column: 1 / -1 } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+</style>
+
+<header class="top">
+  <a class="back" href="plant-3d.html" title="Back to the 3D site view">&#8249;&nbsp;SITE</a>
+  <div class="word"><i aria-hidden="true"></i>PLANTAPI</div>
+  <div><select id="plant" aria-label="Plant"><option>Crushing Plant · Line 2</option><option value="add">+ Add plant</option></select></div>
+  <div class="clock" id="clock"><small>PLANT TIME</small>14:02</div>
+  <div class="mock">MOCKUP · EXAMPLE DATA</div>
+  <nav role="tablist">
+    <button role="tab" data-view="incidents" aria-selected="true">INCIDENT</button>
+    <button role="tab" data-view="plant" aria-selected="false">PLANT</button>
+    <button role="tab" data-view="gov" aria-selected="false">GOVERNANCE</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="view stack" id="view-incidents">
+    <div class="banner" id="banner"></div>
+    <div class="fma" id="fma"></div>
+    <div class="ann" id="ann" aria-label="Agent annunciator panel"></div>
+    <div class="cols">
+      <div class="pane" id="proc"></div>
+      <div class="pane">
+        <h2>Monitor wall <span id="wallcount"></span></h2>
+        <div class="mon">
+          <div class="mon-bar"><span class="chip" id="mchip">—</span><span class="live off" id="mlive">LIVE</span><span class="sp"></span><span class="chip" id="mstat">IDLE</span></div>
+          <div class="mon-bar">
+            <div class="nav"><button id="bback" aria-label="Back">&#8249;</button><button id="bfwd" aria-label="Forward">&#8250;</button><button id="breload" aria-label="Reload">&#8635;</button></div>
+            <input class="burl" id="burl" aria-label="Address" spellcheck="false">
+          </div>
+          <div class="bview" id="bview">
+            <div id="bpage"></div>
+            <div class="cursor" id="bcursor" aria-hidden="true">
+              <svg viewBox="0 0 18 18"><path d="M2 1 L2 15 L6 11 L9 17 L11.5 16 L8.5 10 L14 10 Z" fill="#ffffff" stroke="#1d2329" stroke-width="1.3" stroke-linejoin="round"/></svg>
+              <span id="bwho">Agent</span>
+            </div>
+          </div>
+          <div class="mon-foot"><p id="bhint"></p><button class="pb" id="bctl">Take control</button></div>
+        </div>
+        <div class="wall" id="wall"></div>
+      </div>
+      <div class="stack">
+        <div class="pane"><h2>Session trend <span>elapsed · sped up</span></h2><div class="trend" id="trend"></div></div>
+        <div class="pane"><h2>Event journal <span id="jcount"></span></h2><div class="jwrap"><table class="j"><thead><tr><th>TIME</th><th>PRI</th><th>SRC</th><th>MESSAGE</th></tr></thead><tbody id="journal"></tbody></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="view" id="view-plant" hidden>
+    <div class="grid3">
+      <div class="pane"><h2>Connected systems <span>via Agent37</span></h2><ul class="list">
+        <li><div class="ln"><span class="k">Fiix CMMS</span><span class="dots"></span><span class="v">BROWSER</span></div></li>
+        <li><div class="ln"><span class="k">Odoo ERP</span><span class="dots"></span><span class="v">JSON-2 API</span></div></li>
+        <li><div class="ln"><span class="k">Slack #line2-maint</span><span class="dots"></span><span class="v">MESSAGING</span></div></li>
+        <li><div class="ln"><span class="k">Sheets · Calendar · Gmail</span><span class="dots"></span><span class="v">APP CONN</span></div></li>
+        <li><div class="ln"><span class="k">Monid</span><span class="dots"></span><span class="v">SEARCH · MAIL · CALL</span></div></li>
+        <li><div class="ln"><span class="k">Supabase</span><span class="dots"></span><span class="v">REALTIME</span></div></li>
+        <li><div class="ln"><span class="k">InstaCloud</span><span class="dots"></span><span class="v">HOSTING · POLICY</span></div></li></ul></div>
+      <div class="pane"><h2>Recent incidents <span>this site</span></h2><ul class="list">
+        <li><div class="ln"><span class="k">INC-0142 CV-104 contactor</span><span class="dots"></span><span class="v c-warn">OPEN</span></div></li>
+        <li><div class="ln"><span class="k">INC-0139 P-302 seal leak</span><span class="dots"></span><span class="v">CLOSED</span></div></li>
+        <li><div class="ln"><span class="k">INC-0131 CV-104 contactor</span><span class="dots"></span><span class="v">CLOSED</span></div></li>
+        <li><div class="ln"><span class="k">INC-0127 FV-221 positioner</span><span class="dots"></span><span class="v">CLOSED</span></div></li></ul></div>
+      <div class="pane"><h2>Cost per incident <span>Agent37 usage</span></h2><ul class="list">
+        <li><div class="ln"><span class="k">INC-0142</span><span class="dots"></span><span class="v c-agent">$0.47</span></div></li>
+        <li><div class="ln"><span class="k">INC-0139</span><span class="dots"></span><span class="v">$0.31</span></div></li>
+        <li><div class="ln"><span class="k">INC-0131</span><span class="dots"></span><span class="v">$0.40</span></div></li>
+        <li><div class="ln"><span class="k">Budget used</span><span class="dots"></span><span class="v">$3.18 / $25.00</span></div></li></ul></div>
+      <div class="pane"><h2>Scheduled follow-ups <span>crons</span></h2><ul class="list">
+        <li><div class="ln"><span class="k">Chase technician ack</span><span class="dots"></span><span class="v">14:40</span></div></li>
+        <li><div class="ln"><span class="k">Confirm RS courier</span><span class="dots"></span><span class="v">16:45</span></div></li>
+        <li><div class="ln"><span class="k">Unblock Line 2 if WO closed</span><span class="dots"></span><span class="v">20:00</span></div></li>
+        <li><div class="ln"><span class="k">Reliability digest</span><span class="dots"></span><span class="v">MON 07:00</span></div></li></ul></div>
+      <div class="pane"><h2>Plant memory <span>agent sessions</span></h2><ul class="list">
+        <li>CV-104 contactor has failed 3× since July. Suspect undersized overload setting.</li>
+        <li>Sarah Okafor is the only electrician cleared for MCC-03.</li>
+        <li>RS Components same-day courier cut-off is 12:00.</li>
+        <li>Line 2 low-impact window: weekdays 18:00–20:00.</li></ul></div>
+      <div class="pane"><h2>Workspace files <span>plant files</span></h2><ul class="list">
+        <li><div class="ln"><span class="k m">sop/LOTO-CV104.md</span><span class="dots"></span><span class="v">SOP</span></div></li>
+        <li><div class="ln"><span class="k m">sop/contactor-LC1D09BD.md</span><span class="dots"></span><span class="v">SOP</span></div></li>
+        <li><div class="ln"><span class="k m">production_schedule.csv</span><span class="dots"></span><span class="v">DATA</span></div></li>
+        <li><div class="ln"><span class="k m">photos/failure-burned-contactor.jpg</span><span class="dots"></span><span class="v">EVIDENCE</span></div></li></ul></div>
+    </div>
+  </section>
+
+  <section class="view" id="view-gov" hidden>
+    <div class="cols2">
+      <div class="pane"><h2>Infrastructure actions <span>InstaCloud policy</span></h2>
+        <p class="dim" style="margin:0;padding:10px 10px 0">The ops agent asks InstaCloud before it touches infrastructure. Try each action to see the policy verdict.</p>
+        <div id="gov"></div></div>
+      <div class="pane"><h2>Audit log <span>newest first</span></h2><div class="jwrap"><table class="j"><thead><tr><th>TIME</th><th>VERDICT</th><th>ACTION</th></tr></thead><tbody id="audit"><tr><td colspan="3" class="dim">No infrastructure actions yet.</td></tr></tbody></table></div></div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const STATES = ['NEW','TRIAGING','PLANNING','WAITING_APPROVAL','APPROVED','EXECUTING','WAITING_REPAIR','VERIFYING','CLOSED'];
+
+/* Agents. kind: web = has its own browser in the Agent37 instance; api = tool calls only. */
+const AGENTS = {
+  triage:       { label: 'Triage',       sid: 'ses_tri_2a91', kind: 'web' },
+  reliability:  { label: 'Reliability',  sid: 'ses_rel_4f1c', kind: 'web' },
+  materials:    { label: 'Materials',    sid: 'ses_mat_91be', kind: 'web' },
+  production:   { label: 'Production',   sid: 'ses_pro_07d3', kind: 'api' },
+  workforce:    { label: 'Workforce',    sid: 'ses_wrk_5c20', kind: 'api' },
+  coordinator:  { label: 'Coordinator',  sid: 'ses_crd_e81a', kind: 'api' },
+  risk:         { label: 'Risk',         sid: 'ses_rsk_33f0', kind: 'api' },
+  procurement:  { label: 'Procurement',  sid: 'ses_prc_6b4e', kind: 'api' },
+  erp:          { label: 'ERP',          sid: 'ses_erp_d27c', kind: 'web' },
+  dispatch:     { label: 'Dispatch',     sid: 'ses_dsp_8a15', kind: 'api' },
+  verification: { label: 'Verification', sid: 'ses_ver_f402', kind: 'web' },
+};
+const LANES = [['INTAKE', ['triage'], [0]], ['PLAN', ['reliability','materials','production','workforce'], [1]], ['DECIDE', ['coordinator','risk'], [2, 3]],
+  ['EXECUTE', ['procurement','erp','dispatch'], [4, 5]], ['CLOSE', ['verification'], [6, 7]]];
+
+/* step builders; d = ms before the step runs (at 1x) */
+const nav  = (d, page, hl, note) => ({ d, f: s => { go(s, page); s.hl = hl; s.log.push('↪ open ' + urlOf(page)); if (note) s.note = note; } });
+const hi   = (d, hl, note) => ({ d, f: s => { s.hl = hl; if (note) s.note = note; } });
+const call = (d, line, note) => ({ d, f: s => { s.log.push('→ ' + line); s.calls++; if (note) s.note = note; } });
+const out  = (d, line) => ({ d, f: s => s.log.push(line) });
+const fx   = (d, fn) => ({ d, f: fn });
+
+const SCRIPTS = {
+  triage: () => [
+    call(300, 'files.get photos/failure-burned-contactor.jpg', 'reading photo'),
+    call(700, 'openai.vision(photo, alarm text)', 'diagnosing'),
+    fx(1000, s => { s.log.push('← contactor burned · LC1D09BD · HIGH · Electrical'); S.triage = true;
+      ev('OPENAI', 'Vision: burned 3-pole contactor, likely LC1D09BD (9 A). Severity high, trade electrical.'); }),
+    nav(500, 'fiix_home', '[data-hl=cv104]', 'finding asset'),
+    nav(900, 'fiix_asset', '[data-hl=status]', 'confirming asset'),
+    fx(800, s => { s.log.push('← CV-104 · Crushing Line 2 · MCC-03'); s.note = 'high · electrical';
+      ev('FIIX', 'Triage confirmed CV-104 Conveyor on Crushing Line 2, fed from MCC-03.'); }),
+  ],
+  reliability: () => [
+    nav(400, 'fiix_asset', '[data-hl=status]', 'opening CV-104'),
+    nav(1000, 'fiix_history', '[data-hl=hist]', 'reading WO history'),
+    hi(900, '[data-hl=wo1102]', 'WO-1102 · 2026-09-02'),
+    hi(900, '[data-hl=wo1031]', 'WO-1031 · 2026-07-11'),
+    call(700, 'files.read sop/contactor-LC1D09BD.md', 'reading SOP'),
+    call(700, 'memory.recall "CV-104 contactor"', 'plant memory'),
+    fx(900, s => { s.log.push('← recurring: 3rd failure this quarter'); s.note = 'recurring · ASAP';
+      S.props.reliability = ['ASAP', 'Same contactor failed 2026-07-11 and 2026-09-02. Third failure this quarter.'];
+      ev('FIIX', 'Reliability read 2 closed work orders for CV-104: same contactor both times.'); }),
+  ],
+  materials: () => [
+    call(300, 'odoo.search_read product LC1D09BD', 'checking stock'),
+    fx(700, s => { s.log.push('← qty_available: 0'); ev('ODOO', 'LC1D09BD on hand: 0.'); }),
+    call(500, 'monid.search "LC1D09BD contactor"', 'searching suppliers'),
+    fx(1000, s => { s.log.push('← RS Components $29.49 · 2 more'); ev('MONID', 'Search found RS Components listing for LC1D09BD at $29.49.'); }),
+    nav(500, 'rs_search', '[data-hl=r1]', 'opening RS results'),
+    nav(1000, 'rs_product', '[data-hl=price]', 'reading price'),
+    hi(1000, '[data-hl=stock]', 'stock + delivery'),
+    fx(800, s => { s.log.push('← in stock 46 · courier 17:00'); s.note = 'part 17:00';
+      S.props.materials = ['PART 17:00 TODAY', 'Odoo stock 0. RS Components has it for $29.49, same-day courier.'];
+      ev('AGENT37', 'Materials browser confirmed the RS page: in stock, courier arrives 17:00.'); }),
+  ],
+  production: () => [
+    call(400, 'sheets.values.get production_schedule!A1:F40', 'reading schedule'),
+    out(1100, '← 18 rows · today + tomorrow'),
+    call(500, 'odoo.read workcenter "Crushing Line 2"', 'work centre load'),
+    out(900, '← load 85% today · 60% tomorrow 07:00'),
+    call(600, 'openai.chatJSON(rank downtime windows)', 'ranking windows'),
+    fx(1000, s => { s.log.push('← best: tomorrow 07:00 · alt: today 18:00'); s.note = 'tmrw 07:00';
+      S.props.production = ['TMRW 07:00', 'Lowest schedule impact. Today 18:00–20:00 is also low impact.'];
+      ev('GOOGLE', 'Sheets: lowest-impact window tomorrow 07:00; today 18:00–20:00 low impact.'); }),
+  ],
+  workforce: () => [
+    call(500, 'files.read technicians.json', 'qualified staff'),
+    out(700, '← MCC-03 cleared: Sarah Okafor only'),
+    call(500, 'calendar.freebusy sarah.okafor 10-07..10-08', 'checking calendar'),
+    out(1200, '← free today 18:00 · busy tomorrow 07:00'),
+    fx(600, s => { s.note = 'Sarah 18:00';
+      S.props.workforce = ['S. OKAFOR 18:00', 'Only electrician cleared for MCC-03. Busy tomorrow 07:00.'];
+      ev('GOOGLE', 'Calendar: Sarah Okafor free today 18:00, busy tomorrow 07:00.'); }),
+  ],
+  coordinator: () => [
+    call(400, 'openai.chatJSON(coordinator, 4 proposals)', 'weighing 4 proposals'),
+    out(600, '  reliability  ASAP, recurring'), out(400, '  materials    part 17:00 today'),
+    out(400, '  production   tomorrow 07:00'), out(400, '  workforce    Sarah 18:00 today'),
+    out(800, '← { "window": "2026-10-07T18:00",'), out(500, '    "why": "part 17:00, Sarah free, low impact, recurring",'),
+    out(500, '    "rejected": ["07:00 tomorrow: no cleared electrician"] }'),
+    fx(500, s => { s.note = '18:00 today'; S.plan = { when: '18:00 TODAY', window: '18:00–20:00' };
+      ev('OPENAI', 'Plan: replace contactor today 18:00. Part arrives 17:00, Sarah is free, window is low impact, failure is recurring.'); }),
+  ],
+  risk: () => [
+    call(500, 'files.read authority_rules.md', 'loading rules'),
+    out(800, '✓ supplier search · AUTO'), out(500, '✓ draft work order · AUTO'),
+    out(1300, '! purchase $29.49 · APPROVAL'), out(500, '! block Crushing Line 2 · APPROVAL'), out(500, '! LOTO-CV104 required'),
+    fx(600, s => { s.note = 'needs approval'; S.riskDone = true;
+      ev('AGENT37', 'Risk: purchase and blocking Line 2 need approval. LOTO-CV104 required.', 2); }),
+  ],
+  procurement: () => [
+    call(400, 'supabase.insert parts (LC1D09BD, RS, $29.49)', 'recording purchase'),
+    call(900, 'monid.agentmail.send RS sales · expedite LC1D09BD', 'emailing supplier'),
+    fx(1300, s => { s.log.push('← sent · thread am_7c1'); s.note = 'expedited';
+      ev('MONID', 'AgentMail sent an expedite request to RS Components for LC1D09BD.'); }),
+  ],
+  erp: () => [
+    nav(400, 'fiix_new', '#wo_asset', 'opening WO form'),
+    hi(700, '#wo_task', 'filling task'), hi(500, '#wo_who', 'assigning Sarah'), hi(500, '#wo_when', 'scheduling 18:00'),
+    hi(600, '[data-hl=create]', 'creating WO'),
+    fx(700, s => { S.wo = true; go(s, 'fiix_wo'); s.hl = '[data-hl=status]'; s.log.push('↪ WO-1187 created'); s.note = 'WO-1187 created';
+      ev('FIIX', 'Work order WO-1187 created and assigned to Sarah Okafor.'); }),
+    call(900, 'odoo.write workcenter CL2 block 18:00–20:00', 'blocking Line 2'),
+    fx(700, s => { s.log.push('← ok'); s.note = 'WO-1187 · CL2 blocked'; ev('ODOO', 'Crushing Line 2 blocked 18:00–20:00.'); }),
+  ],
+  dispatch: () => [
+    call(500, 'calendar.events.insert Sarah Okafor 18:00–20:00', 'booking technician'),
+    fx(600, s => { s.log.push('← booked'); ev('GOOGLE', 'Calendar: Sarah Okafor booked 18:00–20:00.'); }),
+    call(500, 'slack.post #line2-maint "Line 2 stops 18:00"', 'notifying crew'),
+    call(500, 'gmail.send supervisor notice', 'emailing supervisor'),
+    call(500, 'cron.create chase-ack in 20 min', 'scheduling follow-up'),
+    fx(1600, s => { s.log.push('! cron fired: no ack from Sarah'); s.note = 'no ack · calling';
+      ev('AGENT37', 'Follow-up fired: no acknowledgement from Sarah Okafor.', 2); }),
+    call(500, 'monid.call Sarah Okafor', 'calling technician'),
+    fx(1300, s => { s.log.push('← acknowledged on call'); s.note = 'acked by call';
+      ev('MONID', 'Phone call placed to Sarah Okafor. Acknowledged on the call.'); }),
+  ],
+  verification: () => S.photo === 'wrong' ? [
+    call(400, 'openai.vision(completion photo, notes, WO-1187)', 'checking photo'),
+    fx(1300, s => { s.log.push('✗ label CHNT NCH8-63 63 A ≠ LC1D09BD 9 A'); s.status = 'fail'; s.end = S.t; s.note = 'wrong part';
+      ev('OPENAI', 'Rejected: photo shows a CHNT NCH8-63 (63 A), not LC1D09BD (9 A).', 1);
+      ev('SLACK', 'Verification asked Sarah Okafor for a photo of the installed contactor.', 'a');
+      S.rejected = true; S.photo = null; S.goto = 5; }),
+  ] : [
+    call(400, 'openai.vision(completion photo, notes, WO-1187)', 'checking photo'),
+    out(1100, '✓ new 3-pole TeSys-D · part no. in notes + WO'),
+    nav(500, 'fiix_wo', '[data-hl=status]', 'closing WO-1187'),
+    fx(800, s => { S.closed = true; s.log.push('↪ WO-1187 closed'); ev('FIIX', 'WO-1187 closed with notes and photo.'); }),
+    call(500, 'odoo.write workcenter CL2 unblock', 'unblocking Line 2'),
+    call(500, 'sheets.append downtime 38 min', 'logging downtime'),
+    fx(500, s => { s.note = 'evidence OK'; ev('ODOO', 'Crushing Line 2 unblocked.'); ev('SUPABASE', 'Incident closed. Audit trail complete.'); }),
+  ],
+};
+
+/* phases: agents in one phase run as parallel sessions */
+const PHASES = [
+  { state: 'TRIAGING', base: 14*60+3, agents: ['triage'], enter() { ev('AGENT37', 'Triage session opened on plant instance plantapi-line2.'); } },
+  { state: 'PLANNING', base: 14*60+5, agents: ['reliability','materials','production','workforce'], enter() { ev('AGENT37', 'Four planner sessions opened in parallel.'); } },
+  { state: 'PLANNING', base: 14*60+9, agents: ['coordinator','risk'], enter() { ev('AGENT37', 'Coordinator and Risk sessions opened in parallel.'); } },
+  { state: 'WAITING_APPROVAL', base: 14*60+12, gate: 'approval', enter() { ev('SLACK', 'Approval request sent to the maintenance supervisor.', 'a'); ev('AGENT37', 'Backup checkpoint saved before execution.'); } },
+  { state: 'EXECUTING', base: 14*60+15, agents: ['procurement','erp','dispatch'], enter() { ev('AGENT37', 'Three execution sessions opened in parallel.'); } },
+  { state: 'WAITING_REPAIR', base: 18*60+47, gate: 'repair', enter(again) { if (!again) { ev('SLACK', 'Courier delivered LC1D09BD to stores.'); ev('SYSTEM', 'Waiting for Sarah Okafor to report the repair done.', 'a'); } } },
+  { state: 'VERIFYING', base: 18*60+52, agents: ['verification'], enter() {} },
+  { state: 'CLOSED', base: 18*60+55, end: true, enter() {} },
+];
+
+let S, B, loop = null;
+function fresh() {
+  S = { t: 0, phase: -1, phaseT: 0, base: 14*60+2, state: 'NEW', gate: null, playing: false, speed: 1, sess: {}, events: [], props: {},
+        triage: false, plan: null, riskDone: false, wo: false, closed: false, rejected: false, photo: null, modify: false, goto: null, wallFrom: -1,
+        techNote: 'Replaced contactor LC1D09BD. LOTO-CV104 applied and removed. Motor runs, no trip after 10 min.' };
+  for (const id in AGENTS) S.sess[id] = { id, ...AGENTS[id], status: 'idle', steps: [], i: 0, wait: 0, page: null, back: [], fwd: [], hl: null, log: [], calls: 0, start: null, end: null, note: '' };
+  B = { focus: 'triage', pinned: false, control: null, basket: 0 };
+  ev('SLACK', 'CV-104 MTR OL TRIP · MCC-03 BKR 7. Shift supervisor posted a photo in #line2-maint.', 1);
+  ev('INSTACLOUD', 'Photo archived to evidence storage. Policy: upload ALLOW.');
+}
+function clockStr() { const m = S.base + Math.floor(S.phaseT / 1000); return `${String(Math.floor(m / 60) % 24).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`; }
+function ev(src, text, pri = 0) { S.events.unshift({ time: clockStr(), src, text, pri }); }
+function go(s, page) { if (s.page && s.page !== page) { s.back.push(s.page); s.fwd = []; } s.page = page; }
+
+function enterPhase(i, again) {
+  S.phase = i; S.phaseT = 0; const p = PHASES[i]; S.base = p.base; S.state = p.state; S.goto = null;
+  p.enter(again);
+  if (p.gate) { S.gate = p.gate; pause(); }
+  if (p.end) { S.closed = true; pause(); }
+  if (p.agents) {
+    S.wallFrom = i;
+    p.agents.forEach(id => {
+      const s = S.sess[id], steps = SCRIPTS[id]();
+      Object.assign(s, { steps, i: 0, wait: steps[0].d, status: 'run', start: S.t, end: null, note: 'starting', log: [`# session ${s.sid} opened`] });
+    });
+    if (!B.pinned || !p.agents.includes(B.focus)) { B.focus = p.agents.find(id => AGENTS[id].kind === 'web') || p.agents[0]; B.pinned = false; }
+  }
+  render();
+}
+
+function tick() {
+  if (!S.playing) return;
+  const dt = 100 * S.speed; S.t += dt; S.phaseT += dt;
+  const p = PHASES[S.phase]; let dirty = false;
+  if (p && p.agents) {
+    for (const id of p.agents) {
+      const s = S.sess[id];
+      if (s.status !== 'run' || B.control === id) continue;
+      s.wait -= dt;
+      while (s.status === 'run' && s.wait <= 0 && s.i < s.steps.length) {
+        s.steps[s.i].f(s); s.i++; dirty = true;
+        if (s.i < s.steps.length) s.wait += s.steps[s.i].d;
+      }
+      if (s.status === 'run' && s.i >= s.steps.length) { s.status = 'done'; s.end = S.t; dirty = true; }
+    }
+    if (S.goto !== null) return enterPhase(S.goto, true);
+    if (p.agents.every(id => S.sess[id].status !== 'run')) return enterPhase(S.phase + 1);
+  }
+  if (dirty) render(); else { renderTrend(); renderClock(); }
+}
+
+function play() {
+  if (S.gate || S.closed) return;
+  if (S.phase === -1) enterPhase(0);
+  S.playing = true; if (!loop) loop = setInterval(tick, 100); render();
+}
+function pause() { S.playing = false; render(); }
+function reset() { clearInterval(loop); loop = null; fresh(); lastWall = ''; lastProc = ''; lastJ = -1; lastFocusKey = ''; render(); }
+
+function approve() { S.gate = null; S.modify = false; S.state = 'APPROVED'; ev('SLACK', 'Supervisor approved the plan.'); ev('SUPABASE', 'Approval recorded with audit entry.'); enterPhase(4); play(); }
+function reject() { S.gate = null; S.modify = false; S.plan = null; S.riskDone = false; ev('SLACK', 'Supervisor rejected the plan. Coordinator and Risk run again.', 2); enterPhase(2); play(); }
+function sendModify() {
+  const v = $('#modwin').value;
+  S.plan = v === 'tmrw' ? { when: '07:00 TMRW', window: '07:00–09:00' } : { when: '18:00 TODAY', window: '18:00–20:00' };
+  ev('SLACK', `Supervisor asked for a change: ${S.plan.when.toLowerCase()}. Coordinator updated the plan.`);
+  if (v === 'tmrw') ev('OPENAI', 'Sarah Okafor is busy tomorrow 07:00. Workforce will need another cleared electrician.', 2);
+  S.modify = false; render();
+}
+function submitRepair() {
+  if (!S.photo) return toast('Choose a completion photo first.');
+  S.gate = null; ev('SLACK', `Sarah Okafor reported done: “${S.techNote.slice(0, 60)}…”`); enterPhase(6); play();
+}
+
+/* websites rendered inside agent browsers */
+const HOST = { fiix: 'https://ali52114.fiix.software', rs: 'https://uk.rs-online.com' };
+const PAGES = {
+  fiix_home:    { site: 'fiix', url: '/assets' },
+  fiix_asset:   { site: 'fiix', url: '/assets/CV-104' },
+  fiix_history: { site: 'fiix', url: '/assets/CV-104/work-orders' },
+  fiix_new:     { site: 'fiix', url: '/work-orders/new' },
+  fiix_wo:      { site: 'fiix', url: '/work-orders/WO-1187' },
+  rs_search:    { site: 'rs', url: '/web/c/?searchTerm=LC1D09BD' },
+  rs_product:   { site: 'rs', url: '/web/p/contactors/LC1D09BD' },
+  notfound:     { site: 'rs', url: '' },
+};
+const urlOf = page => page && PAGES[page].url ? HOST[PAGES[page].site] + PAGES[page].url : '';
+const fxShell = body => `<div class="site fx"><div class="s-top"><b>CMMS</b><span>Crushing Plant</span>
+  <button class="lnk" data-go="fiix_home">Assets</button><button class="lnk" data-go="fiix_history">Work orders</button>
+  <span style="margin-left:auto;font-size:12px">plantapi-agent</span></div><div class="s-body">${body}</div></div>`;
+const rsShell = body => `<div class="site rs"><div class="s-top"><b style="color:#b01e23">RS Components</b>
+  <button class="lnk" data-go="rs_search">Search: LC1D09BD</button><span style="margin-left:auto">Basket (${B.basket})</span></div><div class="s-body">${body}</div></div>`;
+const down = () => S.triage && !S.closed;
+const tag = () => `<span class="s-tag ${down() ? 'down">Down' : 'ok">Running'}</span>`;
+const RENDER = {
+  notfound: () => `<div class="site"><div class="bblank">That address isn't part of this mockup.</div></div>`,
+  fiix_home: () => fxShell(`<h3>Assets · Crushing Plant</h3><table class="s-tbl"><thead><tr><th>Code</th><th>Name</th><th>Location</th><th>Status</th></tr></thead><tbody>
+    <tr data-hl="cv104"><td><button class="lnk" data-go="fiix_asset">CV-104</button></td><td>Conveyor</td><td>Crushing Line 2</td><td>${tag()}</td></tr>
+    <tr><td>MTR-104</td><td>Conveyor drive motor</td><td>Crushing Line 2</td><td><span class="s-tag ok">Running</span></td></tr>
+    <tr><td>MCC-03</td><td>Motor control centre</td><td>Crushing Line 2</td><td><span class="s-tag ok">Running</span></td></tr>
+    <tr><td>P-302</td><td>Slurry pump</td><td>Wash plant</td><td><span class="s-tag ok">Running</span></td></tr>
+    <tr><td>FV-221</td><td>Feed valve</td><td>Wash plant</td><td><span class="s-tag ok">Running</span></td></tr></tbody></table>`),
+  fiix_asset: () => fxShell(`<span class="s-crumb">Assets › CV-104</span><h3>CV-104 Conveyor</h3>
+    <div class="s-tabs"><b>Details</b><button class="lnk" data-go="fiix_history">Work order history</button><button class="lnk" data-go="fiix_new">New work order</button></div>
+    <dl class="s-kv"><dt>Status</dt><dd data-hl="status">${tag()}</dd>
+      <dt>Location</dt><dd>Crushing Line 2</dd><dt>Fed from</dt><dd>MCC-03, breaker 7</dd><dt>Starter</dt><dd>Contactor LC1D09BD (9 A, 24 V dc coil)</dd>
+      <dt>Procedure</dt><dd>LOTO-CV104</dd><dt>Criticality</dt><dd>A (stops Line 2)</dd></dl>`),
+  fiix_history: () => fxShell(`<span class="s-crumb">Assets › CV-104 › Work orders</span><h3>Work order history · CV-104</h3>
+    <table class="s-tbl"><thead><tr><th>WO</th><th>Date</th><th>Task</th><th>Status</th></tr></thead><tbody data-hl="hist">
+    ${S.wo ? `<tr><td><button class="lnk" data-go="fiix_wo">WO-1187</button></td><td>2026-10-07</td><td>Replace burned contactor LC1D09BD</td><td><span class="s-tag ${S.closed ? 'ok">Closed' : 'open">Assigned'}</span></td></tr>` : ''}
+    <tr data-hl="wo1102"><td>WO-1102</td><td>2026-09-02</td><td>Contactor tripped, replaced LC1D09BD</td><td><span class="s-tag ok">Closed</span></td></tr>
+    <tr data-hl="wo1031"><td>WO-1031</td><td>2026-07-11</td><td>Contactor welded, replaced LC1D09BD</td><td><span class="s-tag ok">Closed</span></td></tr></tbody></table>`),
+  fiix_new: () => fxShell(`<span class="s-crumb">Work orders › New</span><h3>New work order</h3>
+    <form class="s-form" onsubmit="return false">
+      <label>Asset<input id="wo_asset" value="CV-104 Conveyor"></label>
+      <label>Task<input id="wo_task" value="Replace burned contactor LC1D09BD"></label>
+      <label>Priority<select id="wo_pri"><option>High</option><option>Medium</option><option>Low</option></select></label>
+      <label>Assigned to<input id="wo_who" value="Sarah Okafor"></label>
+      <label>Scheduled<input id="wo_when" value="2026-10-07 18:00"></label>
+      <label>Procedure<input id="wo_proc" value="LOTO-CV104"></label>
+      <button class="s-btn" data-act="create" data-hl="create">Create work order</button></form>`),
+  fiix_wo: () => fxShell(`<span class="s-crumb">Work orders › WO-1187</span><h3>WO-1187 · Replace burned contactor LC1D09BD</h3>
+    <dl class="s-kv"><dt>Status</dt><dd data-hl="status"><span class="s-tag ${S.closed ? 'ok">Closed' : 'open">Assigned'}</span></dd>
+      <dt>Asset</dt><dd><button class="lnk" data-go="fiix_asset">CV-104 Conveyor</button></dd><dt>Assigned to</dt><dd>Sarah Okafor</dd>
+      <dt>Scheduled</dt><dd>2026-10-07 18:00–20:00</dd><dt>Procedure</dt><dd>LOTO-CV104</dd><dt>Created by</dt><dd>plantapi-agent (ERP)</dd>
+      ${S.closed ? `<dt>Completion</dt><dd>${esc(S.techNote)}</dd><dt>Evidence</dt><dd>completion-correct-part.jpg</dd>` : ''}</dl>
+    ${S.closed ? '' : '<button class="s-btn" data-act="closewo">Close work order</button>'}`),
+  rs_search: () => rsShell(`<h3>3 results for “LC1D09BD”</h3><table class="s-tbl"><tbody>
+    <tr data-hl="r1"><td><button class="lnk" data-go="rs_product">Schneider Electric TeSys D LC1D09BD contactor, 24 V dc coil, 3-pole, 9 A</button></td><td><b>$29.49</b></td></tr>
+    <tr><td>Schneider Electric TeSys D LC1D09P7 contactor, 230 V ac coil, 3-pole, 9 A</td><td><b>$27.10</b></td></tr>
+    <tr><td>Schneider Electric TeSys D LC1D12BD contactor, 24 V dc coil, 3-pole, 12 A</td><td><b>$33.85</b></td></tr></tbody></table>`),
+  rs_product: () => rsShell(`<span class="s-crumb">Automation › Contactors › LC1D09BD</span>
+    <div class="rs-prod"><div class="rs-img">product image<br>(placeholder)</div>
+      <div style="display:grid;gap:8px"><h3>Schneider Electric TeSys D LC1D09BD contactor, 24 V dc coil, 3-pole, 9 A</h3>
+        <span class="s-crumb">Mfr. part no. LC1D09BD · example listing</span>
+        <div class="rs-price" data-hl="price">$29.49 <small style="font-size:12px;font-weight:400">each, excl. tax</small></div>
+        <div data-hl="stock"><b style="color:#1f6e43">In stock: 46</b> · Courier delivery today by 17:00 if ordered before 12:00</div>
+        <div style="display:flex;gap:8px;align-items:center"><input id="rs_qty" aria-label="Quantity" value="1" style="width:52px;padding:6px;border:1px solid #c7cfd5;border-radius:3px">
+          <button class="s-btn red" data-act="basket">Add to basket</button></div>
+        <span class="s-crumb">PlantAPI reads price and stock here. It never checks out.</span></div></div>`),
+};
+const pageKey = s => `${s.page}|${S.wo}|${S.closed}|${S.triage}|${B.basket}`;
+
+function consoleHTML(s, n) {
+  const lines = n ? s.log.slice(-n) : s.log;
+  const cls = l => l.startsWith('#') ? 'c-head' : l.startsWith('→') ? 'c-call' : l.startsWith('←') ? 'c-res' : l.startsWith('✓') ? 'c-okk' : l.startsWith('!') ? 'c-w' : l.startsWith('✗') ? 'c-bad' : '';
+  return `<div class="console">${lines.map((l, i) => `<div class="${cls(l)}${i === lines.length - 1 && s.status === 'run' ? ' caret' : ''}">${esc(l)}</div>`).join('')}</div>`;
+}
+
+/* ------------------------------------------------------------ rendering */
+const stCode = s => B.control === s.id ? 'ctl' : s.status;
+const stText = s => ({ ctl: 'YOU', run: 'LIVE', done: 'DONE', fail: 'FAIL', idle: 'IDLE' })[stCode(s)];
+const priGlyph = p => p === 1 ? '<span class="pri p1">1</span>' : p === 2 ? '<span class="pri p2">2</span>' : p === 'a' ? '<span class="pri pa">!</span>' : '';
+
+function renderClock() { $('#clock').innerHTML = `<small>PLANT TIME</small>${clockStr()}`; }
+
+function renderBanner() {
+  let pri = 1, msg = '14:02 · CV-104 MTR OL TRIP · MCC-03 BKR 7 · LINE 2 STOPPED · INC-0142';
+  if (S.closed) { pri = 0; msg = '18:55 · INC-0142 CLOSED · CV-104 RUNNING · LINE 2 RELEASED'; }
+  else if (S.gate === 'approval') { pri = 'a'; msg = 'ACTION · APPROVE REPAIR PLAN FOR CV-104 · PURCHASE $29.49 + BLOCK LINE 2'; }
+  else if (S.gate === 'repair') { pri = 'a'; msg = S.rejected ? 'ACTION · EVIDENCE REJECTED · SEND PHOTO OF INSTALLED CONTACTOR' : 'ACTION · TECHNICIAN TO REPORT REPAIR ON WO-1187'; }
+  else if (B.control) { pri = 'a'; msg = `MANUAL · YOU HAVE THE ${S.sess[B.control].label.toUpperCase()} BROWSER · OTHER SESSIONS RUNNING`; }
+  const glyph = pri === 0 ? '<span class="pri p0">–</span>' : priGlyph(pri);
+  $('#banner').innerHTML = `
+    <div class="msg">${glyph}<span class="m ${pri === 1 ? 'c-warn' : pri === 'a' ? 'c-act' : ''}" style="font-weight:700">${msg}</span></div>
+    <div class="ctrls">
+      <button class="pb ${S.playing ? 'on' : ''}" id="play" ${S.gate || S.closed ? 'disabled' : ''}>${S.playing ? 'Hold' : S.phase === -1 ? 'Run agents' : 'Resume'}</button>
+      <button class="pb ghost" id="speed" title="Playback speed">${S.speed}×</button>
+      <button class="pb ghost" id="reset">Reset</button>
+    </div>`;
+  $('#play').onclick = () => S.playing ? pause() : play();
+  $('#speed').onclick = () => { S.speed = S.speed === 1 ? 2 : S.speed === 2 ? 4 : 1; render(); };
+  $('#reset').onclick = reset;
+}
+
+function renderFMA() {
+  const idx = STATES.indexOf(S.state);
+  $('#fma').innerHTML = STATES.map((s, i) => {
+    const cls = S.closed ? (i === idx ? 'now' : 'done') : i < idx ? 'done' : i === idx ? 'now' + (s.startsWith('WAITING') ? ' wait' : '') : '';
+    return `<div class="${cls}">${s.replace('_', ' ')}</div>`; }).join('');
+}
+
+function renderAnn() {
+  $('#ann').innerHTML = LANES.map(([name, ids, phases]) => {
+    const n = ids.filter(id => S.sess[id].status === 'run').length;
+    return `<div class="ann-g"><span class="${phases.includes(S.phase) ? 'now' : ''}">${name}${n > 1 ? ' · ' + n + ' PARALLEL' : ''}</span>
+      <div class="ann-row">${ids.map(id => { const s = S.sess[id], c = stCode(s);
+        return `<button class="win ${c === 'idle' ? '' : c}${B.focus === id ? ' focus' : ''}" data-focus="${id}" aria-label="${s.label} session, ${stText(s)}">
+          <span class="k">${s.kind === 'web' ? 'WEB' : 'API'}</span><b>${s.label}</b>
+          <small>${c === 'idle' ? s.sid : c === 'ctl' ? 'you have control' : esc(s.note) + (s.calls ? ' · ' + s.calls : '')}</small></button>`; }).join('')}</div></div>`; }).join('');
+}
+
+function line(k, v, cls = '', why = '') {
+  return `<div class="ln"><span class="k">${k}</span><span class="dots"></span><span class="v ${cls}">${v}</span></div>${why ? `<div class="why">${esc(why)}</div>` : ''}`;
+}
+let lastProc = '';
+function renderProc() {
+  const key = JSON.stringify([S.state, S.gate, S.modify, S.photo, S.rejected, Object.keys(S.props), S.plan, S.riskDone, S.closed, S.triage, S.phase,
+    ['procurement','erp','dispatch','verification'].map(id => S.sess[id].status)]);
+  if (key === lastProc) return; lastProc = key;
+  const T = S.triage;
+  let h = `<h2>Procedure <span>INC-0142 · CV-104</span></h2>
+    <div class="sec"><div class="cap">Failure</div>
+      <div class="evid"><div class="shot">IMG_2041.jpg</div><div class="alarmtext">14:02:17<br>CV-104 MTR OL TRIP<br>MCC-03 BKR 7</div></div>
+      ${line('Asset', T ? 'CV-104 CONVEYOR' : '<span class="dim pulse">ANALYSING</span>')}
+      ${line('Fault', T ? 'CONTACTOR BURNED' : '—')}
+      ${line('Part', T ? 'LC1D09BD 9 A' : '—')}
+      ${line('Severity', T ? 'HIGH' : '—', T ? 'c-warn' : '')}
+      ${line('Line 2', S.closed ? 'RUNNING' : 'STOPPED', S.closed ? '' : 'c-warn')}
+    </div>`;
+  if (S.phase === -1) h += `<div class="sec"><p class="note act">Press <b>Run agents</b>. Eleven agents take this failure from the photo to a closed work order. You make one decision.</p></div>`;
+  if (S.phase >= 1 && S.phase <= 3) {
+    const P = S.props, pend = '<span class="dim pulse">WORKING</span>';
+    h += `<div class="sec"><div class="cap"><span>Planner proposals</span><span class="c-agent">AGENT</span></div>
+      ${line('Reliability', P.reliability ? P.reliability[0] : pend, 'c-agent', P.reliability?.[1])}
+      ${line('Materials', P.materials ? P.materials[0] : pend, 'c-agent', P.materials?.[1])}
+      ${line('Production', P.production ? P.production[0] : pend, 'c-agent', P.production?.[1])}
+      ${line('Workforce', P.workforce ? P.workforce[0] : pend, 'c-agent', P.workforce?.[1])}
+    </div>`;
+  }
+  if (S.plan && S.phase >= 2 && S.phase <= 3) {
+    const G = S.gate === 'approval';
+    h += `<div class="sec"><div class="cap"><span>Coordinator plan</span><span>${S.riskDone ? 'RISK CHECKED' : '<span class="blink">RISK CHECK</span>'}</span></div>
+      <div class="bigplan">REPAIR ${S.plan.when}</div>
+      ${line('Buy LC1D09BD', '$29.49 · RS', S.riskDone ? 'c-act' : '')}
+      ${line('Delivery', '17:00 COURIER')}
+      ${line('Block Line 2', S.plan.window, S.riskDone ? 'c-act' : '')}
+      ${line('Technician', 'S. OKAFOR')}
+      ${line('Isolation', 'LOTO-CV104', S.riskDone ? 'c-caut' : '')}
+      ${line('Approval', S.riskDone ? (G ? '<span class="blink">REQUIRED</span>' : 'REQUIRED') : '—', 'c-act')}
+      ${G && S.modify ? `<div class="modify"><label class="cap" for="modwin">Move repair window</label>
+        <select id="modwin"><option value="today">18:00 today (as planned)</option><option value="tmrw">07:00 tomorrow</option></select>
+        <div class="btnrow"><button class="pb" id="modsend">Send to coordinator</button><button class="pb ghost" id="modcancel">Cancel</button></div></div>` : ''}
+      ${G ? `<div class="btnrow"><button class="pb act" id="approve">Approve</button><button class="pb" id="modify">Modify</button><button class="pb no" id="reject">Reject</button></div>` : ''}
+    </div>`;
+  }
+  if (S.phase === 4) {
+    const st = id => S.sess[id].status === 'done' ? ['DONE', ''] : ['RUNNING', 'c-agent'];
+    h += `<div class="sec"><div class="cap">Approved · executing</div>
+      ${line('Expedite part', ...st('procurement'))}${line('WO-1187 + block L2', ...st('erp'))}${line('Book + notify', ...st('dispatch'))}</div>`;
+  }
+  if (S.phase === 5 || S.phase === 6) {
+    const busy = S.phase === 6;
+    h += `<div class="sec"><div class="cap"><span>Technician report</span><span>WO-1187</span></div>
+      ${line('Part on site', '16:52')}${line('Technician', 'S. OKAFOR')}
+      ${S.rejected && !busy ? '<p class="note warn" style="margin:6px 0">Evidence rejected: the photo shows a 63 A CHNT contactor, not LC1D09BD. Send a photo of the installed part.</p>' : ''}
+      <label class="cap dim" for="technote" style="margin-top:6px">Repair notes</label>
+      <textarea id="technote" ${busy ? 'disabled' : ''}>${esc(S.techNote)}</textarea>
+      <span class="cap dim" style="margin-top:6px">Completion photo</span>
+      <div class="choices">
+        <button class="choice" data-photo="wrong" aria-pressed="${S.photo === 'wrong'}" ${busy ? 'disabled' : ''}><div class="shot bad">IMG_2077.jpg</div>CHNT NCH8-63 · 63 A</button>
+        <button class="choice" data-photo="right" aria-pressed="${S.photo === 'right'}" ${busy ? 'disabled' : ''}><div class="shot ok">IMG_2079.jpg</div>TeSys-D style · 9 A</button>
+      </div>
+      <div class="btnrow"><button class="pb ${busy ? '' : 'act'}" id="done" ${busy ? 'disabled' : ''}>${busy ? 'Verifying' : 'Report repair done'}</button></div>
+    </div>`;
+  }
+  if (S.closed) {
+    h += `<div class="sec"><div class="cap"><span>Closed</span><span class="c-ok">18:55</span></div>
+      ${line('Report → close', '4 H 53 M')}${line('Line downtime', '38 MIN')}${line('Agent cost', '$0.47', 'c-agent')}
+      ${line('Agent sessions', '11')}${line('Human decisions', '1')}${line('WO-1187', 'CLOSED', 'c-ok')}${line('Line 2', 'RELEASED', 'c-ok')}</div>`;
+  }
+  $('#proc').innerHTML = h;
+  const on = (id, fn) => { const el = document.getElementById(id); if (el) el.onclick = fn; };
+  on('approve', approve); on('reject', reject); on('modify', () => { S.modify = true; lastProc = ''; renderProc(); });
+  on('modsend', sendModify); on('modcancel', () => { S.modify = false; lastProc = ''; renderProc(); });
+  on('done', submitRepair);
+  const tn = document.getElementById('technote'); if (tn) tn.oninput = () => S.techNote = tn.value;
+  document.querySelectorAll('[data-photo]').forEach(b => b.onclick = () => { S.photo = b.dataset.photo; lastProc = ''; renderProc(); });
+}
+
+/* monitor wall: small monitors persist so cursors glide between steps */
+let lastWall = '';
+const TS = .4;
+function wallIds() { return S.wallFrom >= 0 ? PHASES[S.wallFrom].agents : []; }
+function renderWall() {
+  const ids = wallIds(), key = ids.join();
+  const live = ids.filter(id => S.sess[id].status === 'run').length;
+  $('#wallcount').textContent = ids.length ? `${live} live · ${ids.length} this step` : 'no sessions';
+  if (key !== lastWall) {
+    lastWall = key;
+    $('#wall').innerHTML = ids.length ? ids.map((id, n) => `
+      <button class="tile" data-tile="${id}" aria-label="Show ${AGENTS[id].label} on the main monitor">
+        <div class="lab"><span>CH${String(n + 1).padStart(2, '0')} ${AGENTS[id].label.toUpperCase()}</span><span class="st"></span></div>
+        <div class="tview"><div class="tinner"></div>
+          <div class="cursor" hidden><svg viewBox="0 0 18 18"><path d="M2 1 L2 15 L6 11 L9 17 L11.5 16 L8.5 10 L14 10 Z" fill="#ffffff" stroke="#1d2329" stroke-width="1.3" stroke-linejoin="round"/></svg><span>${AGENTS[id].label}</span></div></div>
+        <div class="tcap"></div></button>`).join('')
+      : '<p class="empty">Each agent runs in its own Agent37 session. Their screens appear here when they start.</p>';
+    document.querySelectorAll('[data-tile]').forEach(t => t.onclick = () => focusOn(t.dataset.tile));
+  }
+  ids.forEach(id => updateTile(document.querySelector(`[data-tile="${id}"]`), S.sess[id]));
+}
+function offsetIn(el, root) { let top = 0, left = 0; while (el && el !== root) { top += el.offsetTop; left += el.offsetLeft; el = el.offsetParent; if (el && !root.contains(el)) break; } return { top, left }; }
+function updateTile(el, s) {
+  if (!el) return;
+  el.classList.toggle('focus', B.focus === s.id); el.classList.toggle('ctl', B.control === s.id);
+  const st = el.querySelector('.st'); st.className = 'st ' + stCode(s); st.textContent = (s.status === 'run' && B.control !== s.id ? '● ' : '') + stText(s);
+  el.querySelector('.tcap').textContent = B.control === s.id ? 'you have control' : s.log[s.log.length - 1] || '';
+  const view = el.querySelector('.tview'), inner = el.querySelector('.tinner'), cur = el.querySelector('.cursor');
+  if (!s.page) {
+    view.classList.add('api'); inner.style.width = '100%'; inner.dataset.k = '';
+    inner.innerHTML = consoleHTML(s, 10); cur.hidden = true;
+    const extra = inner.firstChild.offsetHeight - view.clientHeight; inner.style.transform = extra > 0 ? `translateY(${-extra}px)` : 'none';
+    return;
+  }
+  view.classList.remove('api');
+  const k = pageKey(s);
+  if (inner.dataset.k !== k) { inner.dataset.k = k; inner.style.width = (100 / TS) + '%'; inner.innerHTML = RENDER[s.page](); }
+  inner.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+  const t = s.hl && inner.querySelector(s.hl);
+  let off = 0;
+  if (t) {
+    t.classList.add('hl');
+    const pos = offsetIn(t, inner), vh = view.clientHeight / TS;
+    off = Math.max(0, pos.top - vh * .45);
+    const x = Math.min(pos.left * TS + Math.min(t.offsetWidth * TS * .35, 50), view.clientWidth - 90);
+    const y = (pos.top - off) * TS + t.offsetHeight * TS / 2 - 3;
+    cur.hidden = B.control === s.id || s.status !== 'run';
+    cur.style.transform = `translate(${Math.max(4, x)}px, ${y}px)`;
+  } else cur.hidden = true;
+  inner.style.transform = `scale(${TS}) translateY(${-off}px)`;
+}
+
+/* main monitor: the focused session full size */
+let lastFocusKey = '';
+function focusOn(id) {
+  if (B.control && B.control !== id) handBack(true);
+  B.focus = id; B.pinned = true; lastFocusKey = ''; render();
+}
+function renderMain() {
+  const s = S.sess[B.focus], user = B.control === s.id, view = $('#bview'), pg = $('#bpage'), cur = $('#bcursor');
+  $('#mchip').textContent = `${s.label.toUpperCase()} · ${s.sid}`;
+  $('#mlive').className = 'live' + (s.status === 'run' && !user ? '' : ' off');
+  $('#mstat').textContent = user ? 'MANUAL · YOU' : s.status === 'idle' ? 'IDLE' : s.status === 'run' ? 'AGENT DRIVING' : s.status === 'done' ? 'COMPLETE' : 'FAILED';
+  $('#burl').value = s.page ? urlOf(s.page) : (s.kind === 'web' ? 'about:blank' : `agent37://plantapi-line2/sessions/${s.sid}`);
+  $('#burl').readOnly = !user;
+  ['bback', 'bfwd', 'breload'].forEach(b => $('#' + b).disabled = !user);
+  if (user) { $('#bback').disabled = !s.back.length; $('#bfwd').disabled = !s.fwd.length; }
+  view.classList.toggle('user', user);
+  $('#bwho').textContent = s.label;
+  const canCtl = s.kind === 'web' && s.page;
+  $('#bctl').disabled = !canCtl;
+  $('#bctl').textContent = user ? `Hand back to ${s.label}` : 'Take control';
+  $('#bctl').className = 'pb' + (user ? ' act' : '');
+  $('#bhint').textContent = user ? `You are driving ${s.label}'s browser. Only ${s.label} is paused; every other session keeps running.`
+    : !s.page ? (s.kind === 'web' ? `${s.label} has a browser but hasn't opened a page yet.` : `${s.label} works through tool calls (app connections, Monid, OpenAI, files). There is no browser to take over.`)
+    : `Watching ${s.label} live. Take control to drive this browser yourself.`;
+  if (!s.page) {
+    view.classList.add('api'); cur.hidden = true;
+    const k = 'c' + s.id + s.log.length + s.status;
+    if (k !== lastFocusKey) { lastFocusKey = k; pg.innerHTML = s.log.length ? consoleHTML(s) : '<div class="console"><div class="c-head"># session not started</div></div>'; view.scrollTop = view.scrollHeight; }
+    return;
+  }
+  view.classList.remove('api');
+  const k = s.id + pageKey(s);
+  if (k !== lastFocusKey) { lastFocusKey = k; pg.innerHTML = RENDER[s.page](); }
+  pg.querySelectorAll('.hl').forEach(x => x.classList.remove('hl'));
+  const t = !user && s.hl && pg.querySelector(s.hl);
+  if (!t) { cur.hidden = true; return; }
+  t.classList.add('hl');
+  const vr = view.getBoundingClientRect(), r = t.getBoundingClientRect();
+  const y = r.top - vr.top + view.scrollTop + r.height / 2 - 4;
+  const x = Math.max(8, Math.min(r.left - vr.left + Math.min(r.width * .35, 160), vr.width - 120));
+  cur.hidden = s.status !== 'run';
+  cur.style.transform = `translate(${x}px, ${y}px)`;
+  view.scrollTo({ top: Math.max(0, y - 160), behavior: 'smooth' });
+}
+function takeControl() {
+  const s = S.sess[B.focus]; if (s.kind !== 'web' || !s.page) return;
+  B.control = s.id; B.pinned = true;
+  ev('SYSTEM', `You took control of the ${s.label} browser. ${s.label} paused; other sessions continue.`, 'a'); render();
+}
+function handBack(silent) {
+  const s = B.control && S.sess[B.control]; B.control = null;
+  if (s && !silent) ev('SYSTEM', `Browser handed back to ${s.label}.`);
+  render();
+}
+function bindMain() {
+  $('#bctl').onclick = () => B.control ? handBack() : takeControl();
+  const s = () => S.sess[B.focus];
+  $('#bback').onclick = () => { const x = s(); if (!x.back.length) return; x.fwd.push(x.page); x.page = x.back.pop(); render(); };
+  $('#bfwd').onclick = () => { const x = s(); if (!x.fwd.length) return; x.back.push(x.page); x.page = x.fwd.pop(); render(); };
+  $('#breload').onclick = () => { lastFocusKey = ''; render(); };
+  $('#burl').onkeydown = e => {
+    if (e.key !== 'Enter' || B.control !== B.focus) return;
+    const v = e.target.value.trim().toLowerCase();
+    const hit = Object.entries(PAGES).find(([, p]) => p.url && v.endsWith(p.url.toLowerCase()) && v.includes(p.site === 'fiix' ? 'fiix' : 'rs-online'));
+    go(s(), hit ? hit[0] : 'notfound'); render();
+  };
+  $('#bpage').addEventListener('click', e => {
+    const t = e.target.closest('[data-go],[data-act],input,select,button'); if (!t) return;
+    if (B.control !== B.focus) { e.preventDefault(); return toast(s().page ? 'Take control to use this browser yourself.' : 'This session has no browser.'); }
+    if (t.dataset.go) { go(s(), t.dataset.go); return render(); }
+    const act = t.dataset.act;
+    if (act === 'basket') { B.basket += Number($('#rs_qty').value) || 1; render(); toast('Added to basket. PlantAPI never completes a purchase.'); }
+    if (act === 'create') toast(S.wo ? 'WO-1187 already exists for this repair.' : 'In the run, the ERP agent creates this work order after approval.');
+    if (act === 'closewo') toast('Verification closes WO-1187 after it checks the completion evidence.');
+  });
+  $('#ann').addEventListener('click', e => { const n = e.target.closest('[data-focus]'); if (n) focusOn(n.dataset.focus); });
+}
+
+function renderTrend() {
+  const ran = Object.values(S.sess).filter(s => s.start !== null);
+  if (!ran.length) { $('#trend').innerHTML = '<p class="dim" style="margin:0;font-size:12px">One row per agent session. Overlapping bars ran in parallel.</p>'; return; }
+  const T = Math.max(S.t, 30000);
+  $('#trend').innerHTML = ran.map(s => {
+    const end = s.end ?? S.t, left = s.start / T * 100, w = Math.max(.6, (end - s.start) / T * 100);
+    const c = B.control === s.id ? 'ctl' : s.status === 'run' ? 'run' : s.status === 'fail' ? 'fail' : '';
+    return `<div class="tr"><span>${s.label}</span><div class="track"><div class="bar ${c}" style="left:${left}%;width:${w}%"></div></div></div>`;
+  }).join('') + `<div class="axis"><span>0 s</span><span>${Math.round(T / 2000)} s</span><span>${Math.round(T / 1000)} s</span></div>`;
+}
+
+let lastJ = -1;
+function renderJournal() {
+  if (S.events.length === lastJ) return;
+  const added = lastJ < 0 ? 0 : S.events.length - lastJ; lastJ = S.events.length;
+  $('#jcount').textContent = `${S.events.length} events`;
+  $('#journal').innerHTML = S.events.map((e, i) => `<tr class="${i < added ? 'new' : ''}"><td>${e.time}</td><td>${priGlyph(e.pri)}</td><td>${e.src}</td>
+    <td class="${e.pri === 1 ? 'c-warn' : e.pri === 'a' ? 'c-act' : ''}">${esc(e.text)}</td></tr>`).join('');
+}
+
+function render() { renderClock(); renderBanner(); renderFMA(); renderAnn(); renderProc(); renderWall(); renderMain(); renderTrend(); renderJournal(); }
+
+/* tabs, plant switcher, governance */
+document.querySelectorAll('nav [data-view]').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav [data-view]').forEach(x => x.setAttribute('aria-selected', x === b));
+  document.querySelectorAll('.view').forEach(v => v.hidden = v.id !== 'view-' + b.dataset.view);
+});
+$('#plant').onchange = e => { if (e.target.value === 'add') { toast('Add plant would create a new Agent37 instance from the plantapi-agent image.'); e.target.selectedIndex = 0; } };
+const GOV = [
+  ['Create incident-analysis environment', 'Branch env with its own database and storage', 'ALLOW', 'Created env inc-0142-analysis'],
+  ['Scale the dashboard service to 3 replicas', 'Production change', 'APPROVE', 'Held for approval apr_7Q2KX9'],
+  ['Delete project plantapi', 'Destructive', 'DENY', 'Blocked by policy'],
+];
+$('#gov').innerHTML = GOV.map((g, i) => `<div class="govrow"><div><b>${g[0]}</b><span>${g[1]}</span></div>
+  <button class="pb" data-gov="${i}">Try</button><span class="verdict" id="gr${i}">—</span></div>`).join('');
+let gclock = 15 * 60 + 10;
+document.querySelectorAll('[data-gov]').forEach(b => b.onclick = () => {
+  const g = GOV[b.dataset.gov], v = $('#gr' + b.dataset.gov);
+  v.textContent = g[2]; v.className = 'verdict ' + g[2];
+  const a = $('#audit'); if (a.querySelector('.dim')) a.innerHTML = '';
+  gclock += 1; const tm = `${Math.floor(gclock / 60)}:${String(gclock % 60).padStart(2, '0')}`;
+  a.insertAdjacentHTML('afterbegin', `<tr><td>${tm}</td><td class="m ${g[2] === 'DENY' ? 'c-warn' : g[2] === 'APPROVE' ? 'c-act' : 'c-ok'}">${g[2]}</td><td>${g[0]}. ${g[3]}.</td></tr>`);
+});
+let tt; function toast(msg) { const el = $('#toast'); el.textContent = msg; el.hidden = false; clearTimeout(tt); tt = setTimeout(() => el.hidden = true, 3200); }
+
+fresh(); bindMain(); render();
+// arriving from the 3D site view: #cv104, #mtr104, #p302 ...
+(() => {
+  const h = location.hash.slice(1).toLowerCase(); if (!h) return;
+  const names = { jc101: 'JC-101', vs102: 'VS-102', cc103: 'CC-103', cv104: 'CV-104', mtr104: 'MTR-104', mcc03: 'MCC-03', bm201: 'BM-201', bm202: 'BM-202', cy203: 'CY-203', p302: 'P-302', fv221: 'FV-221', tk301: 'TK-301', tk302: 'TK-302' };
+  const id = names[h]; if (!id) return;
+  if (h === 'cv104') return toast('CV-104: open incident INC-0142. Press Run agents to watch the team work it.');
+  if (h === 'mtr104' || h === 'mcc03') return toast(`${id} is part of INC-0142 on CV-104. Showing that incident.`);
+  toast(`${id} has no open incident. Showing INC-0142 on CV-104, the open incident on this site.`);
+})();
+</script>

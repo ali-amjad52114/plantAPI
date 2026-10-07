@@ -1,0 +1,2 @@
+Slack #plant-ops, 15:02 - from Line 2 operator (Tom Becker):
+CV-104 keeps tripping, 3rd time this shift. HMI alarm: "CV-104 MOTOR STARTER FAULT - KM104 FEEDBACK LOST". Hear clicking/buzzing from MCC-03 bucket 4 before it drops out. Photo of the starter attached. Restarted twice, trips again after 10-20 min.

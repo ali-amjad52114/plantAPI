@@ -1,0 +1,5 @@
+[
+  {"name": "Sarah Chen", "trade": "electrician", "title": "Electrical Technician", "certifications": ["LOTO", "Low-voltage controls", "NFPA 70E"], "shift": "14:00-22:00", "phone": "+1-555-0101", "slack": "@sarah.chen", "email": "sarah.chen@plantapi.example"},
+  {"name": "Mike Rodriguez", "trade": "millwright", "title": "Millwright", "certifications": ["LOTO", "Conveyor belts", "Alignment"], "shift": "06:00-14:00", "phone": "+1-555-0102", "slack": "@mike.rodriguez", "email": "mike.rodriguez@plantapi.example"},
+  {"name": "David Kim", "trade": "instrumentation", "title": "Instrumentation Technician", "certifications": ["LOTO", "PLC", "Valves and transmitters"], "shift": "06:00-14:00", "phone": "+1-555-0103", "slack": "@david.kim", "email": "david.kim@plantapi.example"}
+]

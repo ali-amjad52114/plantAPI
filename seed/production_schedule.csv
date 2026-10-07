@@ -1,0 +1,10 @@
+Date,Line,Asset,Window Start,Window End,Status,Planned Throughput (t/h),Production Impact If Down,Available Downtime,Maintenance Reserved,Notes
+2026-10-07,Crushing Line 2,CV-104,06:00,14:00,Running,220,High,NO,NO,Day shift - customer order SO-4471 in progress
+2026-10-07,Crushing Line 2,CV-104,14:00,17:30,Running,220,High,NO,NO,Afternoon shift - truck loading
+2026-10-07,Crushing Line 2,CV-104,17:30,18:00,Running,120,Medium,NO,NO,Shift handover
+2026-10-07,Crushing Line 2,CV-104,18:00,20:00,Reduced,60,Low,YES,NO,Evening reduced rate - stockpile above target
+2026-10-07,Crushing Line 2,CV-104,20:00,06:00,Stopped,0,None,NO,NO,Night - line down; no electrician on site
+2026-10-08,Crushing Line 2,CV-104,07:00,08:00,Startup,0,Lowest,YES,NO,Line start-up checks - lowest impact window
+2026-10-08,Crushing Line 2,CV-104,08:00,16:00,Running,220,High,NO,NO,Day shift
+2026-10-07,Crushing Line 1,CV-101,06:00,22:00,Running,180,High,NO,NO,Unaffected
+2026-10-07,Water System,P-302,00:00,23:59,Running,0,Medium,YES,NO,Duty/standby pump - can swap

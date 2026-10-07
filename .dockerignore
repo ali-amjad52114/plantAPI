@@ -1,0 +1,5 @@
+.env
+.insta/
+node_modules/
+.claude/
+.agents/

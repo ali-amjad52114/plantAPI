@@ -1,0 +1,7 @@
+[
+  {"technician": "Sarah Chen", "title": "PM rounds - MCC-01/02", "start": "2026-10-07T14:00:00-04:00", "end": "2026-10-07T17:30:00-04:00"},
+  {"technician": "Sarah Chen", "title": "Available", "start": "2026-10-07T18:00:00-04:00", "end": "2026-10-07T20:00:00-04:00", "free": true},
+  {"technician": "Sarah Chen", "title": "Arc-flash training (off site)", "start": "2026-10-08T07:00:00-04:00", "end": "2026-10-08T12:00:00-04:00"},
+  {"technician": "Mike Rodriguez", "title": "Belt splice - CV-101", "start": "2026-10-07T06:00:00-04:00", "end": "2026-10-07T14:00:00-04:00"},
+  {"technician": "David Kim", "title": "Calibration - FV-221", "start": "2026-10-07T06:00:00-04:00", "end": "2026-10-07T14:00:00-04:00"}
+]
