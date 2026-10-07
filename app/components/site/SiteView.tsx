@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { isOpen, siteAssets, type SiteIncident } from "../data/assets";
 import { ReportFailure } from "../ReportFailure";
+import { ResetDemoButton, type ResetConfig } from "../ResetDemo";
 import { buildScene } from "./scene";
 
 // three comes from node_modules (package.json); the CDN copy is only a fallback if the local chunk fails to load.
@@ -12,7 +13,7 @@ const THREE_URL = "https://esm.sh/three@0.170.0";
 const ADDONS = "https://esm.sh/three@0.170.0/examples/jsm";
 const load = (u: string) => import(/* webpackIgnore: true */ u);
 
-export function SiteView({ incidents, mock, embed = false, focus }: { incidents: SiteIncident[]; mock: boolean; embed?: boolean; focus?: string }) {
+export function SiteView({ incidents, mock, embed = false, focus, cfg }: { incidents: SiteIncident[]; mock: boolean; embed?: boolean; focus?: string; cfg?: ResetConfig }) {
   const root = useRef<HTMLDivElement>(null);
   const scene = useRef<{ show(id: string): void; open(id: string): void; dispose(): void } | null>(null);
   const router = useRouter();
@@ -83,6 +84,7 @@ export function SiteView({ incidents, mock, embed = false, focus }: { incidents:
         <div className="sp" />
         {mock ? <span className="tag">Demo replay · example data</span> : <span className={"chip" + (down ? " alarm" : "")}>{down ? `Live · ${down} down` : "Live · all running"}</span>}
         <button className="glass hbtn" onClick={() => setReport("")}>Report failure</button>
+        {!embed && <ResetDemoButton cfg={cfg ?? { mock }} className="glass hbtn" />}
         <button className="glass hbtn" id="assetsBtn">Assets</button>
         <button className="glass hbtn" id="labelsBtn" aria-pressed="true">Labels<kbd>L</kbd></button>
         <button className="glass hbtn" id="homeBtn">Overview<kbd>Esc</kbd></button>

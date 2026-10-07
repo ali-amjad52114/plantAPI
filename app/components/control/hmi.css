@@ -138,10 +138,11 @@ body { margin: 0 }
 .win.done { color: var(--muted); border-color: rgba(30, 158, 99, .25) }
 .win.done b { color: var(--ink) }
 .win.done::after { content: ""; position: absolute; right: 9px; bottom: 9px; width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 6px var(--ok) }
-.win.fail { background: rgba(217, 54, 54, .18); border-color: var(--warn); color: #FFD0D0; animation: alarm 1s steps(2, start) infinite }
+.win.fail { background: #FDECEC; border-color: var(--warn); color: var(--ink); box-shadow: inset 3px 0 0 var(--warn); animation: alarm 1s steps(2, start) infinite }
+.win.fail small { color: #8F1D1D }
 .win.ctl { background: rgba(232, 101, 10, .16); color: var(--ink); border-color: var(--act); box-shadow: 0 0 18px rgba(232, 101, 10, .3) }
 .win.focus { outline: 2px solid var(--act); outline-offset: 2px }
-@keyframes alarm { 50% { background: rgba(217, 54, 54, .05) } }
+@keyframes alarm { 50% { background: #FFFFFF } }
 
 /* panels */
 .cols { display: grid; grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(300px, 380px); gap: var(--s2); align-items: start }
@@ -370,7 +371,7 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 .agraph .n text.s { font: 9.5px var(--fm); letter-spacing: 0; font-weight: 400; fill: var(--faint) }
 .agraph .n.run rect { fill: rgba(31, 111, 209, .2); stroke: var(--agent) } .agraph .n.run text { fill: var(--ink) }
 .agraph .n.done rect { fill: rgba(30, 158, 99, .08); stroke: rgba(30, 158, 99, .5) } .agraph .n.done text { fill: var(--ink) }
-.agraph .n.fail rect { fill: rgba(217, 54, 54, .25); stroke: var(--warn) } .agraph .n.fail text { fill: #fff }
+.agraph .n.fail rect { fill: #FDECEC; stroke: var(--warn); stroke-width: 1.5 } .agraph .n.fail text { fill: var(--ink) } .agraph .n.fail text.s { fill: #8F1D1D }
 .agraph .n.queued rect { stroke: var(--act); stroke-dasharray: 3 3 }
 .agraph .n.flash rect { fill: rgba(232, 101, 10, .35) } .agraph .n.flash text { fill: var(--ink) }
 .agraph .n.focus rect { stroke: var(--act); stroke-width: 2 }
@@ -480,3 +481,7 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 @media (prefers-reduced-motion: reduce) {
   .cr *, .cr *::before, .cr *::after { animation: none !important; transition: none !important }
 }
+
+/* header "Reset demo" (secondary to Report failure) */
+.top nav button.reset { background: var(--panel) !important; color: var(--ink) !important; border-left: 1px solid var(--rule); font: 700 12px/1 var(--fm); letter-spacing: .16em; text-transform: uppercase }
+.top nav button.reset:hover { background: var(--raised) !important; box-shadow: none }

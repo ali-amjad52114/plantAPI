@@ -11,6 +11,7 @@ import { PAGE_URL } from "../data/mock";
 import { useIncident, type SourceConfig } from "../data/useIncident";
 import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
+import { ResetDemoButton } from "../ResetDemo";
 import { disagree, positions, wall } from "./proposals";
 import { AgentGraph } from "./AgentGraph";
 import { AssetPip } from "./AssetPip";
@@ -94,8 +95,8 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
     if (pick && pick !== focus) setFocus(pick);
   }, [wall, tasks, pinned, manual, focus]);
 
-  if (error) return <div className="cr"><Header q={q} clock={clock} onReport={() => setReport(true)} /><main className="wrap"><p className="note warn">{error}</p></main></div>;
-  if (!inc) return <div className="cr"><Header q={q} clock={clock} onReport={() => setReport(true)} /><main className="wrap"><p className="dim">Loading incident…</p></main></div>;
+  if (error) return <div className="cr"><Header q={q} clock={clock} onReport={() => setReport(true)} cfg={cfg} /><main className="wrap"><p className="note warn">{error}</p></main></div>;
+  if (!inc) return <div className="cr"><Header q={q} clock={clock} onReport={() => setReport(true)} cfg={cfg} /><main className="wrap"><p className="dim">Loading incident…</p></main></div>;
 
   const status = inc.status;
   const tri = inc.triage, plan = inc.plan, ver = inc.verification;
@@ -160,7 +161,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
   return (
     <div className="cr">
-      <Header q={q} clock={clock} onReport={() => setReport(true)} />
+      <Header q={q} clock={clock} onReport={() => setReport(true)} cfg={cfg} />
       <main className="wrap">
         <section className="stack">
           <div className="ihead">
@@ -400,7 +401,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   );
 }
 
-function Header({ q, clock, onReport }: { q: string; clock: number; onReport: () => void }) {
+function Header({ q, clock, onReport, cfg }: { q: string; clock: number; onReport: () => void; cfg?: SourceConfig }) {
   // The server renders in UTC and the browser in local time; show the clock only after mount to avoid a hydration mismatch.
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -410,7 +411,7 @@ function Header({ q, clock, onReport }: { q: string; clock: number; onReport: ()
       <div className="word"><i aria-hidden="true" />PLANTAPI</div>
       <div className="clock"><small>PLANT TIME</small>{mounted ? new Date(clock).toTimeString().slice(0, 5) : "--:--"}</div>
       {q && <div className="mock">DEMO REPLAY · EXAMPLE DATA</div>}
-      <nav><button onClick={onReport} style={{ color: "#fff" }}>REPORT FAILURE</button></nav>
+      <nav>{cfg && <ResetDemoButton cfg={cfg} className="reset" onDone={() => { location.href = "/"; }} />}<button onClick={onReport} style={{ color: "#fff" }}>REPORT FAILURE</button></nav>
     </header>
   );
 }
