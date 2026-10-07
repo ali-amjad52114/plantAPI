@@ -45,8 +45,8 @@ export default async function GovernancePage() {
                   <td className={"m " + (who === "LEAD AI" && v === "DENY" ? "c-warn" : "")}>{who}</td>
                   <td>{pick(r, "action", "operation", "command")}</td>
                   <td className="m">{pick(r, "approval_id", "approval")}</td>
-                  <td className="m">{pick(r, "policy_expected").toUpperCase()}{pick(r, "platform_returned") && pick(r, "policy_expected") !== pick(r, "platform_returned") ? <span className="c-warn"> ≠ {pick(r, "platform_returned").toUpperCase()}</span> : null}</td>
-                  <td>{pick(r, "detail", "reason", "message")}</td>
+                  <td className="m">{pick(r, "policy_expected").toUpperCase()}{/^(allow|approve|deny)$/i.test(pick(r, "platform_returned")) && pick(r, "policy_expected").toLowerCase() !== pick(r, "platform_returned").toLowerCase() ? <span className="c-warn"> ≠ {pick(r, "platform_returned").toUpperCase()}</span> : null}</td>
+                  <td>{pick(r, "detail", "reason", "message")}{pick(r, "platform_returned") && !/^(allow|approve|deny)$/i.test(pick(r, "platform_returned")) && <div className="dim" style={{ fontSize: 11 }}>platform: {pick(r, "platform_returned")}</div>}</td>
                 </tr>); })}</tbody></table></div>}
         </div>
       </main>
