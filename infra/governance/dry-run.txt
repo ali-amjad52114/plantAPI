@@ -1,0 +1,32 @@
+# PlantAPI governance demo - DRY RUN (2026-10-07T22:07:07.197Z)
+# Read-only calls only: agent policy get, branch list. No mutating command is executed.
+
+Live policy mode     : full_access
+main branch protected: false
+Effective decisions the demo depends on:
+  unprotectedBranch  branch.create   -> allow
+  unprotectedBranch  service.scale   -> allow
+  project            project.update  -> allow
+  project            project.delete  -> allow
+
+--live guard: WOULD ABORT before any mutating call
+  - mode is full_access (need branch_specific or customize)
+  - branch main is not in protectedBranchIds
+  - project.delete resolves to allow in scope project (need deny)
+  - project.delete resolves to allow in scope unprotectedBranch (need deny)
+  - project.delete resolves to allow in scope protectedBranch (need deny)
+  - service.scale resolves to allow on unprotected branches (need approve)
+
+Planned --live sequence (each command is run once, output parsed for the real decision):
+  0. insta --agent agent policy get --json            # guard (abort unless governed)
+  1. ALLOW   insta --agent branch create analysis-<ts> --json
+  2. APPROVE insta --agent compute scale 2 app --branch analysis-<ts> --json   # expect exit 2 + approval id
+     fallback if free-plan 403 fires first: insta --agent project rename "<current name>" --json   # project.update, same-name body
+  3. (re-read policy; abort unless project.delete -> deny)
+     DENY    insta --agent project delete --json        # expect policy deny, no approval path
+  4. insta --agent agent approvals list --status pending --json ; insta --agent agent events --limit 25 --json
+  5. write infra/governance/evidence-<timestamp>.json
+
+After --live, the lead (human terminal) cleans up:
+  insta agent approvals deny <approval-id>
+  insta branch delete analysis-<ts>
