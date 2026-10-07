@@ -254,9 +254,9 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   {inc.materials && (() => { const sp = inc.materials.suppliers[inc.materials.recommended_index]; return sp ? <Ln k="Supplier" v={sp.url ? <a href={sp.url} target="_blank" rel="noreferrer">{sp.supplier} {sp.currency} {sp.price}</a> : `${sp.supplier} ${sp.currency} ${sp.price}`} /> : null; })()}
                   {inc.materials?.odoo_product_id != null && <Ln k="Odoo product" v={`#${inc.materials.odoo_product_id} · stock ${inc.materials.internal_stock}`} />}
                   {inc.erp && (inc.erp.fiix_wo_code
-                    ? <Ln k="Fiix WO" v={`${inc.erp.fiix_wo_code} · ${inc.erp.fiix_wo_status}`} />
+                    ? <Ln k="Fiix WO" v={`${inc.erp.fiix_wo_code} · ${ver?.fiix_closed ? "CLOSED" : inc.erp.fiix_wo_status}`} cls={ver?.fiix_closed ? "c-ok" : ""} />
                     : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
-                  {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={inc.erp.odoo_block_ref} />}
+                  {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={`${inc.erp.odoo_block_ref}${ver?.odoo_unblocked ? " · RELEASED" : ""}`} cls={ver?.odoo_unblocked ? "c-ok" : ""} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
                 </div>)}

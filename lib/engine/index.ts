@@ -14,7 +14,10 @@ import {
 import { agent37 } from "@/lib/agent37";
 import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
-import { afterApproval, afterTask, checkOutput, CAN_APPROVE, CAN_COMPLETE, OUTPUT_COLUMN, RUNNING_STATUS } from "./flow";
+import { FLAGS } from "@/lib/contracts/flags";
+import { extractLastJson } from "@/lib/ai";
+import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
+import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
 import { buildTaskText } from "./prompts";
 
@@ -40,7 +43,41 @@ async function setStatus(id: string, status: IncidentStatus, patch: Record<strin
 }
 
 async function enqueue(incidentId: string, role: AgentRole, input: Record<string, unknown> = {}) {
-  must(await db().from("agent_tasks").insert({ incident_id: incidentId, role, status: "QUEUED", input }).select("id"), "enqueue task");
+  const res = await db().from("agent_tasks").insert({ incident_id: incidentId, role, status: "QUEUED", input }).select("id");
+  // 23505 = migration 002's one-open-task-per-role index: a parallel planner already enqueued this step.
+  if (res.error && (res.error as { code?: string }).code === "23505") return;
+  must(res, "enqueue task");
+}
+
+/** Wave A full team: lead flips FLAGS.fullTeam; PLANTAPI_FULL_TEAM=1 enables it for local runs. */
+export const fullTeam = () => FLAGS.fullTeam || process.env.PLANTAPI_FULL_TEAM === "1";
+
+/** Planner/executor roles whose task for this incident is COMPLETE or FAILED (fan-in check). */
+async function settledRoles(incidentId: string): Promise<AgentRole[]> {
+  const res = await db().from("agent_tasks").select("role,status").eq("incident_id", incidentId).in("role", [...PLANNERS, ...EXECUTORS]).in("status", ["COMPLETE", "FAILED"]);
+  return [...new Set((res.data ?? []).map((r) => r.role as AgentRole))];
+}
+
+/** Latest COMPLETE output per wave A role, for the coordinator / risk context. */
+async function teamOutputs(incidentId: string): Promise<Record<string, unknown>> {
+  const res = await db().from("agent_tasks").select("role,status,output,error").eq("incident_id", incidentId).in("role", ["reliability", "production", "workforce", "risk"]).order("created_at");
+  const out: Record<string, unknown> = {};
+  for (const r of res.data ?? []) out[r.role] = r.status === "COMPLETE" ? r.output : { unavailable: r.error ?? r.status };
+  return out;
+}
+
+/** Slice 1 roles use the contract parser; wave A roles validate against wave-a-schemas (one repair call). */
+async function parseOutput(role: AgentRole, text: string): Promise<unknown> {
+  if ((OUTPUT_COLUMN as Record<string, string>)[role]) return ai.parseAgentOutput(role as Slice1Role, text);
+  const schema = schemaFor(role);
+  const first = schema.safeParse(extractLastJson(text));
+  if (first.success) return first.data;
+  return ai.chatJSON(`Extract the final ${role} JSON from this agent reply. Use only values present in the reply.
+
+Error: ${first.error.message}
+
+Reply:
+${text}`, schema, { model: "fast" });
 }
 
 async function audit(incidentId: string, actor: string, action: string, system: string, detail: Record<string, unknown>) {
@@ -85,15 +122,18 @@ export async function claimNextTask(incidentId?: string): Promise<AgentTask | nu
 }
 
 export async function runTask(task: AgentTask): Promise<void> {
-  const role = task.role as Slice1Role;
+  const role = task.role as AgentRole;
   const incidentId = task.incident_id;
+  const team = fullTeam();
   try {
-    if (!SLICE1_ROLES.includes(role)) throw new Error(`role ${role} not in slice 1`);
+    const allowed: AgentRole[] = team ? [...SLICE1_ROLES, ...WAVE_A_ROLES] : SLICE1_ROLES;
+    if (!allowed.includes(role)) throw new Error(`role ${role} not enabled (fullTeam=${team})`);
     let incident = await getIncident(incidentId);
-    if (incident.status !== RUNNING_STATUS[role]) await setStatus(incidentId, RUNNING_STATUS[role]);
+    if (incident.status !== runningStatus(role)) await setStatus(incidentId, runningStatus(role));
     await emit({ incident_id: incidentId, agent: role, kind: "status", system: "agent37", message: `${role} started on Agent37` });
 
     const extra: Record<string, unknown> = { ...task.input };
+    if (team && (role === "coordinator" || role === "risk")) extra.team = await teamOutputs(incidentId);
     if (role === "triage") {
       extra.photo_observation = await observePhoto(incidentId, role, incident.photo_url, "Describe this industrial equipment failure photo: component type, visible damage, any part numbers/brands/ratings on labels.");
     }
@@ -113,8 +153,8 @@ export async function runTask(task: AgentTask): Promise<void> {
       (e) => void emit({ ...e, incident_id: incidentId }),
     );
 
-    const output = await ai.parseAgentOutput(role, turn.outputText);
-    const problem = checkOutput(role, output, incident);
+    const output = await parseOutput(role, turn.outputText);
+    const problem = checkOutput(role as Slice1Role, output, incident);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
     must(
       await db()
@@ -127,11 +167,14 @@ export async function runTask(task: AgentTask): Promise<void> {
     await audit(incidentId, role, `${role}.complete`, "agent37", { response_id: turn.responseId, cost_usd: turn.costUsd, duration_ms: turn.durationMs });
 
     incident = await getIncident(incidentId);
-    const t = afterTask(role, output as { verdict?: string });
-    const patch: Record<string, unknown> = {
-      [OUTPUT_COLUMN[role]]: output,
-      agent37_session_ids: { ...incident.agent37_session_ids, [role]: turn.sessionId },
-    };
+    const t = nextSteps(role, output, team, team ? await settledRoles(incidentId) : []);
+    const patch: Record<string, unknown> = { agent37_session_ids: { ...incident.agent37_session_ids, [role]: turn.sessionId } };
+    const src = (output as { source?: unknown }).source;
+    if (typeof src === "string" && /seed/i.test(src)) {
+      await emit({ incident_id: incidentId, agent: role, kind: "log", system: "google", message: `source: seed file (${src}) — ${role === "workforce" ? "Calendar" : "Sheets"} not connected yet` });
+    }
+    const column = (OUTPUT_COLUMN as Partial<Record<AgentRole, string>>)[role];
+    if (column) patch[column] = output;
     if (role === "triage") {
       // Agent reports the asset code (CV-104); incidents.asset_id is the assets row uuid.
       const code = (output as { asset_id: string }).asset_id;
@@ -145,8 +188,10 @@ export async function runTask(task: AgentTask): Promise<void> {
       if (v.verdict !== "accept") await emit({ incident_id: incidentId, agent: role, kind: "error", system: "openai", message: `Rejected: ${v.reason}` });
     }
     await emit({ incident_id: incidentId, agent: role, kind: "output", system: "agent37", message: `${role} done`, data: output as Record<string, unknown> });
-    await setStatus(incidentId, t.status, patch);
-    if (t.next) await enqueue(incidentId, t.next);
+    if (t.status !== incident.status) await setStatus(incidentId, t.status, patch);
+    else must(await db().from("incidents").update(patch).eq("id", incidentId).select("id"), "update incident");
+    if (role === "risk" && t.status === "REJECTED") await emit({ incident_id: incidentId, agent: role, kind: "error", system: "agent37", message: `Risk DENY: ${(output as { summary?: string }).summary ?? ""}` });
+    for (const next of t.next) await enqueue(incidentId, next);
 
     const fresh = await getIncident(incidentId);
     for (const hook of postStepHooks) await hook(fresh, role).catch((err) => console.error("postStepHook:", err));
@@ -154,7 +199,15 @@ export async function runTask(task: AgentTask): Promise<void> {
     const message = err instanceof Error ? err.message : String(err);
     await db().from("agent_tasks").update({ status: "FAILED", error: message, finished_at: new Date().toISOString() }).eq("id", task.id);
     await emit({ incident_id: incidentId, agent: role, kind: "error", system: "agent37", message: `${role} failed: ${message.slice(0, 300)}` });
-    await setStatus(incidentId, "FAILED").catch(() => {});
+    if (plannerFailureIsFatal(role, team)) {
+      await setStatus(incidentId, "FAILED").catch(() => {});
+    } else {
+      // allSettled: the team goes on without this planner; coordinator starts once all four settled.
+      const t = nextSteps(role, null, team, await settledRoles(incidentId).catch(() => []));
+      const cur = await getIncident(incidentId).catch(() => null);
+      if (cur && cur.status !== t.status && cur.status !== "FAILED") await setStatus(incidentId, t.status).catch(() => {});
+      for (const next of t.next) await enqueue(incidentId, next).catch(() => {});
+    }
   }
 }
 
@@ -172,10 +225,11 @@ export const engine: Engine = {
     must(await db().from("approvals").insert({ incident_id: incidentId, decision, decided_by: by, note: note ?? null }).select("id"), "insert approval");
     await emit({ incident_id: incidentId, agent: "human", kind: "status", system: "supabase", message: `${by} ${decision === "approve" ? "approved" : "rejected"} the plan` });
     await audit(incidentId, by, `plan.${decision}`, "supabase", { note });
-    const t = afterApproval(decision);
+    const t = approvalSteps(decision, fullTeam());
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    if (t.next) await enqueue(incidentId, t.next, { approval: { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() } });
+    const approval = { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() };
+    for (const next of t.next) await enqueue(incidentId, next, { approval });
   },
 
   async complete(incidentId, input) {

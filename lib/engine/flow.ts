@@ -1,5 +1,5 @@
 // Slice 1 state machine: pure, no I/O (unit-tested).
-import type { Incident, IncidentStatus, Slice1Role } from "../contracts/types";
+import type { AgentRole, Incident, IncidentStatus, Slice1Role } from "../contracts/types";
 
 export type Transition = { status: IncidentStatus; next: Slice1Role | null };
 
@@ -59,4 +59,58 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
   if (role === "erp" && !o.odoo_block_ref) return `Crushing Line 2 not blocked in Odoo: ${o.summary ?? ""}`;
   if (role === "verification" && o.verdict === "accept" && !o.fiix_closed) return "verdict accept but the Fiix WO was not closed";
   return null;
+}
+
+// ---------- Wave A: full team (behind FLAGS.fullTeam) ----------
+// triage → [reliability ∥ materials ∥ production ∥ workforce] → coordinator → risk → WAITING_APPROVAL
+
+export const PLANNERS: AgentRole[] = ["reliability", "materials", "production", "workforce"];
+export const EXECUTORS: AgentRole[] = ["erp", "procurement", "dispatch"];
+
+export type Steps = { status: IncidentStatus; next: AgentRole[] };
+
+export function runningStatus(role: AgentRole): IncidentStatus {
+  return (RUNNING_STATUS as Partial<Record<AgentRole, IncidentStatus>>)[role] ?? (EXECUTORS.includes(role) ? "EXECUTING" : "PLANNING");
+}
+
+/**
+ * Where the incident goes after `role` completes. `settledPlanners` = planner roles whose task for this
+ * incident is COMPLETE or FAILED (including this one); the coordinator starts once all four settled.
+ */
+export function nextSteps(role: AgentRole, output: unknown, fullTeam: boolean, settled: AgentRole[] = []): Steps {
+  if (!fullTeam) {
+    const t = afterTask(role as Slice1Role, output as { verdict?: string });
+    return { status: t.status, next: t.next ? [t.next] : [] };
+  }
+  if (role === "triage") return { status: "PLANNING", next: [...PLANNERS] };
+  if (PLANNERS.includes(role)) {
+    const all = PLANNERS.every((p) => settled.includes(p));
+    return { status: "PLANNING", next: all ? ["coordinator"] : [] };
+  }
+  if (role === "coordinator") return { status: "PLANNING", next: ["risk"] };
+  if (role === "risk") {
+    return (output as { decision?: string })?.decision === "DENY" ? { status: "REJECTED", next: [] } : { status: "WAITING_APPROVAL", next: [] };
+  }
+  // erp ∥ procurement ∥ dispatch: wait for all three, then the technician repairs.
+  if (EXECUTORS.includes(role)) {
+    const all = EXECUTORS.every((p) => settled.includes(p));
+    return { status: all ? "WAITING_REPAIR" : "EXECUTING", next: [] };
+  }
+  const t = afterTask(role as Slice1Role, output as { verdict?: string });
+  return { status: t.status, next: t.next ? [t.next] : [] };
+}
+
+/** After approval: slice runs ERP; the full team runs ERP, Procurement and Dispatch in parallel. */
+export function approvalSteps(decision: "approve" | "reject", fullTeam: boolean): Steps {
+  const t = afterApproval(decision);
+  if (!t.next) return { status: t.status, next: [] };
+  return { status: t.status, next: fullTeam ? [...EXECUTORS] : [t.next] };
+}
+
+/** A failed planner doesn't stop the team (allSettled), except Materials: no part, no plan. */
+export function plannerFailureIsFatal(role: AgentRole, fullTeam: boolean): boolean {
+  if (!fullTeam) return true;
+  if (PLANNERS.includes(role)) return role === "materials"; // no part, no plan
+  if (EXECUTORS.includes(role)) return role === "erp"; // no WO / no block, no repair
+  return true;
 }

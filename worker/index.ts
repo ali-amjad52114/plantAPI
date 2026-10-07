@@ -3,7 +3,7 @@ import { loadEnv } from "@/lib/db/env";
 
 loadEnv();
 const POLL_MS = Number(process.env.WORKER_POLL_MS ?? 2000);
-const CONCURRENCY = Number(process.env.WORKER_CONCURRENCY ?? 3);
+const CONCURRENCY = Number(process.env.WORKER_CONCURRENCY ?? 4);
 
 async function main() {
   const { claimNextTask, runTask } = await import("@/lib/engine");
