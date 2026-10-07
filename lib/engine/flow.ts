@@ -54,6 +54,7 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
       (m) => (m.url && m.url === s.url) || (m.supplier === s.supplier && m.price === s.price),
     );
     if (!found) return `plan supplier "${s.supplier}" ${s.price} is not one of the suppliers Materials actually found`;
+    for (const k of ["window_start", "window_end"]) if (!o[k] || Number.isNaN(Date.parse(o[k]))) return `plan ${k} is blank or not a timestamp (${JSON.stringify(o[k])})`;
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
   if (role === "erp" && !o.odoo_block_ref) return `Crushing Line 2 not blocked in Odoo: ${o.summary ?? ""}`;

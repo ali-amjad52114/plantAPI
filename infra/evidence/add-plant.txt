@@ -1,0 +1,38 @@
+# add-plant proof 2026-10-07T15:30:58-07:00 (S4/W1). Template plantapi-agent@1 (build tb_68b3d93031d974774143, sha256:fa48eee41f126fa1f059f6ca1ce032c09492b61b42bcc7495f409a23fff89024)
+## 1. npx tsx lib/agent37/provision/add-plant.ts --live add --name "Test Plant"
+{
+  "plant": {
+    "id": "90097efc-3d33-49b5-b486-9ffaef8aa7bd",
+    "name": "Test Plant",
+    "agent37_instance_id": "hdizdrdslv",
+    "created_at": "2026-10-07T22:30:48.267933+00:00"
+  },
+  "instance": {
+    "id": "hdizdrdslv",
+    "status": "running",
+    "template": "plantapi-agent",
+    "auto_sleep": true
+  },
+  "skillsUploaded": []
+}
+## 2. GET /v1/instances/hdizdrdslv
+{"id":"hdizdrdslv","status":"running","template":"plantapi-agent","template_revision":1,"auto_sleep":true,"idle_timeout_seconds":300,"resources":{"cpu":2,"memory":4,"disk":4}}
+## 3. POST /v1/instances/hdizdrdslv/exec  'ls -la ~/plantapi/skills && which monid && monid --version'
+{"exit_code":0,"stdout":"total 1\ndrwxr-xr-x 2 node node  6 Oct  7 22:30 .\ndrwxr-xr-x 4 node node 35 Oct  7 22:30 ..\n/usr/local/bin/monid\n\u001b[1mmonid\u001b[22m \u001b[94m0.1.7\u001b[39m\n","stderr":"","truncated":false}
+## 4. plants row
+[{"id":"90097efc-3d33-49b5-b486-9ffaef8aa7bd","name":"Test Plant","agent37_instance_id":"hdizdrdslv","created_at":"2026-10-07T22:30:48.267933+00:00"}]
+## 5. putFile probe: PUT https://hdizdrdslv.agent37.app/v1/files/content?path=/home/node/plantapi/skills/probe/README.md
+{"name":"README.md","path":"/home/node/plantapi/skills/probe/README.md","type":"file","size":21,"modified":1791412268756.5105,"hidden":false} HTTP 200
+{"exit_code":0,"stdout":"probe from add-plant\n","stderr":"","truncated":false}
+## 6. GET /v1/instances/hdizdrdslv/usage
+{"period":"2026-10","total_micros":0,"by_integration":{"llm":{"cost_micros":0,"calls":0,"input_tokens":0,"output_tokens":0},"brave":{"cost_micros":0,"calls":0},"composio":{"cost_micros":0,"calls":0},"perflo":{"cost_micros":0,"calls":0}}}
+## 7. npx tsx lib/agent37/provision/add-plant.ts --live remove --id 90097efc-3d33-49b5-b486-9ffaef8aa7bd
+{"plantId":"90097efc-3d33-49b5-b486-9ffaef8aa7bd","instanceId":"hdizdrdslv","instanceDeleted":true}
+## 8. GET /v1/instances/hdizdrdslv after remove
+{"error":{"code":"not_found","message":"Instance not found."}} HTTP 404
+## 9. plants row after remove
+[]
+## 10. GET /v1/instances (remaining)
+pfd5d7eukw running agent37-hermes
+r9h0qk82ie sleeping agent37-qm
+# finished 2026-10-07T15:31:37-07:00

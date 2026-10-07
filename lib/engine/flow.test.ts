@@ -30,7 +30,7 @@ describe("real-only guards", () => {
   const materials = { suppliers: [{ supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }] } as any;
   it("rejects a plan supplier that Materials never found", () => {
     expect(checkOutput("coordinator", { supplier: { supplier: "RS Components", price: 29.49, url: "https://rs/x" } }, { materials })).toMatch(/not one of/);
-    expect(checkOutput("coordinator", { supplier: { supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" } }, { materials })).toBeNull();
+    expect(checkOutput("coordinator", { supplier: { supplier: "Schneider Electric UK", price: 82.45, url: "https://se.com/x" }, window_start: "2026-10-07T18:00:00", window_end: "2026-10-07T19:00:00" }, { materials })).toBeNull();
   });
   it("rejects ERP without a Fiix WO and accept without close", () => {
     expect(checkOutput("erp", { fiix_wo_code: "" }, { materials: null })).toMatch(/no Fiix/);
@@ -125,5 +125,13 @@ describe("coordinator is real only", () => {
     process.env.PLANTAPI_CALENDAR_ID = "cal@group.calendar.google.com";
     expect(buildTaskText("workforce", { id: "i" } as unknown as Incident)).toContain("ONLY from Google Calendar id `cal@group.calendar.google.com` (NOT `primary`)");
     delete process.env.PLANTAPI_CALENDAR_ID;
+  });
+});
+
+describe("coordinator window is never blank", () => {
+  it("rejects a plan without a window", () => {
+    const materials = { suppliers: [{ supplier: "RS", price: 1, url: "u" }] } as any;
+    expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "", window_end: "" }, { materials })).toMatch(/window_start is blank/);
+    expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "2026-10-07T18:35:00-04:00", window_end: "2026-10-07T19:20:00-04:00" }, { materials })).toBeNull();
   });
 });
