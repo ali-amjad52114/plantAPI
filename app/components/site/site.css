@@ -3,17 +3,17 @@
 
 /* Single deliberate look: a light industrial hall under a dark glass HUD (matches the control room mockup's type and amber accent). */
 .sv {
-  --glass: rgba(16, 22, 29, .84); --edge: #2a3644; --fg: #f3efe7; --dim: #a9b4c2; --muted: #6b7787; --amber: #ff7a1a; --ok: #3ddc97; --crit: #ff5a5a; --run: #4da3ff;
+  --glass: rgba(255, 255, 255, .94); --edge: #D9DEE4; --fg: #14181D; --dim: #5A6573; --muted: #8A94A0; --amber: #E8650A; --ok: #1E9E63; --crit: #D93636; --run: #1F6FD1;
   --f-display: "Oswald", Arial, sans-serif; --f-body: "Rubik", Arial, sans-serif; --f-mono: "JetBrains Mono", "Courier New", monospace;
-  color-scheme: dark;
+  color-scheme: light;
 }
 .sv * { box-sizing: border-box }
-.sv { position: fixed; inset: 0; overflow: hidden; background: #0b0f14; color: var(--fg); font: 14px/1.4 var(--f-body) }
+.sv { position: fixed; inset: 0; overflow: hidden; background: #E9EDF1; color: var(--fg); font: 14px/1.4 var(--f-body) }
 body { margin: 0 }
 .sv #host { position: fixed; inset: 0 }
 .sv #host canvas { display: block; outline: none }
 .sv .css2d { position: absolute; inset: 0; pointer-events: none }
-.sv .glass { background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--edge); border-radius: 12px; box-shadow: 0 16px 48px rgba(0, 0, 0, .45) }
+.sv .glass { background: var(--glass); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid var(--edge); border-radius: 12px; box-shadow: 0 16px 48px rgba(20, 24, 29, .12) }
 .sv button { font: inherit; color: inherit; cursor: pointer }
 .sv :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px }
 
@@ -21,19 +21,19 @@ body { margin: 0 }
 .sv #top { position: fixed; z-index: 5; top: calc(16px + env(safe-area-inset-top, 0px)); left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 8px; pointer-events: none }
 .sv #top > * { pointer-events: auto }
 .sv .brand { padding: 8px 14px; display: flex; align-items: center; gap: 10px }
-.sv .brand i { width: 20px; height: 20px; border-radius: 3px; background: repeating-linear-gradient(-45deg, var(--amber) 0 5px, #1b232b 5px 10px) }
+.sv .brand i { width: 20px; height: 20px; border-radius: 3px; background: repeating-linear-gradient(-45deg, var(--amber) 0 5px, #F6F8FA 5px 10px) }
 .sv .brand b { font: 700 20px/1 var(--f-display); letter-spacing: .04em }
 .sv .brand small { display: block; font: 11px var(--f-mono); color: var(--dim); margin-top: 2px }
 .sv .stat { padding: 7px 12px; min-width: 78px }
 .sv .stat .k { font: 600 10px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--dim) }
 .sv .stat .v { font: 600 19px/1.15 var(--f-mono); font-variant-numeric: tabular-nums }
-.sv .stat.bad { border-color: rgba(255, 90, 90, .55) } .stat.bad .v { color: var(--crit) }
+.sv .stat.bad { border-color: rgba(217, 54, 54, .55) } .stat.bad .v { color: var(--crit) }
 .sv .sp { flex: 1 }
-.sv .tag { align-self: center; font: 600 10px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: #1b1300; background: var(--amber); padding: 6px 10px; border-radius: 999px }
+.sv .tag { align-self: center; font: 600 10px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: #FFFFFF; background: var(--amber); padding: 6px 10px; border-radius: 999px }
 .sv .hbtn { border: 0; padding: 0 14px; min-height: 40px; font: 600 13px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase }
 .sv .hbtn kbd { font: 600 10px var(--f-mono); color: var(--dim); margin-left: 6px; border: 1px solid #ffffff30; padding: 1px 4px; border-radius: 2px }
 .sv .hbtn[aria-pressed="false"] { color: var(--dim) }
-.sv .hbtn:hover { background: #1f2833; border-color: var(--amber) }
+.sv .hbtn:hover { background: #F6F8FA; border-color: var(--amber) }
 
 /* incident card */
 .sv #alert { position: fixed; z-index: 5; top: calc(74px + env(safe-area-inset-top, 0px)); right: 12px; width: 320px; padding: 16px 18px; border-top: 4px solid var(--crit); display: grid; gap: 10px }
@@ -41,8 +41,8 @@ body { margin: 0 }
 .sv #alert .k::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--crit); animation: pulse 1s infinite }
 .sv #alert h2 { margin: 0; font: 700 20px/1.1 var(--f-display) }
 .sv #alert p { margin: 0; color: var(--dim); font-size: 13px }
-.sv .go { border: 0; background: var(--amber); color: #10161d; border-radius: 8px !important; font: 700 13px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px; border-radius: 3px; text-align: left }
-.sv .go:hover { background: #ff9445 }
+.sv .go { border: 0; background: var(--amber); color: #F1F4F7; border-radius: 8px !important; font: 700 13px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 10px 12px; border-radius: 3px; text-align: left }
+.sv .go:hover { background: #F07A24 }
 .sv .ghost { border: 1px solid #ffffff2a; background: transparent; font: 600 12px/1 var(--f-display); letter-spacing: .08em; text-transform: uppercase; padding: 8px 10px; border-radius: 3px; text-align: left }
 @keyframes pulse { 50% { opacity: .3 } }
 
@@ -51,7 +51,7 @@ body { margin: 0 }
 .sv #panel h3 { margin: 10px 0 4px; font: 600 11px/1 var(--f-display); letter-spacing: .12em; text-transform: uppercase; color: var(--amber) }
 .sv #panel h3:first-child { margin-top: 2px }
 .sv .asset { width: 100%; border: 0; background: none; display: grid; grid-template-columns: 10px 62px minmax(0, 1fr); gap: 8px; align-items: center; text-align: left; padding: 6px 6px; border-radius: 3px; font-size: 13px }
-.sv .asset:hover, .sv .asset.hov { background: rgba(255, 122, 26, .12) }
+.sv .asset:hover, .sv .asset.hov { background: rgba(232, 101, 10, .12) }
 .sv .asset .d { width: 8px; height: 8px; border-radius: 50% }
 .sv .asset .id { font: 600 12px var(--f-mono) }
 .sv .asset .n { color: var(--dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
@@ -59,15 +59,15 @@ body { margin: 0 }
 .sv #panel .fiix { font: 10px var(--f-mono); color: var(--dim); margin: 10px 0 0 }
 
 /* 3D labels */
-.sv .lbl { pointer-events: auto; cursor: pointer; white-space: nowrap; font: 600 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: #fff;
-  background: rgba(16, 22, 29, .88); padding: 5px 9px 5px 8px; border: 1px solid #2a3644; border-left: 3px solid var(--ok); border-radius: 6px; transition: transform .15s, border-color .15s }
+.sv .lbl { pointer-events: auto; cursor: pointer; white-space: nowrap; font: 600 12px/1 var(--f-display); letter-spacing: .06em; text-transform: uppercase; color: var(--fg);
+  background: rgba(255, 255, 255, .94); padding: 5px 9px 5px 8px; border: 1px solid #D9DEE4; border-left: 3px solid var(--ok); border-radius: 6px; transition: transform .15s, border-color .15s }
 .sv .lbl:hover, .sv .lbl.hov { transform: translateY(-2px); border-left-color: var(--amber) }
 .sv .lbl small { font: 10px var(--f-mono); color: var(--dim); margin-left: 5px; text-transform: none; letter-spacing: 0 }
-.sv .lbl.down { background: rgba(160, 40, 10, .92); border-color: #ff7a1a; border-left-color: #fff; box-shadow: 0 0 24px rgba(255, 122, 26, .55); animation: lblp 1.2s infinite }
-.sv .lbl.down small { color: #ffd9d4 }
+.sv .lbl.down { color: #fff; background: rgba(232, 101, 10, .96); border-color: #E8650A; border-left-color: #fff; box-shadow: 0 0 24px rgba(232, 101, 10, .55); animation: lblp 1.2s infinite }
+.sv .lbl.down small { color: #FFE2CC }
 .sv .lbl.warn { border-left-color: var(--amber) }
-@keyframes lblp { 50% { background: rgba(255, 122, 26, .95) } }
-.sv .area { pointer-events: none; font: 700 15px/1 var(--f-display); letter-spacing: .3em; text-transform: uppercase; color: rgba(169, 180, 194, .5); white-space: nowrap }
+@keyframes lblp { 50% { background: rgba(232, 101, 10, .95) } }
+.sv .area { pointer-events: none; font: 700 15px/1 var(--f-display); letter-spacing: .3em; text-transform: uppercase; color: rgba(90, 101, 115, .5); white-space: nowrap }
 .sv.nolabels .lbl:not(.down) { display: none }
 
 /* bottom hints, tooltip, stage banner */
@@ -79,18 +79,18 @@ body { margin: 0 }
 .sv #tip em { font-style: normal; color: var(--amber); display: block; margin-top: 4px; font: 600 11px var(--f-display); letter-spacing: .08em; text-transform: uppercase }
 .sv #stage { position: fixed; z-index: 7; left: 50%; top: 50%; transform: translate(-50%, -50%); padding: 12px 22px; font: 700 18px/1 var(--f-display); letter-spacing: .14em; text-transform: uppercase; opacity: 0; transition: opacity .3s; pointer-events: none; white-space: nowrap }
 .sv #stage.on { opacity: 1 }
-.sv #fade { position: fixed; inset: 0; z-index: 8; background: #0b0f14; opacity: 0; pointer-events: none; transition: opacity .45s }
+.sv #fade { position: fixed; inset: 0; z-index: 8; background: #E9EDF1; opacity: 0; pointer-events: none; transition: opacity .45s }
 .sv #fade.on { opacity: 1 }
-.sv #fallback { position: fixed; inset: 0; z-index: 9; display: none; place-items: center; background: #10161d; text-align: center; padding: 24px }
+.sv #fallback { position: fixed; inset: 0; z-index: 9; display: none; place-items: center; background: #F1F4F7; text-align: center; padding: 24px }
 .sv #fallback a { color: var(--amber) }
 .sv #assetsBtn { display: none }
 
 /* HUD chrome: live chip, legend with words, click hint, blueprint vignette */
-.sv::after { content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(11, 15, 20, .7) 100%) }
-.sv .hz { position: fixed; z-index: 6; left: 0; right: 0; top: 0; height: 6px; background: repeating-linear-gradient(45deg, #ff7a1a 0 18px, #10161d 18px 36px); pointer-events: none }
-.sv .chip { align-self: center; display: inline-flex; align-items: center; gap: 8px; font: 600 11px/1 var(--f-mono); letter-spacing: .3em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(61, 220, 151, .45); color: var(--ok); background: rgba(61, 220, 151, .08) }
+.sv::after { content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at 50% 40%, transparent 55%, rgba(255, 255, 255, .86) 100%) }
+.sv .hz { position: fixed; z-index: 6; left: 0; right: 0; top: 0; height: 6px; background: repeating-linear-gradient(45deg, #E8650A 0 18px, #F1F4F7 18px 36px); pointer-events: none }
+.sv .chip { align-self: center; display: inline-flex; align-items: center; gap: 8px; font: 600 11px/1 var(--f-mono); letter-spacing: .3em; text-transform: uppercase; padding: 8px 12px; border-radius: 999px; border: 1px solid rgba(30, 158, 99, .45); color: var(--ok); background: rgba(30, 158, 99, .08) }
 .sv .chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; box-shadow: 0 0 10px currentColor; animation: pulse 1.4s infinite }
-.sv .chip.alarm { color: var(--amber); border-color: rgba(255, 122, 26, .5); background: rgba(255, 122, 26, .1) }
+.sv .chip.alarm { color: var(--amber); border-color: rgba(232, 101, 10, .5); background: rgba(232, 101, 10, .1) }
 .sv .brand .eyebrow { display: block; font: 600 10px/1 var(--f-mono); letter-spacing: .32em; color: var(--run); text-transform: uppercase; margin-bottom: 4px }
 .sv #legend { position: fixed; z-index: 4; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); padding: 12px 16px; display: grid; gap: 8px; font: 500 13px/1 var(--f-body) }
 .sv #legend h4 { margin: 0 0 2px; font: 600 10px/1 var(--f-mono); letter-spacing: .3em; text-transform: uppercase; color: var(--muted) }
@@ -105,11 +105,11 @@ body { margin: 0 }
 .sv #fade { transition-duration: .35s }
 
 /* embed mode (iframe in the control room): canvas + one mono label only */
-.sv.embed { background: #0b0f14 }
-.sv.embed::after { background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(11, 15, 20, .75) 100%) }
+.sv.embed { background: #E9EDF1 }
+.sv.embed::after { background: radial-gradient(ellipse at 50% 45%, transparent 50%, rgba(255, 255, 255, .86) 100%) }
 .sv.embed .lbl, .sv.embed .area { display: none }
 .sv .emb { position: fixed; z-index: 3; left: 10px; bottom: 10px; pointer-events: none; font: 600 10px/1 var(--f-mono); letter-spacing: .22em; text-transform: uppercase; color: var(--dim);
-  background: rgba(16, 22, 29, .82); border: 1px solid #2a3644; border-radius: 6px; padding: 6px 8px; white-space: nowrap }
+  background: rgba(255, 255, 255, .94); border: 1px solid #D9DEE4; border-radius: 6px; padding: 6px 8px; white-space: nowrap }
 .sv .emb b { color: var(--ok) } .sv .emb b.down { color: var(--amber); animation: pulse 1.2s infinite } .sv .emb b.warn { color: var(--amber) }
 
 @media (max-width: 860px) {

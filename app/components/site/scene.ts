@@ -23,8 +23,8 @@ const css = new CSS2DRenderer(); css.domElement.className = 'css2d'; host.append
 
 // "Control Room" look: night-shift hall on deep steel, blueprint grid, safety-orange alarms.
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b0f14);
-scene.fog = new THREE.FogExp2(0x0b0f14, .0085);
+scene.background = new THREE.Color(0xe9edf1);
+scene.fog = new THREE.FogExp2(0xe9edf1, .0065);
 const camera = new THREE.PerspectiveCamera(40, 1, .1, 500);
 const HOME = { pos: new THREE.Vector3(-20, 58, 64), target: new THREE.Vector3(0, 0, -1) };
 camera.position.set(56, 72, 84);   // intro: start wide on the other side, then fly in to HOME
@@ -33,7 +33,7 @@ controls.target.set(0, 2, -4);
 Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: 1.42, minDistance: 5, maxDistance: 130, screenSpacePanning: false, zoomToCursor: true, autoRotateSpeed: .35 });
 
 // hemisphere (cool sky / warm floor bounce) + warm key with shadows + blue rim from behind
-scene.add(new THREE.HemisphereLight(0xb8cde6, 0x2a2118, .9));
+scene.add(new THREE.HemisphereLight(0xffffff, 0x9a9488, 1.25));
 const sun = new THREE.DirectionalLight(0xffe6c8, 2.6);
 sun.position.set(-30, 60, 35); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 35, bottom: -35, near: 10, far: 160 });
@@ -42,9 +42,9 @@ scene.add(sun);
 const rim = new THREE.DirectionalLight(0x4da3ff, 1.6); rim.position.set(25, 30, -60); scene.add(rim);
 const fill = new THREE.DirectionalLight(0xcfe0f2, .35); fill.position.set(30, 25, 40); scene.add(fill);
 // blueprint grid on the yard around the hall (theme blue, 2 m cells, fades into fog)
-const grid = new THREE.GridHelper(260, 130, 0x4da3ff, 0x4da3ff);
+const grid = new THREE.GridHelper(260, 130, 0x9fb8d4, 0xc9d6e4);
 grid.material.transparent = true; grid.material.opacity = .14; grid.material.depthWrite = false; grid.position.y = -.02; scene.add(grid);
-const yard = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0x10161d, roughness: .95, metalness: 0 }));
+const yard = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0xdfe4e9, roughness: .95, metalness: 0 }));
 yard.rotation.x = -Math.PI / 2; yard.position.y = -.05; yard.receiveShadow = true; scene.add(yard);
 
 /* ------------------------------------------------------------ textures and materials */
@@ -79,13 +79,13 @@ const signTex = (text, sub, bg = '#e9ecee', fg = '#1b232b') => canvasTex(512, 16
 
 const std = (color, rough = .6, metal = .1, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra });
 const M = {
-  floor: std(0x6f7882, .82, .05, { map: concreteTex }),
+  floor: std(0xd5d9db, .85, .02, { map: concreteTex }),
   steel: std(0x8f979e, .45, .6), steelDark: std(0x3d454c, .55, .5), struct: std(0x6b7680, .5, .55),
   machine: std(0x5f7489, .5, .35), machine2: std(0x8a8f86, .55, .3),
   yellow: std(0xf0b400, .45, .2), orange: std(0xe0601a, .5, .1), red: std(0xb3261e, .45, .2),
   white: std(0xe8ebec, .55, .1), concrete: std(0xa8a6a0, .9, 0), ore: std(0x2e2a27, .95, 0), oreLight: std(0x4a443e, .95, 0),
   rubber: std(0x1c1c1d, .9, 0), pipe: std(0xb3b9be, .35, .7), mill: std(0xffffff, .55, .25, { map: millTex }),
-  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0x2a3644, .7, .35), glassWin: std(0x9fc8ff, .2, 0, { emissive: 0x4da3ff, emissiveIntensity: .8 }),
+  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0xdde2e7, .85, .1), glassWin: std(0x9fc8ff, .2, 0, { emissive: 0x4da3ff, emissiveIntensity: .8 }),
   asphalt: std(0x7d7f80, .9, 0), skin: std(0xc99a76, .8, 0), vest: std(0xff6a13, .7, 0, { emissive: 0x401400, emissiveIntensity: .4 }), helmet: std(0xf7f7f2, .4, 0),
   helmetY: std(0xf2c200, .4, 0), dark: std(0x222629, .7, .2), beacon: std(0xff2a1a, .3, 0, { emissive: 0xff2a1a, emissiveIntensity: 2 }),
   amberLight: std(0xffa500, .3, 0, { emissive: 0xffa000, emissiveIntensity: 1.6 }),
