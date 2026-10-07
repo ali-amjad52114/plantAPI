@@ -45,7 +45,10 @@ function ResetDialog({ cfg, onClose, onDone }: { cfg: ResetConfig; onClose: () =
       const text = await r.text();
       const j = (() => { try { return JSON.parse(text) as { reset_id?: string; error?: string; reason?: string }; } catch { return {}; } })();
       if (r.status === 409) { setReason(j.reason ?? j.error ?? "The reset was refused."); setPhase("refused"); return; }
-      if (!r.ok || !j.reset_id) { setReason(j.error ?? `Reset failed to start (${r.status}). ${text.slice(0, 160)}`); setPhase("error"); return; }
+      if (!r.ok || !j.reset_id) {
+        const detail = text.trimStart().startsWith("<") ? (r.status === 404 ? "The reset endpoint isn't available on this server yet." : "") : text.slice(0, 160);
+        setReason(j.error ?? `Reset failed to start (${r.status}). ${detail}`.trim()); setPhase("error"); return;
+      }
       setPhase("running");
       watch(j.reset_id);
     } catch (e) { setReason((e as Error).message); setPhase("error"); }
