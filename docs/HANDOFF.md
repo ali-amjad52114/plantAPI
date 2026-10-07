@@ -233,3 +233,9 @@ Upload 15:56 → CLOSED 16:17:01. UI = polished UI on main (:3000); repair repor
 9. PASS correct part (via UI form) → ACCEPT, fiix_closed + odoo_unblocked → CLOSED 16:17:01. Cost $0.124 (not shared).
 Findings: window 28 min < 45-min estimate (dispatch flagged); approve on unknown id → 409 raw message (should 404); complete uploads photo before state check.
 UI (merged UI on main): endpoint matrix PASS (health 200, empty upload 400, bad decision 400, approve CLOSED 409 no change, complete w/o photo 400); report dialog, machine click → incident, PiP dock/expand/min/restore PASS; phone: PiP now starts minimized (s/ui b1eeb4a, needs merge); site-view header buttons overlap the asset list near 800 px.
+
+## S4 — 16:22 · done: safe deploy of main 8982d86 to slice-preview
+DONE: scripts/deploy-safe.sh --branch slice-preview --skip-drain-check (s/platform ecf141a, image sha256:b6ff8894…). drain=true → 0 RUNNING → build/rollout → new worker started draining → /api/health 200 → drain=false → claiming. / 200 Site view · /plant 200 · /governance 200 · /api/health 200 (worker.draining present, running 0, full_team, agent37_depth).
+NEXT: future deploys: scripts/deploy-safe.sh --branch slice-preview (no skip flag; worker now honours worker_control).
+BLOCKER: none.
+SPEND: InstaCloud preview build/compute
