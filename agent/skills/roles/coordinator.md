@@ -42,13 +42,13 @@ Example (illustrative — derived from planner outputs):
   "part": "LC1D09BD",
   "internal_stock": 0,
   "supplier": {
-    "supplier": "RS Components",
-    "part": "Schneider Electric TeSys D LC1D09BD 3P 9A 24 V DC coil",
-    "price": 29.49,
+    "supplier": "RS - America",
+    "part": "LC1D09BD",
+    "price": 152.64,
     "currency": "USD",
-    "stock": 120,
-    "lead_time": "1-2 days (today 17:00 courier)",
-    "url": "https://www.rs-online.com/web/p/contactors/1825567",
+    "stock": null,
+    "lead_time": "unknown (no delivery field in Monid result)",
+    "url": "https://www.google.com/search?ibp=oshop&q=...",
     "source": "monid"
   },
   "technician": "Sarah Chen",
@@ -60,7 +60,7 @@ Example (illustrative — derived from planner outputs):
   "safety": ["LOTO required (SOP-ELEC-014): lock Q104 and 24 V DC breaker F104", "Verify absence of voltage on L1/L2/L3 and A1/A2", "Do not bypass KM104 feedback"],
   "confidence": 0.85,
   "actions": [
-    { "action": "Request purchase of 1x LC1D09BD from RS Components ($29.49)", "system": "rs", "rule": "APPROVAL" },
+    { "action": "Request purchase of 1x LC1D09BD from RS - America ($152.64)", "system": "rs", "rule": "APPROVAL" },
     { "action": "Create Fiix work order on CV-104 and assign Sarah Chen", "system": "fiix", "rule": "AUTO" },
     { "action": "Block Crushing Line 2 work centre 18:00-19:00", "system": "odoo", "rule": "APPROVAL" },
     { "action": "Safety-critical LOTO electrical work on MCC-03 bucket 4", "system": "fiix", "rule": "APPROVAL" },
