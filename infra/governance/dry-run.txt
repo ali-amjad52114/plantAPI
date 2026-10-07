@@ -1,21 +1,16 @@
-# PlantAPI governance demo - DRY RUN (2026-10-07T22:07:07.197Z)
+# PlantAPI governance demo - DRY RUN (2026-10-07T22:09:27.900Z)
 # Read-only calls only: agent policy get, branch list. No mutating command is executed.
 
-Live policy mode     : full_access
+Live policy mode     : branch_specific
 main branch protected: false
 Effective decisions the demo depends on:
   unprotectedBranch  branch.create   -> allow
-  unprotectedBranch  service.scale   -> allow
-  project            project.update  -> allow
-  project            project.delete  -> allow
+  unprotectedBranch  service.scale   -> approve
+  project            project.update  -> approve
+  project            project.delete  -> deny
 
 --live guard: WOULD ABORT before any mutating call
-  - mode is full_access (need branch_specific or customize)
   - branch main is not in protectedBranchIds
-  - project.delete resolves to allow in scope project (need deny)
-  - project.delete resolves to allow in scope unprotectedBranch (need deny)
-  - project.delete resolves to allow in scope protectedBranch (need deny)
-  - service.scale resolves to allow on unprotected branches (need approve)
 
 Planned --live sequence (each command is run once, output parsed for the real decision):
   0. insta --agent agent policy get --json            # guard (abort unless governed)
