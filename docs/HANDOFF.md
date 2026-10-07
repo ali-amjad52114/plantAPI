@@ -153,3 +153,17 @@ SPEND: $0
 - Animated agent graph in the control room (FLAGS.agentGraph, or auto for full-team incidents), driven by agent_tasks + agent_events. Screenshot 12.
 - Plan card disagreement + resolution: done earlier (dc6ba6f, d87d45d).
 FINDINGS for core: incidents.cost is null on all incidents (panel shows "—"); 2d9b4671 erp RUNNING since 15:27 (>6 min) with procurement/dispatch never queued.
+
+## Integration evidence (S2 tools — real runs on 2026-10-07, for the README)
+| Sponsor / system | Real proof |
+|---|---|
+| Agent37 | Instance `pfd5d7eukw`; all 11 role skills return schema-valid ROLE_OUTPUT as real turns (`scripts/smoke-roles-agent37.ts`, `scripts/smoke-roles-waveA-agent37.ts`); built-in browser drives Fiix; exec + files API (screenshot download in 0.5 s); managed Composio connections ACTIVE: googlecalendar `ca_f-8GUBAQAeDo`, googlesheets `ca_LfMFRqjxat29`, gmail `ca_mypGGgP3S7oQ`, slack `ca_zZ1ZSqkFoLXB` |
+| OpenAI | Verification vision on seed photos: `completion-wrong-part.jpg` → reject (label CHNT NCH8-63 63 A), `completion-correct-part.jpg` → accept (`scripts/smoke-roles.ts`) |
+| Monid | Search `litescrape /google/shopping` "LC1D09BD RS Components" → RS - America $152.64 (`scripts/fixtures/monid-LC1D09BD.json`); AgentMail inbox `rs-supplier-demo@agentmail.to`, procurement email message id `<010001a11880c893-5da8f24f-4feb-40ec-8282-3054065a0d97-000000@email.amazonses.com>` (idempotent rerun, not resent) |
+| Fiix (CMMS) | WOs created on CV-104 through the Agent37 browser: WO 4 (create), WO 5 (create → assign "ali amjad" → close), screenshots `/home/node/shots/fiix-wo-5-*.png`; history reads WO 1–8 |
+| Odoo (ERP) | JSON-2 API: LC1D09BD = `product.product:1` qty 0; Crushing Line 2 = `mrp.workcenter:1` blocked via `mrp.workcenter.productivity:2` (loss "Equipment Failure") then unblocked (`scripts/smoke-odoo.ts`) |
+| Google Sheets | "PlantAPI Production Schedule" `1nfpZ5f4aiz70jXyk4dkks5XMLzVdbiANkekRliePUNw` (10 rows) — read live by Production (`source: sheets:<id>`) |
+| Google Calendar | "PlantAPI Technicians" `8d5f45e4b9f2e1b57fda80a5724243eeffdb91c53d9ce10382e40158df050e92@group.calendar.google.com` (5 events) — read live by Workforce (`source: calendar:<id>`) |
+| Slack | `#plant-ops` `C0C7DT5EBFV` created through Composio |
+| RS (browser) | Honest negative: RS blocks the datacenter IP (DataDome CAPTCHA / Akamai Access Denied) — screenshot `evidence/rs-LC1D09BD-1791412430802.png`; not bypassed, step dropped |
+| Supabase, InstaCloud | (lead / S1 / S4 to add) |

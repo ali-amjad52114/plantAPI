@@ -167,6 +167,7 @@ export interface Incident {
   erp: ErpOutput | null;
   verification: VerificationOutput | null;
   agent37_session_ids: Record<string, string>; // role -> Agent37 session id
+  archived?: boolean; // demo-reset hides old test incidents (migration 004)
   cost?: {
     agent37_usd: number;
     agent37_micros: number;
