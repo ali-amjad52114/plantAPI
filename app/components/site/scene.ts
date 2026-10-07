@@ -1,5 +1,9 @@
 // @ts-nocheck
 // 3D site view scene (three.js). Imperative port of docs/plant-3d.html; typed loosely on purpose.
+import { addInteriorProps } from "./props-interior";
+import { addYardProps } from "./props-yard";
+import { addWallProps } from "./props-walls";
+import { addVehicleProps } from "./props-vehicles";
 // root = the .sv element holding the HUD; deps = three modules; opts = { assets, onOpen(assetId) }.
 export function buildScene(root, deps, opts) {
 const { THREE, OrbitControls, CSS2DRenderer, CSS2DObject } = deps;
@@ -373,6 +377,9 @@ pipe([[16.5, 2.4, -4.5], [19.5, 2.4, -4.5], [19.5, 4.6, -9]], .2, M.pipe, scene)
 pipe([[14.5, 3.2, 3], [18, 3.2, 3], [18, 5.2, 3.5]], .2, M.pipe, scene);
 pipe([[2.6, 1, 4.9], [2.6, 1, 7.2], [9.5, 1, 7.2], [9.5, 1.1, 3]], .2, M.pipe, scene);
 for (const x of [-30, -22, -14, -6, 6, 14, 22, 30]) box(1.2, 1.5, 1.2, M.ore, x, .75, -17, scene);  // stockpiled ore bins along the back wall
+
+// set dressing: interior details + outdoor yard (skipped in embed mode, which shows one asset only)
+if (!EMBED) { const D = { HX, HZ, HH }; addInteriorProps(THREE, scene, D); addWallProps(THREE, scene, D); addYardProps(THREE, scene, D); addVehicleProps(THREE, scene, D); }
 
 // walkways with yellow handrails between machines
 box(26, .12, 1.4, M.steelDark, -15, 6.3, -13.2, scene); railing(-28, -12.5, -2, -12.5, 6.3, scene); railing(-28, -13.9, -2, -13.9, 6.3, scene);
