@@ -19,7 +19,11 @@ export function AssetPip({ inc, mock }: { inc: Pick<Incident, "asset_id" | "alar
   const code = assetCodeOf(inc, mock);
   const [mode, setMode] = useState<"dock" | "big" | "min">("dock");
   const [shown, setShown] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setShown(true), 300); return () => clearTimeout(t); }, []);
+  useEffect(() => {
+    // on phones the docked view would cover the procedure: start as the small "Show asset 3D" pill
+    if (window.matchMedia("(max-width: 700px)").matches) setMode("min");
+    const t = setTimeout(() => setShown(true), 300); return () => clearTimeout(t);
+  }, []);
 
   const q = mock ? "&mock=1" : "";
   const src = `/?embed=1${code ? `&focus=${encodeURIComponent(code)}` : ""}${q}`;
