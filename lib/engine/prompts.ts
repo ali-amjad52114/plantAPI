@@ -19,10 +19,6 @@ const ROLE_BRIEF: Partial<Record<AgentRole, string>> = {
   // wave A (inline until S2 ships agent/skills/roles/<role>.md)
   reliability:
     "You are the Reliability agent. Read CV-104's failure history in Fiix (browser, `agent/skills/fiix/SKILL.md`: closed work orders on the asset) and the SOPs in `~/plantapi/seed/sop/`. Decide whether this failure is recurring, the likely root cause, and how urgent the repair is. List the WO codes and files you actually read in `sources`.",
-  production:
-    "You are the Production agent. Find the lowest-impact downtime window for the affected work centre today/tomorrow from the production schedule (`~/plantapi/seed/production_schedule.csv`; Google Sheets once connected). Recommend one window and list the alternatives with their impact. Put the file/sheet you read in `source`.",
-  workforce:
-    "You are the Workforce agent. Pick the technician with the required trade (from triage) and LOTO qualification using `~/plantapi/seed/technicians.json` and their availability from `~/plantapi/seed/calendar_events.json` (Google Calendar once connected). Report when they are free, any conflicts, and alternatives. Put the file/calendar you read in `source`.",
   procurement:
     "You are the Procurement agent. The plan was approved (see `approval`). For the plan's supplier: record the sourcing decision in Odoo (JSON-2 API, `agent/skills/odoo/SKILL.md`) and send ONE expedite email to the supplier through Monid AgentMail (`agent/skills/monid/SKILL.md`). Never buy, never add to basket, never check out — `purchased` is always false. Anything you could not do for real goes in `blocked` with the reason.",
   dispatch:
@@ -31,12 +27,32 @@ const ROLE_BRIEF: Partial<Record<AgentRole, string>> = {
     "You are the Risk agent. Classify every action in the coordinator's plan with the authority rules — AUTO: read history/SOP/inventory, supplier search, availability, draft WO; APPROVAL: purchase, block production, schedule outage, safety-critical work; DENY: bypass safety, delete records. Overall `decision` = the strictest rule. CV-104 electrical work requires LOTO.",
 };
 
+// Production / Workforce: real Google Sheet / Calendar (Agent37 Composio app connections) when S2 has
+// set them up; the seed files are only a bridge and the agent must say so in `source`.
+export function productionBrief(): string {
+  const sheet = process.env.PLANTAPI_SCHEDULE_SHEET_ID;
+  const where = sheet
+    ? `Read the production schedule from Google Sheet \`${sheet}\` (your Google Sheets app connection; id also in $PLANTAPI_SCHEDULE_SHEET_ID). Put \`google-sheets:${sheet}\` in \`source\`. Only if the Sheets connection fails, fall back to \`~/plantapi/seed/production_schedule.csv\` and put \`seed file\` plus the error in \`source\`.`
+    : "Google Sheets is not connected yet: read `~/plantapi/seed/production_schedule.csv` and put `seed file ~/plantapi/seed/production_schedule.csv (Sheets not connected)` in `source`.";
+  return `You are the Production agent. Find the lowest-impact downtime window for the affected work centre today/tomorrow. ${where} Recommend one window and list the alternatives with their impact.`;
+}
+
+export function workforceBrief(): string {
+  const cal = process.env.PLANTAPI_CALENDAR_ID;
+  const where = cal
+    ? `Read availability from Google Calendar \`${cal}\` (your Google Calendar app connection; id also in $PLANTAPI_CALENDAR_ID). Put \`google-calendar:${cal}\` in \`source\`. Only if the Calendar connection fails, fall back to \`~/plantapi/seed/calendar_events.json\` and put \`seed file\` plus the error in \`source\`.`
+    : "Google Calendar is not connected yet: read `~/plantapi/seed/calendar_events.json` and put `seed file ~/plantapi/seed/calendar_events.json (Calendar not connected)` in `source`.";
+  return `You are the Workforce agent. Pick the technician with the required trade (from triage) and LOTO qualification using \`~/plantapi/seed/technicians.json\`. ${where} Report when they are free, any conflicts, and alternatives.`;
+}
+
 /** Role skill from S2 if it exists locally (uploaded to the instance at ~/plantapi/skills/), else the inline brief. */
 export function roleInstructions(role: AgentRole): string {
   for (const dir of [path.join(process.cwd(), "agent/skills/roles")]) {
     const file = path.join(dir, `${role}.md`);
     if (existsSync(file)) return readFileSync(file, "utf8");
   }
+  if (role === "production") return productionBrief();
+  if (role === "workforce") return workforceBrief();
   return ROLE_BRIEF[role] ?? `You are the ${role} agent of the plant maintenance team.`;
 }
 

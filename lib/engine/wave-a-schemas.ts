@@ -62,7 +62,7 @@ export const ProcurementOutput = z.object({
   currency: z.string(),
   supplier_record_ref: z.string().nullable(), // Odoo record id actually created (vendor/procurement note)
   expedite_email: z
-    .object({ to: z.string(), subject: z.string(), message_id: z.string().nullable(), sent: z.boolean() })
+    .object({ to: z.string(), subject: z.string(), body: z.string(), message_id: z.string().nullable(), sent: z.boolean() })
     .nullable(), // Monid AgentMail
   purchased: z.literal(false), // never buys
   blocked: z.array(z.string()), // steps that could not run for real, with the reason
@@ -74,7 +74,7 @@ export const Notice = z.object({
   channel: z.enum(["slack", "gmail", "calendar", "phone", "agent37_cron"]),
   to: z.string(),
   ref: z.string().nullable(), // message id / event id / call id actually returned
-  status: z.enum(["sent", "booked", "scheduled", "blocked", "failed"]),
+  status: z.enum(["sent", "booked", "scheduled", "drafted", "blocked", "failed"]),
   detail: z.string(),
 });
 

@@ -19,6 +19,7 @@ import { extractLastJson } from "@/lib/ai";
 import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
 import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
+import { beginTurn, endTurn } from "./cost";
 import { buildTaskText } from "./prompts";
 
 const db = () => supabaseAdmin();
@@ -148,10 +149,13 @@ export async function runTask(task: AgentTask): Promise<void> {
 
     const instanceId = process.env.AGENT37_INSTANCE_ID ?? "pfd5d7eukw";
     const sessionId = incident.agent37_session_ids?.[role];
-    const turn = await agent37.runTurn(
-      { instanceId, role, incidentId, input: buildTaskText(role, incident, extra), sessionId, reasoningEffort: "medium" },
-      (e) => void emit({ ...e, incident_id: incidentId }),
-    );
+    await beginTurn(incidentId);
+    const turn = await agent37
+      .runTurn(
+        { instanceId, role, incidentId, input: buildTaskText(role, incident, extra), sessionId, reasoningEffort: "medium" },
+        (e) => void emit({ ...e, incident_id: incidentId }),
+      )
+      .finally(() => endTurn(incidentId).catch((err) => console.error("cost:", err)));
 
     const output = await parseOutput(role, turn.outputText);
     const problem = checkOutput(role as Slice1Role, output, incident);
@@ -164,7 +168,13 @@ export async function runTask(task: AgentTask): Promise<void> {
         .select("id"),
       "complete task",
     );
-    await audit(incidentId, role, `${role}.complete`, "agent37", { response_id: turn.responseId, cost_usd: turn.costUsd, duration_ms: turn.durationMs });
+    await audit(incidentId, role, `${role}.complete`, "agent37", {
+      response_id: turn.responseId,
+      cost_usd: turn.costUsd,
+      duration_ms: turn.durationMs,
+      input_tokens: (turn as { inputTokens?: number | null }).inputTokens ?? null,
+      output_tokens: (turn as { outputTokens?: number | null }).outputTokens ?? null,
+    });
 
     incident = await getIncident(incidentId);
     const t = nextSteps(role, output, team, team ? await settledRoles(incidentId) : []);
