@@ -9,8 +9,14 @@ export interface IncidentView {
   followUp?: AgentTask; // dispatch ack-follow-up watch row (Agent37 cron), if any
 }
 
+/** Error from an incident API route, keeping the server's reason (e.g. 409 "plan is stale — re-plan"). */
+export class ApiError extends Error {
+  constructor(message: string, public status: number, public reason?: string) { super(message); this.name = "ApiError"; }
+}
+
 export interface IncidentActions {
   approve(decision: "approve" | "reject", note?: string): Promise<void>;
+  replan(): Promise<void>;
   complete(input: { notes: string; downtimeMinutes: number; photo: File | null; mockPhoto?: "wrong" | "right" }): Promise<void>;
 }
 

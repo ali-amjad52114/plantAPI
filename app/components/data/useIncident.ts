@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 import type { AgentEvent, AgentRole, AgentTask, Incident } from "@/lib/contracts/types";
-import type { IncidentActions, IncidentView, MockControls } from "./model";
+import { ApiError, type IncidentActions, type IncidentView, type MockControls } from "./model";
 import { MockRun } from "./mock";
 
 export interface SourceConfig { mock: boolean; supabaseUrl?: string; supabaseAnonKey?: string }
@@ -64,7 +64,12 @@ export function useIncident(id: string, cfg: SourceConfig) {
     async approve(decision, note) {
       if (cfg.mock) return runRef.current?.approve(decision, note);
       const r = await fetch(`/api/incidents/${id}/approve`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ decision, by: "supervisor", note }) });
-      if (!r.ok) throw new Error(`Approve failed: ${r.status} ${await r.text()}`);
+      if (!r.ok) throw await apiError(r, "Approve failed");
+    },
+    async replan() {
+      if (cfg.mock) return;
+      const r = await fetch(`/api/incidents/${id}/replan`, { method: "POST" });
+      if (!r.ok) throw await apiError(r, "Re-plan failed");
     },
     async complete({ notes, downtimeMinutes, photo, mockPhoto }) {
       if (cfg.mock) return runRef.current?.complete(mockPhoto ?? "right", notes);
@@ -72,7 +77,7 @@ export function useIncident(id: string, cfg: SourceConfig) {
       fd.set("notes", notes); fd.set("actual_downtime_minutes", String(downtimeMinutes));
       if (photo) fd.set("photo", photo);
       const r = await fetch(`/api/incidents/${id}/complete`, { method: "POST", body: fd });
-      if (!r.ok) throw new Error(`Report failed: ${r.status} ${await r.text()}`);
+      if (!r.ok) throw await apiError(r, "Report failed");
     },
   }), [cfg.mock, id]);
 
@@ -101,4 +106,10 @@ function mergeRow<T extends object>(prev: T, next: Partial<T>): T {
   const out = { ...prev };
   for (const [k, v] of Object.entries(next)) if (v !== undefined) (out as Record<string, unknown>)[k] = v;
   return out;
+}
+
+async function apiError(r: Response, what: string) {
+  const text = await r.text();
+  try { const j = JSON.parse(text) as { error?: string; reason?: string }; return new ApiError(j.error ?? `${what}: ${r.status}`, r.status, j.reason); }
+  catch { return new ApiError(`${what}: ${r.status} ${text.slice(0, 200)}`, r.status); }
 }

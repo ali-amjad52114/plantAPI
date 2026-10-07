@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import type { AgentEvent, AgentRole, AgentTask, IncidentStatus } from "@/lib/contracts/types";
 import { incidentPanels } from "../panels";
-import { LANES, ROLE_LABEL, SYSTEM_LABEL, WEB_ROLES } from "../data/model";
+import { ApiError, LANES, ROLE_LABEL, SYSTEM_LABEL, WEB_ROLES } from "../data/model";
 import { PAGE_URL } from "../data/mock";
 import { useIncident, type SourceConfig } from "../data/useIncident";
 import { Screen, type SessionScreen } from "./Screen";
@@ -36,6 +36,8 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   const [notes, setNotes] = useState(cfg.mock ? "Replaced contactor LC1D09BD. LOTO-CV104 applied and removed. Motor runs, no trip after 10 min." : "");
   const [downtime, setDowntime] = useState("");
   const [busy, setBusy] = useState(false);
+  const [stale, setStale] = useState<string | null>(null); // reason the engine refused to approve this plan
+  useEffect(() => setStale(null), [view?.incident.plan?.window_start, view?.tasks.coordinator?.finished_at]);
   const [toast, setToast] = useState<string | null>(null);
   const [report, setReport] = useState(false);
   const q = cfg.mock ? "?mock=1" : "";
@@ -115,7 +117,19 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   const ctx = { triaged: !!tri, wo: !!mockFlags?.wo || !!inc.erp, closed: closed || !!mockFlags?.closed, basket: 0 };
   const asset104 = tri?.asset_id ?? "ASSET";
 
-  const act = async (f: () => Promise<void>) => { setBusy(true); try { await f(); } catch (e) { setToast((e as Error).message); } finally { setBusy(false); } };
+  const act = async (f: () => Promise<void>) => {
+    setBusy(true);
+    try { await f(); }
+    catch (e) {
+      if (e instanceof ApiError && e.status === 409 && /stale/i.test(e.message)) setStale(e.reason ?? e.message);
+      else setToast((e as Error).message);
+    } finally { setBusy(false); }
+  };
+  // a refusal recorded by the engine after the latest plan also counts (survives a page reload)
+  const planAt = tasks.coordinator?.finished_at ? +new Date(tasks.coordinator.finished_at) : 0;
+  const refused = [...events].reverse().find(e => /^Approval refused: plan is stale/i.test(e.message) && +new Date(e.created_at ?? 0) >= planAt);
+  const staleReason = stale ?? (refused ? refused.message.replace(/^Approval refused: plan is stale\s*[—-]\s*/i, "").replace(/\. Re-plan first\.?$/, "") : null);
+  const doReplan = () => act(async () => { await actions.replan(); setStale(null); setToast("Re-planning: the coordinator and risk agents are running again."); });
   const focusOn = (r: AgentRole) => { if (manual && manual.role !== r) handBack(); setFocus(r); setPinned(true); };
   const takeControl = () => {
     const s = sessions[focus];
@@ -231,6 +245,11 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   {plan.window_start
                     ? <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
                     : <div className="bigplan" style={{ color: "var(--caution-ink)" }}>WINDOW NOT SET</div>}
+                  <div className="dim" style={{ fontSize: 12, marginTop: -2 }}>
+                    Planned {tasks.coordinator?.finished_at ? `${hhmm(tasks.coordinator.finished_at)} (${dayWord(tasks.coordinator.finished_at, inc.created_at).toLowerCase()})` : "—"}
+                    {plan.window_end && clock > +new Date(plan.window_end) && <span className="c-warn"> · window has ended</span>}
+                    {plan.window_start && clock <= +new Date(plan.window_end) && clock > +new Date(plan.window_start) && <span className="c-caut"> · window in progress</span>}
+                  </div>
                   {pos.length > 1 && <div className="resolve">
                     <span className="cap">Resolution</span>
                     {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
@@ -249,12 +268,23 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                       <select id="modwin" value={win} onChange={e => setWin(e.target.value as "today" | "tmrw")}><option value="today">As planned</option><option value="tmrw">07:00 tomorrow</option></select>
                       <div className="btnrow"><button className="pb" disabled={busy} onClick={() => act(async () => { await actions.approve("approve", win === "tmrw" ? "tmrw: move the repair window to 07:00 tomorrow" : undefined); setModify(false); })}>Approve with change</button><button className="pb ghost" onClick={() => setModify(false)}>Cancel</button></div>
                     </div>)}
+                  {gateApproval && staleReason && (
+                    <div className="note warn" role="alert" style={{ marginTop: 8 }}>
+                      <b>This plan is stale and can&apos;t be approved.</b> {staleReason}
+                      <div className="btnrow"><button className="pb act" disabled={busy} onClick={doReplan}>{busy ? "Re-planning…" : "Re-plan"}</button></div>
+                    </div>)}
                   {gateApproval && (
                     <div className="btnrow">
                       <button className="pb act" disabled={busy} onClick={() => act(() => actions.approve("approve"))}>Approve</button>
                       <button className="pb" disabled={busy} onClick={() => setModify(true)}>Modify</button>
                       <button className="pb no" disabled={busy} onClick={() => act(() => actions.approve("reject"))}>Reject</button>
                     </div>)}
+                </div>)}
+
+              {status === "REJECTED" && (
+                <div className="sec"><div className="cap"><span>Plan rejected</span></div>
+                  <p className="note warn">The supervisor rejected this plan. Re-plan to run the coordinator and risk agents again with the current schedule.</p>
+                  <div className="btnrow"><button className="pb act" disabled={busy} onClick={doReplan}>{busy ? "Re-planning…" : "Re-plan"}</button></div>
                 </div>)}
 
               {(status === "APPROVED" || status === "EXECUTING") && (
