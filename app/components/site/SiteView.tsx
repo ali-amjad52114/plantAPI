@@ -12,7 +12,7 @@ const THREE_URL = "https://esm.sh/three@0.170.0";
 const ADDONS = "https://esm.sh/three@0.170.0/examples/jsm";
 const load = (u: string) => import(/* webpackIgnore: true */ u);
 
-export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock: boolean }) {
+export function SiteView({ incidents, mock, embed = false, focus }: { incidents: SiteIncident[]; mock: boolean; embed?: boolean; focus?: string }) {
   const root = useRef<HTMLDivElement>(null);
   const scene = useRef<{ show(id: string): void; open(id: string): void; dispose(): void } | null>(null);
   const router = useRouter();
@@ -38,10 +38,12 @@ export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock:
         if (cancelled || !root.current) return;
         scene.current = buildScene(root.current, { THREE, OrbitControls: oc.OrbitControls, CSS2DRenderer: css2d.CSS2DRenderer, CSS2DObject: css2d.CSS2DObject }, {
           assets,
+          embed,
+          focus,
           onOpen: (assetId: string) => {
             const { open, q } = route.current;
             const hit = open.find(i => i.asset === assetId) ?? open[0];
-            if (!hit) { setReport(assetId); root.current?.querySelector("#fade")?.classList.remove("on"); root.current?.querySelector("#stage")?.classList.remove("on"); return; }
+            if (!hit) { setReport(assetId); root.current?.classList.remove("leaving"); root.current?.querySelector("#fade")?.classList.remove("on"); root.current?.querySelector("#stage")?.classList.remove("on"); return; }
             const sep = q ? "&" : "?";
             router.push(`/incidents/${hit.id}${q}${hit.asset === assetId ? "" : `${sep}asset=${encodeURIComponent(assetId)}`}`);
           },
@@ -52,7 +54,21 @@ export function SiteView({ incidents, mock }: { incidents: SiteIncident[]; mock:
       }
     })();
     return () => { cancelled = true; scene.current?.dispose(); scene.current = null; };
-  }, [assets, router]);
+  }, [assets, router, embed, focus]);
+
+  if (embed) {
+    const fa = assets.find(a => a.id === focus);
+    const word = fa ? (fa.status === "down" ? "Down" : fa.status === "warn" ? "Maintenance" : "Running") : null;
+    return (
+      <div className="sv embed" ref={root}>
+        <div id="host" />
+        <div className="emb">
+          {focus ?? "Site"} · Live 3D{word && <> · <b className={fa!.status}>{word}</b></>}
+        </div>
+        {failed && <div id="fallback" style={{ display: "grid" }}><div><p>3D view unavailable in this browser.</p></div></div>}
+      </div>
+    );
+  }
 
   return (
     <div className="sv" ref={root}>

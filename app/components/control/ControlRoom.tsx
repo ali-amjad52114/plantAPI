@@ -13,6 +13,7 @@ import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
 import { disagree, positions, wall } from "./proposals";
 import { AgentGraph } from "./AgentGraph";
+import { AssetPip } from "./AssetPip";
 import { FLAGS } from "@/lib/contracts/flags";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
@@ -340,6 +341,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
         </section>
       </main>
       {report && <ReportFailure mock={cfg.mock} onClose={() => setReport(false)} />}
+      <AssetPip inc={inc} mock={!!cfg.mock} />
       {toast && <div className="toast" role="status">{toast}</div>}
     </div>
   );
