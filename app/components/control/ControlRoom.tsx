@@ -200,14 +200,16 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
-                  <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                  {plan.window_start
+                    ? <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    : <div className="bigplan" style={{ color: "var(--caution-ink)" }}>WINDOW NOT SET</div>}
                   {pos.length > 1 && <div className="resolve">
                     <span className="cap">Resolution</span>
-                    {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
-                    <div className="rv rv-win"><b>Coordinator</b> {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
+                    <div className="rv rv-win"><b>Coordinator</b> {plan.window_start ? `${plantHHMM(plan.window_start)} ${dayWord(plan.window_start, inc.created_at)}` : "no window yet: conditions not all met"}</div>
                   </div>}
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
-                  <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
+                  <Ln k="Window" v={plan.window_start ? `${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "PENDING CONFIRMATION"} cls={plan.window_start ? "" : "c-caut"} />
                   <Ln k="Technician" v={plan.technician} />
                   {riskOut && <Ln k="Risk" v={`${riskOut.decision ?? "—"}${riskOut.loto_required ? " · LOTO" : ""}`} cls={riskOut.decision === "DENY" ? "c-warn" : "c-act"} why={(riskOut.hazards ?? []).join(" · ") || riskOut.summary} />}
                   {plan.safety.length > 0 && <ul className="safety">{plan.safety.map(x => <li key={x}>{x}</li>)}</ul>}
@@ -262,6 +264,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                   <Ln k="Fiix WO" v={ver?.fiix_closed ? "CLOSED" : "OPEN"} cls={ver?.fiix_closed ? "c-ok" : "c-warn"} />
                   <Ln k="Line" v={ver?.odoo_unblocked ? "RELEASED" : "BLOCKED"} cls={ver?.odoo_unblocked ? "c-ok" : "c-warn"} />
                   <Ln k="Agent sessions" v={String(Object.keys(inc.agent37_session_ids ?? {}).length)} />
+                  {inc.cost && <Ln k="Agent37 cost" v={`$${inc.cost.agent37_usd.toFixed(2)}${inc.cost.shared_instance ? " *shared" : ""}`} cls="c-agent" />}
                   {ver?.reason && <div className="why">{ver.reason}</div>}
                 </div>)}
 
@@ -276,6 +279,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
                     : <><Ln k="Fiix WO" v="NOT CREATED" cls="c-warn" /><div className="why">{inc.erp.summary}</div></>)}
                   {inc.erp?.odoo_block_ref && <Ln k="Odoo block" v={`${inc.erp.odoo_block_ref}${ver?.odoo_unblocked ? " · RELEASED" : ""}`} cls={ver?.odoo_unblocked ? "c-ok" : ""} />}
                   {inc.erp?.screenshot_path && <Ln k="WO screenshot" v={inc.erp.screenshot_path} />}
+                  {!(status === "APPROVED" || status === "EXECUTING") && <ExecDetails tasks={tasks} />}
                   {(Object.values(tasks) as AgentTask[]).filter(t => t.agent37_response_id).map(t => <Ln key={t.role} k={`Agent37 ${ROLE_LABEL[t.role]}`} v={t.agent37_response_id!} />)}
                 </div>)}
             </div>
