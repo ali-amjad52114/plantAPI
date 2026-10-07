@@ -411,3 +411,4 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 .win { padding: 12px 12px 10px }
 .win b { font-size: 13px; padding-right: 0; overflow-wrap: normal; word-break: keep-all; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .win .k { top: auto; bottom: 10px; right: 10px }
+.win small { padding-right: 44px }
