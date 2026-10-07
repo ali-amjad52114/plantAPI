@@ -50,3 +50,22 @@ If `monid` still is not found, call it by absolute path: `~/.npm-global/bin/moni
 - No matching rows: return the error "no priced listing matching <PART>"; do not invent a supplier.
 
 Code equivalent: `lib/tools/monid.ts` → `searchSuppliers(part)`; smoke test `scripts/smoke-monid.ts`.
+
+## AgentMail (procurement email)
+
+Status 2026-10-07: commands below are from `monid inspect` (schemas verified); **send + read-back NOT yet proven** because `/create-inboxes` costs **$1/call**, above the $0.50 session cap. Needs lead approval to create the inbox once.
+
+Recipient rule: send ONLY to the demo supplier inbox we own (`rs-supplier-demo@agentmail.to`). Never email real RS or any personal address.
+
+On the Agent37 instance first: `export PATH="$HOME/.npm-global/bin:$PATH" NO_COLOR=1` (monid lives at `~/.npm-global/bin/monid`).
+
+| Step | Command | Cost |
+|---|---|---|
+| Discover | `monid discover -q "agentmail inbox"` | free |
+| List inboxes | `monid run -p agentmail -e /list-inboxes -w 60 -j` | $0 |
+| Create inbox (once, approval needed) | `monid run -p agentmail -e /create-inboxes -i '{"username":"rs-supplier-demo","displayName":"RS Supplier (demo)"}' -w 60 -j` | $1 |
+| Send RFQ | `monid run -p agentmail -e /send-messages -i '{"inboxId":"rs-supplier-demo@agentmail.to","to":"rs-supplier-demo@agentmail.to","subject":"PlantAPI RFQ test LC1D09BD","text":"Please quote 1x Schneider LC1D09BD, 24VDC coil. Need by today 17:00."}' -w 60 -j` | $0.001 |
+| List messages | `monid run -p agentmail -e /list-messages -i '{"inboxId":"rs-supplier-demo@agentmail.to","limit":10}' -w 60 -j` | $0 |
+| Read one | `monid run -p agentmail -e "/messages/{id}" -i '{"inboxId":"rs-supplier-demo@agentmail.to","messageId":"<id>"}' -w 60 -j` | $0 |
+
+A taken username fails with `already_exists` (the error suggests alternatives); use the address `/create-inboxes` returns as `inboxId`. Smoke test: `scripts/smoke-agentmail.ts`.
