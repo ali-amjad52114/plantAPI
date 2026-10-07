@@ -41,7 +41,7 @@ COPY package.json tsconfig.json ./
 COPY lib ./lib
 COPY worker ./worker
 COPY infra/deploy/entrypoint.sh /entrypoint.sh
-RUN sed -i "s/$//" /entrypoint.sh && chmod +x /entrypoint.sh && chown -R node:node /app /worker
+RUN sed -i "s/\r\$//" /entrypoint.sh && chmod +x /entrypoint.sh && chown -R node:node /app /worker
 USER node
 WORKDIR /app
 EXPOSE 8080
