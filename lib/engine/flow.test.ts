@@ -185,3 +185,13 @@ describe("odoo block check", () => {
     expect(parseBlockRef(null)).toBeNull();
   });
 });
+
+describe("window long enough for the repair", () => {
+  it("rejects a 28 min window for a 45 min repair", () => {
+    const materials = { suppliers: [{ supplier: "RS", price: 1, url: "u" }] } as any;
+    const triage = { estimated_repair_minutes: 45 } as any;
+    const sup = { supplier: "RS", price: 1, url: "u" };
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-07T19:32:00-04:00", window_end: "2026-10-07T20:00:00-04:00" }, { materials, triage })).toMatch(/28 min but triage estimates 45/);
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-07T18:00:00-04:00", window_end: "2026-10-07T18:45:00-04:00" }, { materials, triage })).toBeNull();
+  });
+});
