@@ -5,5 +5,5 @@ checks:
   ✓ Dockerfile — using the Dockerfile in the directory
   ✓ start command — Dockerfile has a CMD/ENTRYPOINT
   ✓ port — 8080 (--port flag)
-  ✓ build context — 1.7 MB
+  ✓ build context — 1.8 MB
 verdict: deployable
