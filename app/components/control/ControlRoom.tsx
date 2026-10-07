@@ -200,14 +200,16 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
-                  <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                  {plan.window_start
+                    ? <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    : <div className="bigplan" style={{ color: "var(--caution-ink)" }}>WINDOW NOT SET</div>}
                   {pos.length > 1 && <div className="resolve">
                     <span className="cap">Resolution</span>
-                    {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
-                    <div className="rv rv-win"><b>Coordinator</b> {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
+                    <div className="rv rv-win"><b>Coordinator</b> {plan.window_start ? `${plantHHMM(plan.window_start)} ${dayWord(plan.window_start, inc.created_at)}` : "no window yet: conditions not all met"}</div>
                   </div>}
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={a.rule} cls={"tag " + (a.rule === "APPROVAL" && riskDone ? "c-act" : a.rule === "DENY" ? "c-warn" : "")} />)}
-                  <Ln k="Window" v={`${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}`} />
+                  <Ln k="Window" v={plan.window_start ? `${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "PENDING CONFIRMATION"} cls={plan.window_start ? "" : "c-caut"} />
                   <Ln k="Technician" v={plan.technician} />
                   {riskOut && <Ln k="Risk" v={`${riskOut.decision ?? "—"}${riskOut.loto_required ? " · LOTO" : ""}`} cls={riskOut.decision === "DENY" ? "c-warn" : "c-act"} why={(riskOut.hazards ?? []).join(" · ") || riskOut.summary} />}
                   {plan.safety.length > 0 && <ul className="safety">{plan.safety.map(x => <li key={x}>{x}</li>)}</ul>}
