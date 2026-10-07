@@ -32,8 +32,24 @@ function must<T>(res: { data: T | null; error: { message: string } | null }, wha
   return res.data as T;
 }
 
+export class IncidentNotFoundError extends Error {
+  constructor(id: string) {
+    super(`incident not found: ${id}`);
+  }
+}
+
 export async function getIncident(id: string): Promise<Incident> {
-  return must(await db().from("incidents").select("*").eq("id", id).single(), "load incident") as Incident;
+  const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  if (!uuid.test(id)) throw new IncidentNotFoundError(id);
+  const row = must(await db().from("incidents").select("*").eq("id", id).maybeSingle(), "load incident");
+  if (!row) throw new IncidentNotFoundError(id);
+  return row as Incident;
+}
+
+/** For routes: throws IncidentNotFoundError / a 409-style Error before any side effect (e.g. photo upload). */
+export async function assertCanComplete(id: string): Promise<void> {
+  const incident = await getIncident(id);
+  if (!CAN_COMPLETE.includes(incident.status)) throw new Error(`cannot complete in status ${incident.status}`);
 }
 
 export async function emit(e: AgentEvent): Promise<void> {
