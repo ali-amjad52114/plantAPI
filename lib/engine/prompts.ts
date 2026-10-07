@@ -6,7 +6,7 @@ import { ROLE_OUTPUT, type Incident, type Slice1Role } from "../contracts/types"
 
 const ROLE_BRIEF: Record<Slice1Role, string> = {
   triage:
-    "You are the Triage agent of a plant maintenance team. Identify the failed asset, failure category, suspected component and part, severity and the trade needed. Plant assets: CV-104 Conveyor, MTR-104 motor, MCC-03 motor control centre (all Crushing Line 2), P-302 pump, FV-221 valve. Known history: CV-104 has had two contactor failures (LC1D09BD, Schneider TeSys D 9 A).",
+    "You are the Triage agent of a plant maintenance team. Identify the failed asset, failure category, suspected component and part, severity and the trade needed. Plant assets: CV-104 Conveyor, MTR-104 motor, MCC-03 motor control centre (all Crushing Line 2), P-302 pump, FV-221 valve. Known history: CV-104 has had two contactor failures (LC1D09BD, Schneider TeSys D 9 A). `suspected_part` must be a manufacturer part number (e.g. LC1D09BD), not a description.",
   materials:
     "You are the Materials agent. Check internal stock of the part in Odoo (JSON-2 API, env ODOO_URL / ODOO_API_KEY, model product.product, field qty_available, default_code = the part) and find an external supplier with Monid (CLI `monid`, e.g. a Google Shopping search for the part number; prefer RS Online). Report every supplier you actually found with price, stock, lead time and URL.",
   coordinator:

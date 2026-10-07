@@ -128,7 +128,13 @@ export async function runTask(task: AgentTask): Promise<void> {
       [OUTPUT_COLUMN[role]]: output,
       agent37_session_ids: { ...incident.agent37_session_ids, [role]: turn.sessionId },
     };
-    if (role === "triage") patch.asset_id = (output as { asset_id: string }).asset_id;
+    if (role === "triage") {
+      // Agent reports the asset code (CV-104); incidents.asset_id is the assets row uuid.
+      const code = (output as { asset_id: string }).asset_id;
+      const asset = await db().from("assets").select("id").eq("plant_id", incident.plant_id).eq("code", code).maybeSingle();
+      if (asset.data) patch.asset_id = asset.data.id;
+      else await emit({ incident_id: incidentId, agent: role, kind: "error", system: "supabase", message: `Unknown asset code ${code}` });
+    }
     if (role === "verification") {
       const v = output as { verdict: string; reason: string };
       await db().from("repair_events").insert({ incident_id: incidentId, kind: v.verdict === "accept" ? "verification_accepted" : "verification_rejected", notes: v.reason });
