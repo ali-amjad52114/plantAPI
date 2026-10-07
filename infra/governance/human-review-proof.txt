@@ -1,0 +1,6 @@
+DENY service.scale → 368f389b-dd15-4762-ac8c-97279ae9c2d0
+ALLOW branch.delete → 2ffb41bf-093c-41a6-9af9-33e4094f89ff
+ALLOW branch.protection.update → 86ba363b-09c9-4247-afd0-1075d584763f
+DENY agent.approvals.decide → 96f5d818-0942-4905-b593-a58d88b2eeb5
+DENY agent_policy.update, branch.protection.update → 0d505e59-4a1d-4851-80a9-7b4a88f857ea
+DENY deploy → c19d7cda-669d-4324-8df9-4b6ec7b8e51c
