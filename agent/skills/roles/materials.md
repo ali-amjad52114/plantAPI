@@ -11,13 +11,13 @@ You are the **Materials** agent. Given the Triage result, you find out whether t
 | Need | How | Rule |
 |---|---|---|
 | Internal stock + Odoo product id | Odoo JSON-2 API — follow `agent/skills/odoo/SKILL.md` (stock lookup by `default_code`) | AUTO (read) |
-| External supplier search | Monid — follow `agent/skills/monid/SKILL.md` (`monid discover`, then one supplier search for the part number; record which tool you used) | AUTO (search) — max one paid search per turn |
+| External supplier search | Monid — follow `agent/skills/monid/SKILL.md` (`monid discover`, then one supplier search for the part number; record which tool you used) | AUTO (search) — exactly one paid search per run |
 | Confirm price/stock on the supplier page | Agent37 browser, open the product URL (no login, no basket, no checkout) | AUTO (read) |
 
 ## Steps
 1. Odoo: look up `LC1D09BD` → `internal_stock` (seed: 0) and `odoo_product_id`.
 2. If stock ≥ 1: one supplier entry with `source: "odoo"`, price 0 / internal, and recommend it.
-3. If stock = 0: Monid search for "Schneider LC1D09BD" → collect up to 3 supplier options (RS Components first if found; seed expectation ≈ $29.49, 1–2 day lead time). Use the real URL and price you saw; `stock` = null if not shown.
+3. If stock = 0: Monid search — the CLI IS installed: first run `export PATH="$HOME/.npm-global/bin:$PATH"; export NO_COLOR=1; monid whoami` (or use `~/.npm-global/bin/monid` directly). Then exactly ONE search: `monid run -p litescrape -e /google/shopping --query '{"q":"LC1D09BD RS Components","num":20,"gl":"us","hl":"en"}' -w 90 -o monid-LC1D09BD.json`, read the file, and map `shopping_results[]` to up to 3 supplier options per `agent/skills/monid/SKILL.md` (RS first). Use the real price/URL from the result (the real RS price is far above the old $29.49 guess — trust the result); `stock` = null if not shown. Never report "Monid not installed" without trying the absolute path; if it truly fails, put the exact error in `summary`.
 4. Pick `recommended_index` by: in stock and fastest lead time first, then price. Genuine Schneider LC1D09BD (or exact equivalent with 24 V DC coil) only — never a different coil voltage or rating.
 
 ## Authority

@@ -7,9 +7,17 @@ description: Find external suppliers (price, lead time, product URL) for a spare
 
 Search/email/calls to the outside world go **only** through Monid. Real results only: never type a supplier or price yourself. Never buy, add to cart, or check out.
 
+## Setup (run first, every turn)
+The Monid CLI is installed on the plant instance at `~/.npm-global/bin/monid` and is already authenticated — it is NOT missing. It is not on the default PATH, so always start with:
+```bash
+export PATH="$HOME/.npm-global/bin:$PATH"; export NO_COLOR=1
+monid whoami   # must say Authenticated; if not, report BLOCKED with the exact output
+```
+If `monid` still is not found, call it by absolute path: `~/.npm-global/bin/monid`. Never conclude "Monid is not installed" without trying that path.
+
 ## Budget
 - `monid discover` and `monid inspect` are free.
-- One search = `litescrape /google/shopping`, $0.00015/call. Max 2 searches per incident, retry a failed call at most 2 times.
+- One search = `litescrape /google/shopping`, $0.00015/call. Max 1 search per run, retry a failed call at most 2 times.
 - Set `NO_COLOR=1` (and `MSYS_NO_PATHCONV=1` on Git Bash, or endpoint paths get mangled).
 
 ## Steps
@@ -21,7 +29,8 @@ Search/email/calls to the outside world go **only** through Monid. Real results 
    monid run -p litescrape -e /google/shopping \
      --query '{"q":"<PART> RS Components","num":20,"gl":"us","hl":"en"}' -w 90 -o monid-<PART>.json
    ```
-   If no row has a source containing "RS", you may run ONE more search with `"q":"Schneider <PART> contactor"`.
+   For LC1D09BD use exactly `"q":"LC1D09BD RS Components"` (proven 2026-10-07 to return RS - America). Do not run a second search; if no RS row, use the best other matching row.
+   Then read the result: `cat monid-<PART>.json` (the rows are in `shopping_results[]`).
 4. Map `shopping_results[]` to SupplierOption. Keep only rows whose title contains the part number (ignore `-`/spaces/case), that have `extracted_price`, and no `second_hand_condition`:
    - `supplier` = `source` · `part` = the part · `price` = `extracted_price` · `currency` = "USD"
    - `stock` = null (Google Shopping has no stock count; the browser step reads it on the product page)
