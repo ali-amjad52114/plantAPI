@@ -15,7 +15,7 @@ export default async function GovernancePage() {
   const res = url && key ? await createClient(url, key).from("infra_actions").select("*").order("created_at", { ascending: false }).limit(100) : null;
   const missing = !res || (res.error && /does not exist|schema cache|not find/i.test(res.error.message));
   const rows = (res?.data ?? []) as Row[];
-  const count = (v: string) => rows.filter(r => pick(r, "decision", "verdict", "policy_decision", "result").toUpperCase() === v).length;
+  const count = (v: string) => rows.filter(r => pick(r, "outcome", "decision", "verdict", "platform_returned").toUpperCase() === v).length;
 
   return (
     <div className="cr">
@@ -33,16 +33,17 @@ export default async function GovernancePage() {
           {missing ? <p className="note act" style={{ margin: 10 }}>The <code>infra_actions</code> table doesn&apos;t exist yet. It appears here as soon as the platform session creates it.</p>
             : res?.error ? <p className="note warn" style={{ margin: 10 }}>{res.error.message}</p>
             : rows.length === 0 ? <p className="dim" style={{ padding: 10, margin: 0 }}>No infrastructure actions recorded yet.</p>
-            : <div className="jwrap" style={{ maxHeight: "none" }}><table className="j"><thead><tr><th>TIME</th><th>VERDICT</th><th>ACTION</th><th>APPROVAL ID</th><th>DETAIL</th></tr></thead>
+            : <div className="jwrap" style={{ maxHeight: "none" }}><table className="j"><thead><tr><th>TIME</th><th>VERDICT</th><th>ACTION</th><th>APPROVAL ID</th><th>EXPECTED</th><th>DETAIL</th></tr></thead>
               <tbody>{rows.map((r, i) => {
-                const v = pick(r, "decision", "verdict", "policy_decision", "result").toUpperCase();
+                const v = pick(r, "outcome", "decision", "verdict", "platform_returned").toUpperCase();
                 const t = pick(r, "created_at");
                 return (<tr key={pick(r, "id") || i}>
                   <td>{t ? new Date(t).toTimeString().slice(0, 5) : ""}</td>
                   <td><span className={"verdict " + v}>{v || "—"}</span></td>
                   <td>{pick(r, "action", "operation", "command")}</td>
                   <td className="m">{pick(r, "approval_id", "approval")}</td>
-                  <td>{pick(r, "detail", "reason", "message", "target")}</td>
+                  <td className="m">{pick(r, "policy_expected").toUpperCase()}{pick(r, "platform_returned") && pick(r, "policy_expected") !== pick(r, "platform_returned") ? <span className="c-warn"> ≠ {pick(r, "platform_returned").toUpperCase()}</span> : null}</td>
+                  <td>{pick(r, "detail", "reason", "message")}</td>
                 </tr>); })}</tbody></table></div>}
         </div>
       </main>
