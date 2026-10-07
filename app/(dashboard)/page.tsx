@@ -14,5 +14,5 @@ export default async function SitePage({ searchParams }: { searchParams: Promise
   const embed = one(sp.embed) === "1";
   const f = one(sp.focus)?.trim().toUpperCase();
   const focus = f && /^[A-Z0-9-]{1,24}$/.test(f) ? f : undefined;
-  return <SiteView incidents={incidents} mock={cfg.mock} embed={embed} focus={focus} />;
+  return <SiteView incidents={incidents} mock={cfg.mock} embed={embed} focus={focus} cfg={cfg} />;
 }

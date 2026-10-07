@@ -480,3 +480,7 @@ table.j { width: 100%; border-collapse: collapse; font-size: 12px }
 @media (prefers-reduced-motion: reduce) {
   .cr *, .cr *::before, .cr *::after { animation: none !important; transition: none !important }
 }
+
+/* header "Reset demo" (secondary to Report failure) */
+.top nav button.reset { background: var(--panel) !important; color: var(--ink) !important; border-left: 1px solid var(--rule); font: 700 12px/1 var(--fm); letter-spacing: .16em; text-transform: uppercase }
+.top nav button.reset:hover { background: var(--raised) !important; box-shadow: none }
