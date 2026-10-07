@@ -80,3 +80,16 @@ DONE (s/tools, not pushed): fd5326b monid/materials use ~/.npm-global/bin/monid,
 NEXT: run erp role live (real Fiix WO + Odoo block) once lead says so; confirm Fiix history filter on a fresh browser session.
 BLOCKER: Fiix has no Sarah Chen user (only "ali amjad", Guest, group entries) → WOs assigned to ali amjad, skill names Sarah Chen in summary. Adding her = new Fiix user, needs lead/user OK.
 SPEND: Agent37 reported $0 for all turns (cost_usd 0 — unmetered or free) · Monid ~$0.0005 total · OpenAI ~$0.10
+
+## Verifier (S2-UI) — 15:10 · slice first half PASS · second half waiting on core fix
+Incident c62334f1-f0bb-4aaf-86e2-5bf04306c292, UI on :3000 (main) and :3005 (s/ui fixes), single worker = lead's.
+- PASS upload → NEW → TRIAGING → PLANNING → WAITING_APPROVAL, live via Realtime.
+- PASS triage (Agent37 + OpenAI vision): CV-104 · contactor KM104 · LC1D09BD · high · electrician. Agent37 response e03250f89dc24296b3de519d914edfc5.
+- PASS materials: Odoo product #1 stock 0; Monid litescrape /google/shopping → RS - America USD 152.64 (supplier page blocked; shown as unverified). Agent37 9260e4046b7b488bbd4b6f7cf68dd209.
+- PASS coordinator plan: 18:00–19:00 (plant -04:00), Sarah Chen, 5 actions (4 APPROVAL, 1 DENY jumper), 4 safety steps. Agent37 2c49a0fc2a1046b7a6b239df99e99c4c. Approve/Modify/Reject live.
+- FAIL (core, known) earlier run fb9ae7de: after Approve, erp turn got no approval → fiix_wo_code "" and engine still advanced to WAITING_REPAIR. UI now shows "Fiix WO: NOT CREATED" (s/ui dcca3a2).
+- UI bugs found by the live run, fixed on s/ui: Realtime partial updates wiped incident.triage (bd042da); plan times shown in browser tz (bd042da); long real plan actions overflowed into the monitor column (cf0cb36). Needs merge of s/ui → main.
+- Engine note: coordinator/triage feed events carry system "fiix" (journal SRC shows FIIX for OpenAI work); agent37_session_ids stays empty early (monitor says "no session" until set).
+Screenshots: s/ui docs/screenshots/ui/01-c62334f1-waiting-approval.jpg, 02-…-plan-overflow-bug.jpg, 03-…-plan-fixed.jpg.
+NEXT: on core's go, drive the second half on :3000: Approve → Fiix WO + Odoo block → wrong-part photo (expect REJECT) → correct photo (expect ACCEPT) → CLOSED.
+SPEND: none by verifier (lead's worker ran the agents).
