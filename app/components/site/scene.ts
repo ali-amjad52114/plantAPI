@@ -17,14 +17,14 @@ const host = $('#host');
 const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
 renderer.setPixelRatio(Math.min(2, devicePixelRatio || 1));
 renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.15;
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
 host.append(renderer.domElement);
 const css = new CSS2DRenderer(); css.domElement.className = 'css2d'; host.append(css.domElement);
 
-// "Control Room" look: night-shift hall on deep steel, blueprint grid, safety-orange alarms.
+// Daylight look: clean industrial hall under a light sky, blue blueprint grid, safety-orange alarms.
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0b0f14);
-scene.fog = new THREE.FogExp2(0x0b0f14, .0085);
+scene.background = new THREE.Color(0xeaf0f5);
+scene.fog = new THREE.FogExp2(0xeaf0f5, .0042);
 const camera = new THREE.PerspectiveCamera(40, 1, .1, 500);
 const HOME = { pos: new THREE.Vector3(-20, 58, 64), target: new THREE.Vector3(0, 0, -1) };
 camera.position.set(56, 72, 84);   // intro: start wide on the other side, then fly in to HOME
@@ -33,18 +33,18 @@ controls.target.set(0, 2, -4);
 Object.assign(controls, { enableDamping: true, dampingFactor: .08, maxPolarAngle: 1.42, minDistance: 5, maxDistance: 130, screenSpacePanning: false, zoomToCursor: true, autoRotateSpeed: .35 });
 
 // hemisphere (cool sky / warm floor bounce) + warm key with shadows + blue rim from behind
-scene.add(new THREE.HemisphereLight(0xb8cde6, 0x2a2118, .9));
-const sun = new THREE.DirectionalLight(0xffe6c8, 2.6);
+scene.add(new THREE.HemisphereLight(0xf4f8fc, 0xb7bec6, 1.5));
+const sun = new THREE.DirectionalLight(0xfff0dc, 2.3);
 sun.position.set(-30, 60, 35); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048);
 Object.assign(sun.shadow.camera, { left: -45, right: 45, top: 35, bottom: -35, near: 10, far: 160 });
-sun.shadow.bias = -.0005; sun.shadow.normalBias = .04;
+sun.shadow.bias = -.0005; sun.shadow.normalBias = .04; sun.shadow.radius = 4;
 scene.add(sun);
-const rim = new THREE.DirectionalLight(0x4da3ff, 1.6); rim.position.set(25, 30, -60); scene.add(rim);
-const fill = new THREE.DirectionalLight(0xcfe0f2, .35); fill.position.set(30, 25, 40); scene.add(fill);
+const rim = new THREE.DirectionalLight(0xd6e6fa, .7); rim.position.set(25, 30, -60); scene.add(rim);
+const fill = new THREE.DirectionalLight(0xffffff, .6); fill.position.set(30, 25, 40); scene.add(fill);
 // blueprint grid on the yard around the hall (theme blue, 2 m cells, fades into fog)
-const grid = new THREE.GridHelper(260, 130, 0x4da3ff, 0x4da3ff);
-grid.material.transparent = true; grid.material.opacity = .14; grid.material.depthWrite = false; grid.position.y = -.02; scene.add(grid);
-const yard = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0x10161d, roughness: .95, metalness: 0 }));
+const grid = new THREE.GridHelper(260, 130, 0x1f6fd1, 0x1f6fd1);
+grid.material.transparent = true; grid.material.opacity = .12; grid.material.depthWrite = false; grid.position.y = -.02; scene.add(grid);
+const yard = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshStandardMaterial({ color: 0xd9dee3, roughness: .95, metalness: 0 }));
 yard.rotation.x = -Math.PI / 2; yard.position.y = -.05; yard.receiveShadow = true; scene.add(yard);
 
 /* ------------------------------------------------------------ textures and materials */
@@ -79,13 +79,13 @@ const signTex = (text, sub, bg = '#e9ecee', fg = '#1b232b') => canvasTex(512, 16
 
 const std = (color, rough = .6, metal = .1, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal, ...extra });
 const M = {
-  floor: std(0x6f7882, .82, .05, { map: concreteTex }),
+  floor: std(0xf2f4f6, .85, .02, { map: concreteTex }),
   steel: std(0x8f979e, .45, .6), steelDark: std(0x3d454c, .55, .5), struct: std(0x6b7680, .5, .55),
   machine: std(0x5f7489, .5, .35), machine2: std(0x8a8f86, .55, .3),
   yellow: std(0xf0b400, .45, .2), orange: std(0xe0601a, .5, .1), red: std(0xb3261e, .45, .2),
   white: std(0xe8ebec, .55, .1), concrete: std(0xa8a6a0, .9, 0), ore: std(0x2e2a27, .95, 0), oreLight: std(0x4a443e, .95, 0),
   rubber: std(0x1c1c1d, .9, 0), pipe: std(0xb3b9be, .35, .7), mill: std(0xffffff, .55, .25, { map: millTex }),
-  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0x2a3644, .7, .35), glassWin: std(0x9fc8ff, .2, 0, { emissive: 0x4da3ff, emissiveIntensity: .8 }),
+  slurry: std(0xffffff, .25, .05, { map: slurryTex }), wall: std(0xc9d1da, .78, .2), glassWin: std(0xcfe2f5, .15, .1, { emissive: 0x6fa8e0, emissiveIntensity: .25 }),
   asphalt: std(0x7d7f80, .9, 0), skin: std(0xc99a76, .8, 0), vest: std(0xff6a13, .7, 0, { emissive: 0x401400, emissiveIntensity: .4 }), helmet: std(0xf7f7f2, .4, 0),
   helmetY: std(0xf2c200, .4, 0), dark: std(0x222629, .7, .2), beacon: std(0xff2a1a, .3, 0, { emissive: 0xff2a1a, emissiveIntensity: 2 }),
   amberLight: std(0xffa500, .3, 0, { emissive: 0xffa000, emissiveIntensity: 1.6 }),
@@ -429,11 +429,11 @@ const ringGeo = new THREE.RingGeometry(.86, 1, 64), discGeo = new THREE.CircleGe
 for (const [id, g] of assetGroups) {
   const isDown = BY_ID[id]?.status === 'down';
   if (!isDown && !(EMBED && id === FOCUS)) continue;   // embed: the focused asset always gets a ring (blue when healthy)
-  const hot = isDown ? 0xff7a1a : 0x4da3ff, hot2 = isDown ? 0xff5a5a : 0x4da3ff;
+  const hot = isDown ? 0xe8650f : 0x1f6fd1, hot2 = isDown ? 0xd33a3a : 0x1f6fd1;   // light theme: solid normal-blended colors (additive washes out on a light sky)
   const c = g.userData.center, r = Math.max(3, Math.min(9, g.userData.size * .45));
-  const mk = (geo, color, op) => { const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: op, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.rotation.x = -Math.PI / 2; m.position.set(c.x, .06, c.z); m.scale.setScalar(r); m.renderOrder = 2; m.userData.keepFor = id; scene.add(m); return m; };
-  const disc = mk(discGeo, isDown ? 0xff5a1a : 0x4da3ff, .16), ring = mk(ringGeo, hot, .9), wave = mk(ringGeo, hot2, .6);
-  const beam = new THREE.Mesh(new THREE.CylinderGeometry(r * .92, r * .92, 14, 48, 1, true), new THREE.MeshBasicMaterial({ color: hot, transparent: true, opacity: .07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
+  const mk = (geo, color, op) => { const m = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ color, transparent: true, opacity: op, blending: THREE.NormalBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); m.rotation.x = -Math.PI / 2; m.position.set(c.x, .06, c.z); m.scale.setScalar(r); m.renderOrder = 2; m.userData.keepFor = id; scene.add(m); return m; };
+  const disc = mk(discGeo, isDown ? 0xe8650f : 0x1f6fd1, .16), ring = mk(ringGeo, hot, .9), wave = mk(ringGeo, hot2, .6);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(r * .92, r * .92, 14, 48, 1, true), new THREE.MeshBasicMaterial({ color: hot, transparent: true, opacity: .07, blending: THREE.NormalBlending, depthWrite: false, side: THREE.DoubleSide, fog: false }));
   beam.position.set(c.x, 7, c.z); beam.userData.keepFor = id; beam.visible = !EMBED; scene.add(beam);
   const glowL = new THREE.PointLight(isDown ? 0xff6a1a : 0x4da3ff, 18, r * 3.2, 1.8); glowL.position.set(c.x, 2.5, c.z); scene.add(glowL);
   if (isDown && EMBED && id === FOCUS) {   // fault pulse on the hero object (orange/red emissive)
@@ -442,7 +442,7 @@ for (const [id, g] of assetGroups) {
   }
   anim.push((dt, t) => {
     const k = .5 + .5 * Math.sin(t * 4);
-    ring.material.opacity = .55 + .4 * k; disc.material.opacity = .08 + .12 * k; beam.material.opacity = .04 + .06 * k; glowL.intensity = 10 + 16 * k;
+    ring.material.opacity = .6 + .4 * k; disc.material.opacity = .12 + .14 * k; beam.material.opacity = .05 + .07 * k; glowL.intensity = 6 + 12 * k;
     const u = (t * .6) % 1; wave.scale.setScalar(r * (1 + u * .9)); wave.material.opacity = .7 * (1 - u);
   });
 }
@@ -552,7 +552,7 @@ addEventListener('resize', resize); resize();
 const clock = new THREE.Clock();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 if (EMBED && assetGroups.has(FOCUS)) {
-  // embed: one "levitating" hero object. Hide everything except the focused asset, its ring, lights, grid and dark ground.
+  // embed: one "levitating" hero object. Hide everything except the focused asset, its ring, lights, grid and light ground.
   const fg = assetGroups.get(FOCUS), c = fg.userData.center, lift = .7;
   for (const o of [...scene.children]) { if (o === fg || o.isLight || o === grid || o === yard || o.userData.keepFor === FOCUS) continue; o.visible = false; }
   const pivot = new THREE.Group(); pivot.position.set(c.x, 0, c.z); scene.add(pivot); pivot.attach(fg);

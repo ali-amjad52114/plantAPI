@@ -3,32 +3,32 @@
   position: fixed; right: 24px; bottom: 24px; z-index: 8;
   width: 400px; max-width: calc(100vw - 48px);
   display: flex; flex-direction: column;
-  background: #161D26; border: 1px solid #2A3644; border-top: 3px solid #FF7A1A; border-radius: 12px; overflow: hidden;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, .55), 0 0 0 1px rgba(0, 0, 0, .3);
+  background: #FFFFFF; border: 1px solid #D8DEE6; border-top: 3px solid #E8650F; border-radius: 12px; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 12px 32px rgba(16, 24, 40, .14);
   opacity: 0; transform: translateY(12px) scale(.96); transform-origin: bottom right;
   transition: opacity .3s ease, transform .3s ease, width .35s cubic-bezier(.3, .7, .3, 1);
 }
 .pip.in { opacity: 1; transform: none }
 .pip.big { width: 720px }
-.pip-bar { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 12px; background: #1F2833; border-bottom: 1px solid #2A3644; min-width: 0 }
-.pip-t { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font: 700 11px/1 "JetBrains Mono", "Courier New", monospace; letter-spacing: .14em; text-transform: uppercase; color: #F3EFE7; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
-.pip-t i, .pip-pill i { width: 8px; height: 8px; border-radius: 50%; background: #FF5A5A; box-shadow: 0 0 8px #FF5A5A; flex: none; animation: pip-pulse 1.4s ease-in-out infinite }
+.pip-bar { display: flex; align-items: center; gap: 8px; padding: 8px 8px 8px 12px; background: #F0F3F7; border-bottom: 1px solid #D8DEE6; min-width: 0 }
+.pip-t { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; font: 700 11px/1 "JetBrains Mono", "Courier New", monospace; letter-spacing: .14em; text-transform: uppercase; color: #13202C; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.pip-t i, .pip-pill i { width: 8px; height: 8px; border-radius: 50%; background: #D33A3A; box-shadow: 0 0 0 3px rgba(211, 58, 58, .15); flex: none; animation: pip-pulse 1.4s ease-in-out infinite }
 @keyframes pip-pulse { 50% { opacity: .35 } }
-.pip-link { font: 700 10px/1 "JetBrains Mono", "Courier New", monospace; letter-spacing: .1em; text-transform: uppercase; color: #4DA3FF; text-decoration: none; white-space: nowrap; padding: 6px 4px; border-radius: 6px }
-.pip-link:hover { color: #F3EFE7 }
-.pip-b { width: 28px; height: 28px; flex: none; display: grid; place-items: center; border-radius: 6px; border: 1px solid #2A3644; background: #161D26; color: #A9B4C2; font: 700 14px/1 "JetBrains Mono", monospace; cursor: pointer; transition: background .15s, color .15s, border-color .15s }
-.pip-b:hover { background: #263140; color: #F3EFE7; border-color: #3A4A5C }
-.pip-b:focus-visible, .pip-link:focus-visible, .pip-pill:focus-visible { outline: 2px solid #FF7A1A; outline-offset: 2px }
-.pip-f { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #0B0F14 }
+.pip-link { font: 700 10px/1 "JetBrains Mono", "Courier New", monospace; letter-spacing: .1em; text-transform: uppercase; color: #1F6FD1; text-decoration: none; white-space: nowrap; padding: 6px 4px; border-radius: 6px }
+.pip-link:hover { color: #13202C }
+.pip-b { width: 28px; height: 28px; flex: none; display: grid; place-items: center; border-radius: 6px; border: 1px solid #D8DEE6; background: #FFFFFF; color: #4E5B69; font: 700 14px/1 "JetBrains Mono", monospace; cursor: pointer; transition: background .15s, color .15s, border-color .15s }
+.pip-b:hover { background: #E7ECF2; color: #13202C; border-color: #B8C2CE }
+.pip-b:focus-visible, .pip-link:focus-visible, .pip-pill:focus-visible { outline: 2px solid #E8650F; outline-offset: 2px }
+.pip-f { display: block; width: 100%; aspect-ratio: 16 / 10; border: 0; background: #EAF0F5 }
 .pip-pill {
   position: fixed; right: 24px; bottom: 24px; z-index: 8;
   display: inline-flex; align-items: center; gap: 8px; height: 40px; padding: 0 16px; border-radius: 999px;
-  background: #1F2833; border: 1px solid #FF7A1A; color: #F3EFE7; cursor: pointer;
+  background: #FFFFFF; border: 1px solid #E8650F; color: #13202C; cursor: pointer;
   font: 700 11px/1 "JetBrains Mono", "Courier New", monospace; letter-spacing: .14em; text-transform: uppercase;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, .5), 0 0 16px rgba(255, 122, 26, .25);
+  box-shadow: 0 1px 2px rgba(16, 24, 40, .06), 0 8px 24px rgba(16, 24, 40, .12);
   opacity: 0; transform: translateY(8px); transition: opacity .3s ease, transform .3s ease, background .15s;
 }
 .pip-pill.in { opacity: 1; transform: none }
-.pip-pill:hover { background: #263140 }
+.pip-pill:hover { background: #FFF1E6 }
 @media (max-width: 860px) { .pip, .pip.big { width: min(400px, calc(100vw - 32px)); right: 16px; bottom: 16px } }
 @media (prefers-reduced-motion: reduce) { .pip, .pip-pill, .pip-t i, .pip-pill i { transition: none !important; animation: none !important } }
