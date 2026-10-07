@@ -111,7 +111,7 @@ button { cursor: pointer }
 .ln .dots { flex: 1; min-width: 12px; border-bottom: 1.5px dotted var(--rule); transform: translateY(-3px) }
 .ln .v { font: 700 12.5px/1.3 var(--fm); text-align: right; text-transform: uppercase; overflow-wrap: anywhere }
 .why { font-size: 11.5px; color: var(--muted); margin: -1px 0 5px; padding-left: 10px; border-left: 2px solid var(--hair) }
-.bigplan { font: 700 26px/1.05 var(--fm); color: var(--agent); letter-spacing: -.01em; margin: 2px 0 6px }
+.bigplan { font: 700 clamp(18px, 1.7vw, 26px)/1.1 var(--fm); overflow-wrap: anywhere; color: var(--agent); letter-spacing: -.01em; margin: 2px 0 6px }
 .evid { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 10px; align-items: start; margin-bottom: 6px }
 .shot { aspect-ratio: 4/3; max-width: 100%; display: grid; place-items: end start; padding: 4px; font: 9.5px var(--fm); color: #fff; border: 1px solid var(--bezel);
   background: radial-gradient(circle at 38% 42%, #2b1a10 0 14%, #5d3a1f 15% 22%, transparent 23%), linear-gradient(160deg, #6d747a, #3a4046 60%, #22272b) }
