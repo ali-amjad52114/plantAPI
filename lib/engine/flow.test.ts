@@ -135,3 +135,15 @@ describe("coordinator window is never blank", () => {
     expect(checkOutput("coordinator", { supplier: { supplier: "RS", price: 1, url: "u" }, window_start: "2026-10-07T18:35:00-04:00", window_end: "2026-10-07T19:20:00-04:00" }, { materials })).toBeNull();
   });
 });
+
+describe("no-ack follow-up", () => {
+  it("is a Slack reminder + Gmail notice, never a call", async () => {
+    process.env.PLANTAPI_NOTICE_EMAIL = "ops@example.com";
+    const { reminderAction } = await import("./depth.pure");
+    const a = reminderAction();
+    expect(a).toContain("#plant-ops");
+    expect(a).toContain("ops@example.com");
+    expect(a).toMatch(/Do NOT place any phone call/);
+    delete process.env.PLANTAPI_NOTICE_EMAIL;
+  });
+});
