@@ -117,3 +117,32 @@ NOTE: live policy was switched full_access → branch_specific at ~15:08 by S4 o
 NEXT (human/lead terminal): `insta agent approvals deny 05f384af-2ced-4f15-9d7c-f905469cc00a` · `insta agent approvals approve 9d6f239c-d666-48fd-acbd-3f77ff73b329` (branch.delete of analysis-20261007222046, cleanup) · `insta agent policy protect-branch main`.
 D3: real deploy to branch slice-preview in progress; URL will follow here.
 SPEND: Agent37 ≈ minutes of one instance (< $0.05) · Monid $0 · OpenAI $0
+
+## Verifier (S2-UI) — 15:28 · WAVE A partial · FAIL at execution fan-out
+Incident 2d9b4671-b220-40f3-acfb-cee63725d6ef, :3000, lead's worker (PLANTAPI_FULL_TEAM=1).
+1. PASS triage (15:21–15:22).
+2. PASS 4 planners in parallel (15:22:34–35 created; UI "PLAN · 4 PARALLEL", 4 lit windows). Sources: reliability = SOP file (Fiix history unavailable); materials = Monid dataforseo /google-shopping → RS - America $152.64, lead time unknown; production = LIVE sheets:1nfpZ5f4… → 07:00 tomorrow; workforce = LIVE calendar:primary, no events → availability unverified.
+3. PASS coordinator → 18:00 today (-04:00), explains disagreement. ISSUE (REAL ONLY): rationale cites "seed schedule" and "seed calendar" (Sarah's arc-flash training) — coordinator prompt still gets seed files; the live calendar has no such event.
+4. PASS risk: APPROVAL + LOTO required.
+5. PASS Approve clicked in UI (15:27:10).
+6. FAIL fan-out: only erp queued; no procurement / dispatch task rows. Likely flow.ts:107 `fullTeam` read from env in the Next server (approve route), which lacks PLANTAPI_FULL_TEAM=1 (only the worker has it).
+UI (s/ui 59e8df7, dc6ba6f, d87d45d, 61ae1e5): planner positions with sources (seed labelled), DISAGREE flag, resolution block (losers struck through, coordinator pick), risk line, procurement/dispatch details; monitor wall groups one engine step (30 s). Screenshots 07–09 in s/ui docs/screenshots/ui/.
+NEXT: rerun fresh wave A incident once the flag is set for the Next server.
+
+## S4/W1 — 15:31 · done
+DONE: template plantapi-agent@1 (build tb_68b3d93031d974774143). "Add plant" = lib/agent37/provision/add-plant.ts addPlant({name}) / removePlant(id). Live proof: instance hdizdrdslv (plantapi-agent rev 1, auto-sleep 300s, $1 cap) + plants row 90097efc-3d33-49b5-b486-9ffaef8aa7bd; exec showed ~/plantapi/skills and monid 0.1.7 at /usr/local/bin/monid; files API upload verified; then instance deleted (404) and row removed. Evidence infra/evidence/add-plant.txt (s/platform 1fdc9e1).
+NEXT: re-run when agent/skills/** exists (S2) to sync real skills; UI "Add plant" button can call addPlant.
+BLOCKER: none.
+SPEND: Agent37 < $0.01
+
+## S4/W3 — 15:32 · done
+DONE: migration 020_infra_actions applied to real Supabase (Realtime on, RLS off, anon select). 3 REAL governance rows backfilled from the live run: ALLOW e8a4477b-350e-4b73-a2ac-43e81f6af103 · APPROVE d804ba6d-58ed-420e-a48b-526f315a5fdb (approval 05f384af…) · DENY 08ec0f21-6c5d-40a9-abce-43cf06bec7b7; anon REST select = 200. governance-demo.ts --live now writes each step via lib/infra/infra-actions.ts recordInfraAction. s/platform a9a958e.
+NEXT: S3 governance panel per infra/governance/UI_NOTES.md (order by created_at, raw->step; Realtime INSERT). Note: migration 020 lives in s/platform supabase/migrations — merge alongside S1 migrations.
+BLOCKER: none.
+SPEND: $0
+
+## S4/W2 — 15:32 · done
+DONE: lib/agent37/provision/budget.ts getBudget/setBudget + backup.ts createCheckpoint/listBackups + platform-cli.ts + README.md (signatures for S1/S3). Live on pfd5d7eukw: cap $3 → $3 (unchanged), spent $0.399 this month, $2.60 left; on-demand backup 1d7078da8512977edbf0 (259.7 MB, ~20s). s/platform 5a7790e, evidence infra/evidence/budget-backup.txt.
+NEXT: S1 calls createCheckpoint(instanceId, label) before execution and stores id/status on the incident (limit: 1 manual backup per 15 min, newest replaces previous; returns status "rate_limited" instead of throwing). S3 shows spend vs cap via getBudget.
+BLOCKER: none.
+SPEND: $0
