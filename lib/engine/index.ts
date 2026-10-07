@@ -235,7 +235,10 @@ async function runTaskInner(task: AgentTask): Promise<void> {
 
     incident = await getIncident(incidentId);
     if (followUp) {
-      await emit({ incident_id: incidentId, agent: role, kind: "output", system: "agent37", message: `${role} follow-up done`, data: output as Record<string, unknown> });
+      const notices = ((output as { notices?: Array<{ channel: string; status: string; ref: string | null }> }).notices ?? [])
+        .map((n) => `${n.channel} ${n.status}${n.ref ? ` (${n.ref})` : ""}`)
+        .join(", ");
+      await emit({ incident_id: incidentId, agent: role, kind: "output", system: "slack", message: `Reminder sent: ${notices || "no notices reported"}`, data: output as Record<string, unknown> });
       return;
     }
     if (role === "dispatch" && depthEnabled()) {

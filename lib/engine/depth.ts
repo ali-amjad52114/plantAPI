@@ -8,6 +8,7 @@ import { FLAGS } from "@/lib/contracts/flags";
 import type { AgentEvent, AgentTask, Incident } from "@/lib/contracts/types";
 import { supabaseAdmin } from "@/lib/db";
 import { extractLastJson } from "@/lib/ai";
+import { reminderAction } from "./depth.pure";
 import { createCron, cronRuns, deleteCron, getSession, lastAssistantText, oneShotSchedule } from "@/lib/agent37/crons";
 
 export const depthEnabled = () => FLAGS.agent37Depth || process.env.PLANTAPI_AGENT37_DEPTH === "1";
@@ -48,6 +49,7 @@ async function takeCheckpoint(incidentId: string): Promise<void> {
 }
 
 // ---------- 2. Ack follow-up cron ----------
+
 
 const ACK_DELAY_MIN = () => Number(process.env.PLANTAPI_ACK_DELAY_MIN ?? 10);
 
@@ -126,7 +128,7 @@ async function finish(
   await enqueue(w.incident_id, {
     follow_up: true,
     reason: `no Slack ack within ${ACK_DELAY_MIN()} min`,
-    action: "Send ONE Slack reminder to the technician about this job. No phone call (dropped), no other channel.",
+    action: reminderAction(),
     ack_check: result,
   });
 }
