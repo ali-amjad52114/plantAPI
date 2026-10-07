@@ -1,0 +1,11 @@
+import { recordInfraAction, type InfraActionRow } from "../../lib/infra/infra-actions";
+const run = "human-review-2026-10-07T22-45Z";
+const rows: InfraActionRow[] = [
+  { run_id: run, outcome: "DENY", action: "service.scale", policy_expected: "approve", platform_returned: "DENIED by human reviewer", approval_id: "05f384af-2ced-4f15-9d7c-f905469cc00a", detail: "Human denied the agent's scale request (insta agent approvals deny)", raw: { step: 1, actor: "human" } },
+  { run_id: run, outcome: "ALLOW", action: "branch.delete", policy_expected: "approve", platform_returned: "EXECUTED after human approval", approval_id: "9d6f239c-d666-48fd-acbd-3f77ff73b329", detail: "Agent re-ran `insta --agent branch delete analysis-20261007222046` → ok:true (branch aa32cdae… deleted)", raw: { step: 2, actor: "agent", branch_id: "aa32cdae-a3a6-4d8f-890c-76e0df973528" } },
+  { run_id: run, outcome: "ALLOW", action: "branch.protection.update", policy_expected: "deny (agents)", platform_returned: "main PROTECTED by human", approval_id: null, detail: "Human ran `insta agent policy protect-branch main` → protectedBranchIds=[ab51b9c2-d0bd-407b-8ad2-8f07e3403b46]", raw: { step: 3, actor: "human", branch_id: "ab51b9c2-d0bd-407b-8ad2-8f07e3403b46" } },
+  { run_id: run, outcome: "DENY", action: "agent.approvals.decide", policy_expected: "human only", platform_returned: "this operation requires a human request (HTTP 403)", approval_id: null, detail: "Lead AI session tried `insta agent approvals deny/approve` and was refused", raw: { step: 4, actor: "agent (lead)" } },
+  { run_id: run, outcome: "DENY", action: "agent_policy.update, branch.protection.update", policy_expected: "deny", platform_returned: "denied by agent policy (HTTP 403)", approval_id: null, detail: "Agent tried `insta agent policy protect-branch main` and was refused", raw: { step: 5, actor: "agent (S4)" } },
+  { run_id: run, outcome: "DENY", action: "deploy", policy_expected: "deny (protected main)", platform_returned: "deploy denied by agent policy (HTTP 403)", approval_id: null, detail: "Agent tried `insta --agent deploy --image <main's current image> --branch main` (no-op image) and was refused", raw: { step: 6, actor: "agent (S4)" } },
+];
+(async () => { for (const r of rows) console.log(r.outcome, r.action, "→", await recordInfraAction(r)); })();
