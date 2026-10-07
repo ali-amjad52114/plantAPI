@@ -131,7 +131,7 @@ async function main() {
   const approval = { decision: "approve", decided_by: "smoke", note: "dry run" };
   await Promise.all([
     want("procurement")
-      ? turn("procurement", task("procurement", { incident_id: id, plan, materials, approval, send: false, supplier_email: "test-inbox@example.invalid" }, "DRY RUN: send is false. Compose only."))
+      ? turn("procurement", task("procurement", { incident_id: id, plan, materials, approval, dry_run: true }, "DRY RUN: dry_run is true. Compose only; free /list-messages is fine, never /send-messages."))
       : null,
     want("dispatch")
       ? turn("dispatch", task("dispatch", { incident_id: id, plan, erp: null, approval, dry_run: true }, "DRY RUN: dry_run is true. Write nothing; you may READ Calendar/Slack connection status (COMPOSIO_SEARCH_TOOLS) to report blocked vs drafted."))
