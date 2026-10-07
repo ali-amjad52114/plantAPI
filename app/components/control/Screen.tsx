@@ -2,6 +2,7 @@
 // One agent session's screen: a browser page (demo copy or live Agent37 screenshot) or its tool-call console.
 import { useLayoutEffect, useRef } from "react";
 import { MOCK_PAGES, type SiteCtx } from "./mockSites";
+import { IdleMimic } from "./IdleFill";
 
 export interface SessionScreen {
   role: string;
@@ -25,7 +26,7 @@ export function Console({ s, last }: { s: SessionScreen; last?: number }) {
   return (
     <div className="console">
       {lines.length ? lines.map((l, i) => <div key={i} className={cls(l) + (i === lines.length - 1 && s.running ? " caret" : "")}>{l}</div>)
-        : <div className="c-head"># session not started</div>}
+        : <IdleMimic compact={!!last} />}
     </div>
   );
 }

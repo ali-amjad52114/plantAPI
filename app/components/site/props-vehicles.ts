@@ -1,6 +1,6 @@
 // @ts-nocheck
 // Yard vehicles + paving: loading apron, front-left staff lot with pickups, haul truck on the apron, loader at the stockpiles.
-// The loop road itself lives in props-yard.ts (front z=HZ+13, right x=HX+15, w=8), so nothing here repeats it.
+// Also owns the asphalt loop road (front z=HZ+13, right x=HX+15, w=8) and the east lot at (HX+37, 4).
 // dims = { HX, HZ, HH }: the hall spans x in [-HX, HX], z in [-HZ, HZ]. Decoration only.
 export function addVehicleProps(THREE, scene, dims) {
   const { HX, HZ } = dims;
@@ -18,6 +18,29 @@ export function addVehicleProps(THREE, scene, dims) {
   const flat = (mat, w, d, x, y, z) => { const m = decor(new THREE.Mesh(G.plane, mat)); m.rotation.x = -Math.PI / 2; m.scale.set(w, d, 1); m.position.set(x, y, z); m.receiveShadow = true; root.add(m); return m; };
   const wheel = (p, r, w, x, y, z) => { const m = decor(new THREE.Mesh(G.wheel, M.tyre)); m.rotation.x = Math.PI / 2; m.scale.set(r, w, r); m.position.set(x, y, z); m.castShadow = true; p.add(m); return m; };
   const veh = (x, z, ry) => { const g = new THREE.Group(); g.position.set(x, 0, z); g.rotation.y = ry; root.add(g); return g; };
+
+  // ---------- asphalt loop road (front z=HZ+13, right x=HX+15) with an exit east to the yard edge + spur to the east lot
+  const R = { front: HZ + 13, back: -HZ - 19, left: -HX - 20, right: HX + 15, w: 8 }, EDGE = 195;
+  const segs = [ // [x0, z0, x1, z1] centre lines; axis-aligned
+    [R.left, R.front, EDGE, R.front], [R.left, R.back, R.right, R.back],
+    [R.left, R.back, R.left, R.front], [R.right, R.back, R.right, R.front], [R.right, 4, R.right + 15, 4],
+  ];
+  const dashes = [];
+  for (const [x0, z0, x1, z1] of segs) {
+    const alongX = z0 === z1, len = alongX ? x1 - x0 : z1 - z0, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
+    if (alongX) { flat(M.apron, len + R.w, R.w, cx, .02, cz); for (const s of [-1, 1]) flat(M.line, len + R.w - .6, .18, cx, .03, cz + s * (R.w / 2 - .35)); }
+    else { flat(M.apron, R.w, len + R.w, cx, .02, cz); for (const s of [-1, 1]) flat(M.line, .18, len + R.w - .6, cx + s * (R.w / 2 - .35), .03, cz); }
+    for (let t = R.w / 2 + 1.5; t < len - R.w / 2 - 1; t += 5) dashes.push(alongX ? [x0 + t, z0, 0] : [x0, z0 + t, 1]);
+  }
+  const dm = decor(new THREE.InstancedMesh(G.plane, M.line, dashes.length)); dm.receiveShadow = true;
+  const o = new THREE.Object3D();
+  dashes.forEach(([x, z, v], i) => { o.position.set(x, .035, z); o.rotation.set(-Math.PI / 2, 0, v ? Math.PI / 2 : 0); o.scale.set(2.4, .2, 1); o.updateMatrix(); dm.setMatrixAt(i, o.matrix); });
+  root.add(dm);
+
+  // ---------- east lot at the end of the spur, 2 pickups
+  const E = { x: R.right + 22, z: 4 };
+  flat(M.lot, 14, 12, E.x, .025, E.z);
+  for (let i = 0; i <= 4; i++) flat(M.bay, .18, 5, E.x - 6 + i * 3, .035, E.z - 3);
 
   // ---------- loading apron in front of the open front, between the hall and the loop road
   const apZ0 = HZ + 1, apZ1 = HZ + 9;
@@ -43,6 +66,8 @@ export function addVehicleProps(THREE, scene, dims) {
   pickup(bayX(1), L.z - L.d / 2 + 3, 0, M.white);
   pickup(bayX(2), L.z - L.d / 2 + 3, 0, M.grey);
   pickup(bayX(5), L.z - L.d / 2 + 3, Math.PI, M.blue);
+  pickup(E.x - 4.5, E.z - 3, 0, M.white);
+  pickup(E.x + 1.5, E.z - 3, Math.PI, M.grey);
 
   // ---------- haul truck on the right end of the apron, nose toward the road
   (function haul(x, z, ry) {
@@ -64,7 +89,7 @@ export function addVehicleProps(THREE, scene, dims) {
     box(g, M.dark, 1.6, .25, .25, 2.2, 1.4, 0);          // lift arms
     box(g, M.dark, .5, .9, 2.4, 3, .65, 0);              // bucket
     for (const sx of [-1, 1.1]) for (const sz of [-1, 1]) wheel(g, .7, .5, sx, .7, sz);
-  })(-HX - 32, -HZ - 25, -Math.PI / 4);
+  })(-HX - 34, -HZ - 29, -Math.PI / 4); // (-68,-50): clear of the left/back road and the (-54,-60) pile
 
   return root;
 }

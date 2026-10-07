@@ -14,6 +14,7 @@ import { ReportFailure } from "../ReportFailure";
 import { disagree, positions, wall } from "./proposals";
 import { AgentGraph } from "./AgentGraph";
 import { AssetPip } from "./AssetPip";
+import { PhotoIdle, TrendIdle } from "./IdleFill";
 import { FLAGS } from "@/lib/contracts/flags";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
@@ -187,7 +188,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               <h2>Procedure <span>{tri?.asset_id ?? "intake"} · {inc.id.slice(0, 8)}</span></h2>
               <div className="sec"><div className="cap">Failure</div>
                 <div className="evid">
-                  {inc.photo_url ? /* eslint-disable-next-line @next/next/no-img-element */ <img className="shot" src={inc.photo_url} alt="Reported failure" style={{ objectFit: "cover", width: "100%" }} /> : <div className="shot">no photo</div>}
+                  {inc.photo_url ? /* eslint-disable-next-line @next/next/no-img-element */ <img className="shot" src={inc.photo_url} alt="Reported failure" style={{ objectFit: "cover", width: "100%" }} /> : <PhotoIdle />}
                   <div className="alarmtext">{inc.alarm_text}</div>
                 </div>
                 <Ln k="Asset" v={tri ? `${tri.asset_id}` : <span className="dim pulse">ANALYSING</span>} />
@@ -381,7 +382,7 @@ function priOf(e: AgentEvent): Pri {
 // Session timeline with idle gaps (waiting for people) folded, so parallel runs stay readable.
 function Trend({ tasks, manualRole, now }: { tasks: Partial<Record<AgentRole, AgentTask>>; manualRole?: AgentRole; now: number }) {
   const rows = LANES.flatMap(l => l.roles).map(r => tasks[r]).filter((t): t is AgentTask => !!t?.started_at);
-  if (!rows.length) return <div className="trend"><p className="dim" style={{ margin: 0, fontSize: 12 }}>One row per agent session. Overlapping bars ran in parallel.</p></div>;
+  if (!rows.length) return <TrendIdle />;
   const iv = rows.map(t => [+new Date(t.started_at!), t.finished_at ? +new Date(t.finished_at) : Math.max(+new Date(t.started_at!), now)] as const);
   const sorted = [...iv].sort((a, b) => a[0] - b[0]);
   const GAP = 60e3; // a folded idle gap is drawn as one minute

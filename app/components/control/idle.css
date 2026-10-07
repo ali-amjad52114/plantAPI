@@ -1,0 +1,41 @@
+/* Idle-state placeholders (IdleFill.tsx). Dark screen insets stay dark; light panels stay light. */
+.idle-mimic { display: grid; place-items: center; gap: 6px; padding: 14px 10px; min-height: 100%; }
+.idle-mimic svg { width: 100%; max-width: 640px; height: auto; display: block; }
+.idle-mimic .im-title { fill: #6f7c86; font: 600 9px var(--fm, ui-monospace, monospace); letter-spacing: .12em; }
+.idle-mimic .im-pipe { stroke: #5a6872; stroke-width: 3; }
+.idle-mimic .im-pipe.stop { stroke: #3a444b; stroke-dasharray: 2 4; }
+.idle-mimic .im-flow { stroke: #8fd3a8; stroke-width: 2; stroke-dasharray: 6 8; animation: im-flow 1.2s linear infinite; }
+.idle-mimic .im-arrow { fill: none; stroke: #8a979f; stroke-width: 1.5; }
+.idle-mimic .im-arrow.stop { stroke: #4a555d; }
+.idle-mimic .im-node rect { fill: #1b2329; stroke: #6d7b85; stroke-width: 1.3; }
+.idle-mimic .im-node.trip rect { fill: rgba(240, 120, 32, .14); stroke: #f07820; stroke-width: 2; animation: im-blink 1.6s steps(2, start) infinite; }
+.idle-mimic .im-roll { fill: #1b2329; stroke: #f07820; stroke-width: 1.3; }
+.idle-mimic .im-id { fill: #d9e1e6; font: 700 10px var(--fm, ui-monospace, monospace); text-anchor: middle; }
+.idle-mimic .im-node.trip .im-id { fill: #ff9a4a; }
+.idle-mimic .im-name { fill: #7f8c95; font: 9px var(--fm, ui-monospace, monospace); text-anchor: middle; }
+.idle-mimic .im-trip { fill: #ff9a4a; font: 700 9px var(--fm, ui-monospace, monospace); letter-spacing: .14em; text-anchor: middle; }
+.idle-mimic .im-cap { margin: 0; color: #8a979f; font: 11px var(--fm, ui-monospace, monospace); letter-spacing: .04em; }
+.idle-mimic .im-cap b { color: #d9e1e6; }
+.idle-mimic.compact { padding: 6px 4px; }
+@keyframes im-flow { to { stroke-dashoffset: -14; } }
+@keyframes im-blink { 50% { stroke-opacity: .35; } }
+
+.trend-idle { position: relative; margin: var(--s2, 8px); height: 132px; border: 1px solid var(--rule, #dfe3e6); border-radius: 6px; overflow: hidden;
+  background: repeating-linear-gradient(0deg, transparent 0 25px, rgba(120, 132, 140, .07) 25px 26px); }
+.trend-idle .ti-grid { position: absolute; inset: 0 0 20px; display: grid; grid-template-columns: repeat(6, 1fr); }
+.trend-idle .ti-grid span { border-left: 1px dashed rgba(120, 132, 140, .22); }
+.trend-idle .ti-grid span:first-child { border-left: 0; }
+.trend-idle .ti-rows { position: absolute; inset: 10px 10px 30px; display: grid; gap: 10px; }
+.trend-idle .ti-rows span { border-radius: 3px; background: rgba(120, 132, 140, .07); }
+.trend-idle .ti-msg { position: absolute; inset: 0 0 20px; display: grid; place-items: center; margin: 0; color: var(--faint, #8a949b); font-size: 12px; }
+.trend-idle .ti-axis { position: absolute; left: 0; right: 0; bottom: 0; height: 20px; display: flex; justify-content: space-between; padding: 0 6px;
+  align-items: center; border-top: 1px solid var(--rule, #dfe3e6); color: var(--faint, #8a949b); font: 9.5px var(--fm, ui-monospace, monospace); }
+
+.shot.photo-idle { place-items: center; align-content: center; gap: 6px; background: repeating-linear-gradient(135deg, #f4f6f7 0 8px, #eef1f3 8px 16px);
+  border-style: dashed; color: var(--faint, #8a949b); text-align: center; }
+.shot.photo-idle svg { width: 40px; height: 34px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+.shot.photo-idle span { font: 10.5px var(--fm, ui-monospace, monospace); color: inherit; }
+
+@media (prefers-reduced-motion: reduce) {
+  .idle-mimic .im-flow, .idle-mimic .im-node.trip rect { animation: none; }
+}
