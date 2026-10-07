@@ -19,7 +19,7 @@ const ROLE_BRIEF: Record<Slice1Role, string> = {
 
 /** Role skill from S2 if it exists locally (uploaded to the instance at ~/plantapi/skills/), else the inline brief. */
 export function roleInstructions(role: Slice1Role): string {
-  for (const dir of [path.join(process.cwd(), "agent/skills/roles"), "C:/AI/plantapi-tools/agent/skills/roles"]) {
+  for (const dir of [path.join(process.cwd(), "agent/skills/roles")]) {
     const file = path.join(dir, `${role}.md`);
     if (existsSync(file)) return readFileSync(file, "utf8");
   }
