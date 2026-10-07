@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { afterApproval, afterTask, approvalSteps, checkOutput, nextSteps, plannerFailureIsFatal } from "./flow";
 import { ProcurementOutput, RiskOutput } from "./wave-a-schemas";
-import { buildTaskText } from "./prompts";
+import { buildTaskText, productionBrief, workforceBrief } from "./prompts";
 import type { Incident } from "../contracts/types";
 
 describe("slice 1 flow", () => {
@@ -103,11 +103,11 @@ describe("cost per incident", () => {
 describe("production/workforce sources", () => {
   it("use the real Sheet/Calendar when their ids are set, seed bridge otherwise", () => {
     delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
-    expect(buildTaskText("production", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("Sheets not connected");
+    expect(productionBrief()).toContain("Sheets not connected");
     process.env.PLANTAPI_SCHEDULE_SHEET_ID = "sheet123";
     process.env.PLANTAPI_CALENDAR_ID = "cal456";
-    expect(buildTaskText("production", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("google-sheets:sheet123");
-    expect(buildTaskText("workforce", { id: "i", alarm_text: "", photo_url: null } as unknown as Incident)).toContain("google-calendar:cal456");
+    expect(productionBrief()).toContain("google-sheets:sheet123");
+    expect(workforceBrief()).toContain("google-calendar:cal456");
     delete process.env.PLANTAPI_SCHEDULE_SHEET_ID;
     delete process.env.PLANTAPI_CALENDAR_ID;
   });

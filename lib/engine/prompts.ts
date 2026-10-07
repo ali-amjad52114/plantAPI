@@ -29,7 +29,7 @@ const ROLE_BRIEF: Partial<Record<AgentRole, string>> = {
 
 // Production / Workforce: real Google Sheet / Calendar (Agent37 Composio app connections) when S2 has
 // set them up; the seed files are only a bridge and the agent must say so in `source`.
-function productionBrief(): string {
+export function productionBrief(): string {
   const sheet = process.env.PLANTAPI_SCHEDULE_SHEET_ID;
   const where = sheet
     ? `Read the production schedule from Google Sheet \`${sheet}\` (your Google Sheets app connection; id also in $PLANTAPI_SCHEDULE_SHEET_ID). Put \`google-sheets:${sheet}\` in \`source\`. Only if the Sheets connection fails, fall back to \`~/plantapi/seed/production_schedule.csv\` and put \`seed file\` plus the error in \`source\`.`
@@ -37,7 +37,7 @@ function productionBrief(): string {
   return `You are the Production agent. Find the lowest-impact downtime window for the affected work centre today/tomorrow. ${where} Recommend one window and list the alternatives with their impact.`;
 }
 
-function workforceBrief(): string {
+export function workforceBrief(): string {
   const cal = process.env.PLANTAPI_CALENDAR_ID;
   const where = cal
     ? `Read availability from Google Calendar \`${cal}\` (your Google Calendar app connection; id also in $PLANTAPI_CALENDAR_ID). Put \`google-calendar:${cal}\` in \`source\`. Only if the Calendar connection fails, fall back to \`~/plantapi/seed/calendar_events.json\` and put \`seed file\` plus the error in \`source\`.`
