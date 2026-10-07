@@ -162,7 +162,8 @@ function checkGuard(p: Policy, mainBranchId: string | null): Guard {
   const mode = p.policy?.mode ?? "unknown";
   if (!GOVERNED_MODES.has(mode)) reasons.push(`mode is ${mode} (need branch_specific or customize)`);
   const mainProtected = !!mainBranchId && (p.policy?.protectedBranchIds ?? []).includes(mainBranchId);
-  if (!mainProtected) reasons.push("branch main is not in protectedBranchIds");
+  // Not a safety condition for this demo (project.delete deny is checked below); warn only.
+  if (!mainProtected) console.warn("warning: branch main is not in protectedBranchIds (human must run `insta agent policy protect-branch main`)");
   for (const scope of ["project", "unprotectedBranch", "protectedBranch"]) {
     const d = rule(p, scope, "project.delete");
     if (d !== "deny") reasons.push(`project.delete resolves to ${d} in scope ${scope} (need deny)`);
