@@ -38,6 +38,18 @@ Deployed app: **TODO (lead): deployed InstaCloud URL**
 | 65–80 s | The technician uploads a photo of the wrong part, labelled CHNT NCH8-63 63 A. Verification **rejects** it. The technician uploads the correct LC1-D09-type contactor, and Verification **accepts** it. |
 | 80–90 s | The Fiix work order is closed, Odoo is unblocked, and the incident is **CLOSED**. Then 15 s of governance: ALLOW / APPROVE / DENY. |
 
+## Screenshots
+
+All of these come from real runs. Full demo script: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md).
+
+| | |
+|---|---|
+| **Control room: four planners in parallel** ![](docs/screenshots/ui/07-2d9b4671-four-planners-parallel.jpg) | **Plan card: disagreement and resolution** ![](docs/screenshots/ui/09-2d9b4671-disagreement-resolution.jpg) |
+| **Agent graph** ![](docs/screenshots/ui/12-agent-graph-2d9b4671.jpg) | **Execution: Fiix WO plus Odoo block** ![](docs/screenshots/ui/05-dd94429f-fiix-wo6-odoo-block-verifying.jpg) |
+| **CLOSED: 11-agent run `ed54ca93`** ![](docs/screenshots/ui/13-ed54ca93-wave-a-closed.jpg) | **/plant: Agent37 instance panels** ![](docs/screenshots/ui/10-plant-panels.jpg) |
+| **/governance: ALLOW / APPROVE / DENY** ![](docs/screenshots/ui/11-governance-allow-approve-deny.jpg) | **/governance: AI lead refused (403)** ![](docs/screenshots/ui/14-governance-lead-ai-refused.jpg) |
+| **Agent37 live view of the plant browser** ![](docs/screenshots/platform/live-view-hj9wbnzkte.jpg) | |
+
 ## Architecture
 
 ```mermaid
