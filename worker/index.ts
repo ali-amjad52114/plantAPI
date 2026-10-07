@@ -1,4 +1,5 @@
 // S1/A4: polls agent_tasks (QUEUED) and runs each as one real Agent37 turn via the engine.
+import { hostname } from "node:os";
 import { loadEnv } from "@/lib/db/env";
 
 loadEnv();
@@ -9,6 +10,17 @@ async function main() {
   const { claimNextTask, runTask, checkFollowUps, reapStaleTasks } = await import("@/lib/engine");
   let lastFollowUpCheck = 0;
   let lastReap = 0;
+  let lastBeat = 0;
+  const { supabaseAdmin } = await import("@/lib/db");
+  const workerId = process.env.PLANTAPI_WORKER_ID ?? `${hostname()}:${process.pid}`;
+  const startedAt = new Date().toISOString();
+  // Heartbeat for GET /api/health (one row per worker; last_poll every 15 s).
+  const heartbeat = async (busy: number) => {
+    const { error } = await supabaseAdmin()
+      .from("worker_heartbeat")
+      .upsert({ id: workerId, last_poll: new Date().toISOString(), started_at: startedAt, info: { pid: process.pid, running: busy, concurrency: CONCURRENCY, full_team: process.env.PLANTAPI_FULL_TEAM === "1", agent37_depth: process.env.PLANTAPI_AGENT37_DEPTH === "1" } });
+    if (error) console.error("worker heartbeat failed:", error.message);
+  };
   // Merged skill/seed/env changes reach the plant instance only via this sync — run it on every start.
   try {
     const { syncInstance } = await import("@/lib/agent37/sync-instance");
@@ -30,6 +42,10 @@ async function main() {
         running++;
         console.log(`worker: ${task.role} for incident ${task.incident_id}`);
         runTask(task).finally(() => running--);
+      }
+      if (Date.now() - lastBeat > 15_000) {
+        lastBeat = Date.now();
+        await heartbeat(running);
       }
       if (Date.now() - lastReap > 60_000) {
         lastReap = Date.now();
