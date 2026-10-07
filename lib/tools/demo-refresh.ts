@@ -72,7 +72,7 @@ function makeClock(tz: string) {
 type ToolCall = { tool_slug: string; arguments: Record<string, unknown> };
 type ToolResult = { error?: string; response?: any; tool_slug: string; index: number };
 
-function composio() {
+export function composio() {
   const instance = process.env.AGENT37_INSTANCE_ID || "pfd5d7eukw";
   const base = (process.env.AGENT37_BASE_URL || "https://api.agent37.com/v1").replace(/\/$/, "");
   const key = process.env.AGENT37_API_KEY;
@@ -270,4 +270,29 @@ export async function refreshDemoData(opts: RefreshOptions = {}): Promise<Refres
     progress("error", summary.error);
   }
   return summary;
+}
+
+// ---------- exact-id calendar helpers (used by resetDemo archive) ----------
+export interface CalendarEventCheck { id: string; exists: boolean; summary?: string; start?: string; error?: string }
+
+/** GET each id in PLANTAPI_CALENDAR_ID (one batched call). exists=false for missing/cancelled/other-calendar ids. */
+export async function checkCalendarEvents(ids: string[], calId = process.env.PLANTAPI_CALENDAR_ID): Promise<CalendarEventCheck[]> {
+  if (!ids.length) return [];
+  if (!calId) throw new Error("BLOCKED: PLANTAPI_CALENDAR_ID not set");
+  const res = await composio().multi(ids.map((id) => ({ tool_slug: "GOOGLECALENDAR_EVENTS_GET", arguments: { calendar_id: calId, event_id: id } })));
+  return ids.map((id, i) => {
+    const r = res[i];
+    if (r?.error) return { id, exists: false, error: r.error.slice(0, 160) };
+    const ev = findAll(r?.response, (x) => x.id === id)[0];
+    if (!ev || ev.status === "cancelled") return { id, exists: false, error: ev ? "cancelled" : "not found in response" };
+    return { id, exists: true, summary: ev.summary, start: ev.start?.dateTime ?? ev.start?.date };
+  });
+}
+
+/** DELETE exact event ids from PLANTAPI_CALENDAR_ID (one batched call). Caller must have checked existence. */
+export async function deleteCalendarEvents(ids: string[], calId = process.env.PLANTAPI_CALENDAR_ID): Promise<{ id: string; deleted: boolean; error?: string }[]> {
+  if (!ids.length) return [];
+  if (!calId) throw new Error("BLOCKED: PLANTAPI_CALENDAR_ID not set");
+  const res = await composio().multi(ids.map((id) => ({ tool_slug: "GOOGLECALENDAR_DELETE_EVENT", arguments: { calendar_id: calId, event_id: id, send_updates: "none" } })));
+  return ids.map((id, i) => (res[i]?.error ? { id, deleted: false, error: res[i].error!.slice(0, 160) } : { id, deleted: true }));
 }

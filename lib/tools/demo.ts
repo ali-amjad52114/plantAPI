@@ -1,11 +1,14 @@
 // Demo reset (real systems, one button). Importable from Next and the worker: no top-level side effects.
 // Steps: guard -> archive incidents -> unblock Odoo Crushing Line 2 -> close open CV-104 Fiix WOs (Agent37 browser)
-// -> refresh Sheet + Calendar (lib/tools/demo-refresh) -> summary. Never deletes anything. Never logs secrets.
+// -> refresh Sheet + Calendar (lib/tools/demo-refresh) -> summary. Never logs secrets.
+// Only deletions: the archived incidents' Dispatch calendar bookings, matched by the exact event ids Dispatch
+// recorded (agent_tasks.output.notices[channel=calendar].ref, or agent_events.data), and only if they exist in
+// PLANTAPI_CALENDAR_ID. Never by title.
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { odoo, unblockWorkcenter, DEMO_WORKCENTER } from "@/lib/tools/odoo";
-import { refreshDemoData } from "@/lib/tools/demo-refresh";
+import { refreshDemoData, checkCalendarEvents, deleteCalendarEvents } from "@/lib/tools/demo-refresh";
 
 export const LIVE_STATUSES = ["EXECUTING", "WAITING_REPAIR", "VERIFYING"] as const;
 const FIIX_INSTANCE = "pfd5d7eukw";
@@ -98,6 +101,57 @@ export async function closeOpenFiixWos(progress: (d: string) => void = () => {})
   return { openBefore: open.map((w) => w.code), closed, stillOpen: after.filter((w) => !/Closed/i.test(w.row)).map((w) => w.code) };
 }
 
+// ---------- Dispatch calendar bookings (exact ids) ----------
+export interface DispatchBooking { incidentId: string; eventId: string; source: "agent_tasks" | "agent_events" }
+
+/** Collect {channel:"calendar", ref} notices anywhere inside a JSON value. */
+function calendarRefs(v: unknown, acc: string[] = []): string[] {
+  if (Array.isArray(v)) { for (const x of v) calendarRefs(x, acc); return acc; }
+  if (v && typeof v === "object") {
+    const o = v as Record<string, unknown>;
+    if (o.channel === "calendar" && typeof o.ref === "string" && o.ref.trim()) acc.push(o.ref.trim());
+    for (const x of Object.values(o)) calendarRefs(x, acc);
+  }
+  return acc;
+}
+
+/** Read-only: event ids Dispatch booked for these incidents (all incidents when incidentIds is omitted). */
+export async function findDispatchBookings(incidentIds?: string[]): Promise<DispatchBooking[]> {
+  if (incidentIds && !incidentIds.length) return [];
+  const db = supabase();
+  let tq = db.from("agent_tasks").select("incident_id,output").eq("role", "dispatch");
+  if (incidentIds) tq = tq.in("incident_id", incidentIds);
+  const tasks = await retry(async () => { const r = await tq; if (r.error) throw new Error(r.error.message); return r.data ?? []; });
+  let eq = db.from("agent_events").select("incident_id,data");
+  if (incidentIds) eq = eq.in("incident_id", incidentIds);
+  const events = await retry(async () => { const r = await eq.limit(5000); if (r.error) throw new Error(r.error.message); return r.data ?? []; });
+  const out = new Map<string, DispatchBooking>();
+  for (const t of tasks) for (const id of calendarRefs(t.output)) if (!out.has(id)) out.set(id, { incidentId: t.incident_id, eventId: id, source: "agent_tasks" });
+  for (const e of events) for (const id of calendarRefs(e.data)) if (!out.has(id)) out.set(id, { incidentId: e.incident_id, eventId: id, source: "agent_events" });
+  return [...out.values()];
+}
+
+/** GET each booking in the PlantAPI Technicians calendar; dryRun lists only, otherwise deletes the ones that exist. */
+export async function cleanupDispatchBookings(
+  incidentIds: string[] | undefined,
+  opts: { dryRun?: boolean; onProgress?: (detail: string) => void } = {},
+) {
+  const bookings = await findDispatchBookings(incidentIds);
+  const checks = await checkCalendarEvents(bookings.map((b) => b.eventId));
+  const rows = bookings.map((b, i) => ({ ...b, exists: checks[i].exists, summary: checks[i].summary, start: checks[i].start, checkError: checks[i].error }));
+  const toDelete = rows.filter((r) => r.exists);
+  for (const r of rows.filter((r) => !r.exists)) opts.onProgress?.(`skipped calendar event ${r.eventId} (incident ${r.incidentId.slice(0, 8)}): not in PlantAPI Technicians calendar`);
+  if (opts.dryRun) return { rows, deleted: [] as string[], failed: [] as string[] };
+  const res = await deleteCalendarEvents(toDelete.map((r) => r.eventId));
+  const deleted: string[] = [], failed: string[] = [];
+  res.forEach((d, i) => {
+    const inc = toDelete[i].incidentId.slice(0, 8);
+    if (d.deleted) { deleted.push(d.id); opts.onProgress?.(`deleted calendar event ${d.id} (incident ${inc})`); }
+    else { failed.push(d.id); opts.onProgress?.(`FAILED to delete calendar event ${d.id} (incident ${inc}): ${d.error}`); }
+  });
+  return { rows, deleted, failed };
+}
+
 // ---------- main ----------
 export async function resetDemo(opts: ResetOptions = {}): Promise<ResetSummary> {
   const say = (step: DemoStep, detail: string) => { try { opts.onProgress?.(step, detail); } catch { /* ignore listener errors */ } };
@@ -130,7 +184,14 @@ export async function resetDemo(opts: ResetOptions = {}): Promise<ResetSummary> 
       if (u.error) throw new Error(u.error.message);
       return u.data ?? [];
     });
-    return { status: "ok", detail: `archived ${r.length} incident(s)`, data: { archivedIds: r.map((x) => x.id) } };
+    const archivedIds = r.map((x) => x.id as string);
+    const c = await cleanupDispatchBookings(archivedIds, { onProgress: (d) => say("archive", d) });
+    return {
+      status: c.failed.length ? "error" : "ok",
+      detail: `archived ${r.length} incident(s); deleted ${c.deleted.length} Dispatch calendar booking(s)` +
+        `${c.failed.length ? `; failed ${c.failed.join(",")}` : ""}`,
+      data: { archivedIds, deletedCalendarEventIds: c.deleted, failedCalendarEventIds: c.failed },
+    };
   });
 
   // 3. odoo
