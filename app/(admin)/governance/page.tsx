@@ -8,6 +8,8 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "PlantAPI · Governance" };
 
 type Row = Record<string, unknown>;
+// Server-rendered: format in the plant's timezone, not the container's (UTC when deployed).
+const PLANT_TZ = process.env.PLANT_TZ ?? "America/New_York";
 const pick = (r: Row, ...ks: string[]) => { for (const k of ks) if (r[k] != null && r[k] !== "") return String(r[k]); return ""; };
 
 export default async function GovernancePage() {
@@ -40,7 +42,7 @@ export default async function GovernancePage() {
                 const d = pick(r, "detail");
                 const who = /^Lead AI/i.test(d) ? "LEAD AI" : /^Human/i.test(d) ? "HUMAN" : /^Agent/i.test(d) || pick(r, "run_id") ? "AGENT" : "—";
                 return (<tr key={pick(r, "id") || i}>
-                  <td>{t ? new Date(t).toTimeString().slice(0, 5) : ""}</td>
+                  <td>{t ? new Date(t).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: PLANT_TZ }) : ""}</td>
                   <td><span className={"verdict " + v}>{v || "—"}</span></td>
                   <td className={"m " + (who === "LEAD AI" && v === "DENY" ? "c-warn" : "")}>{who}</td>
                   <td>{pick(r, "action", "operation", "command")}</td>

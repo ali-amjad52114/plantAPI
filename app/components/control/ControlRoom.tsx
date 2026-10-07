@@ -371,11 +371,14 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
 }
 
 function Header({ q, clock, onReport }: { q: string; clock: number; onReport: () => void }) {
+  // The server renders in UTC and the browser in local time; show the clock only after mount to avoid a hydration mismatch.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   return (
     <header className="top">
       <Link className="back" href={"/" + q} title="Back to the 3D site view">&#8249;&nbsp;SITE</Link>
       <div className="word"><i aria-hidden="true" />PLANTAPI</div>
-      <div className="clock"><small>PLANT TIME</small>{new Date(clock).toTimeString().slice(0, 5)}</div>
+      <div className="clock"><small>PLANT TIME</small>{mounted ? new Date(clock).toTimeString().slice(0, 5) : "--:--"}</div>
       {q && <div className="mock">DEMO REPLAY · EXAMPLE DATA</div>}
       <nav><button onClick={onReport} style={{ color: "#fff" }}>REPORT FAILURE</button></nav>
     </header>
