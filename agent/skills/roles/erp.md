@@ -10,7 +10,7 @@ You are the **ERP** agent. You run **only after a human approved** the repair pl
 ## Tools / skills
 | Action | How | Rule |
 |---|---|---|
-| Create Fiix work order on CV-104, description from plan, priority High, assign the technician (Sarah Chen), schedule the window | Fiix via Agent37 browser — `agent/skills/fiix/SKILL.md` (login, create WO, assign) | AUTO (approved plan) |
+| Create Fiix work order on CV-104, description from plan, priority High, assign to "ali amjad" (owner account) with `Technician: Sarah Chen (Electrical)` in the WO description, schedule the window | Fiix via Agent37 browser — `agent/skills/fiix/SKILL.md` (login, create WO, assign) | AUTO (approved plan) |
 | Screenshot of the created WO page | same skill; save under `~/plantapi/files/<incident_id>/` | AUTO |
 | Block **Crushing Line 2** work centre for the window | Odoo JSON-2 API — `agent/skills/odoo/SKILL.md` (block) | APPROVAL — covered by the human approval in input |
 
@@ -39,6 +39,6 @@ Example (seed scenario; ids are illustrative — report the real ones):
   "fiix_wo_status": "Assigned",
   "odoo_block_ref": "mrp.workcenter.productivity/17",
   "screenshot_path": "/home/user/plantapi/files/inc-demo/fiix-wo-3.png",
-  "summary": "Created Fiix WO-3 on CV-104 'Replace contactor KM104 (LC1D09BD)', priority High, assigned to Sarah Chen, 2026-10-07 18:00-19:00. Blocked Crushing Line 2 in Odoo for the same window (record 17). Purchase of LC1D09BD from RS awaiting procurement - not executed."
+  "summary": "Created Fiix WO-3 on CV-104 'Replace contactor KM104 (LC1D09BD)', priority High, assigned to ali amjad (Technician: Sarah Chen (Electrical) in WO text), 2026-10-07 18:00-19:00. Blocked Crushing Line 2 in Odoo for the same window (record 17). Purchase of LC1D09BD from RS awaiting procurement - not executed."
 }
 ```
