@@ -5,6 +5,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { createClient } from "@supabase/supabase-js";
 import { odoo, unblockWorkcenter, DEMO_WORKCENTER } from "@/lib/tools/odoo";
+import { refreshDemoData } from "@/lib/tools/demo-refresh";
 
 export const LIVE_STATUSES = ["EXECUTING", "WAITING_REPAIR", "VERIFYING"] as const;
 const FIIX_INSTANCE = "pfd5d7eukw";
@@ -97,17 +98,6 @@ export async function closeOpenFiixWos(progress: (d: string) => void = () => {})
   return { openBefore: open.map((w) => w.code), closed, stillOpen: after.filter((w) => !/Closed/i.test(w.row)).map((w) => w.code) };
 }
 
-// ---------- refresh (Sheet + Calendar) ----------
-type RefreshFn = (o: { dryRun?: boolean; tz?: string; onProgress?: (step: string, detail: string) => void }) => Promise<unknown>;
-async function loadRefresh(): Promise<RefreshFn | null> {
-  // TODO(core): switch to a static `import { refreshDemoData } from "@/lib/tools/demo-refresh"` once that file lands.
-  try {
-    const spec: string = "./demo-refresh";
-    const m = (await import(/* webpackIgnore: true */ spec)) as { refreshDemoData?: RefreshFn };
-    return m.refreshDemoData ?? null;
-  } catch { return null; }
-}
-
 // ---------- main ----------
 export async function resetDemo(opts: ResetOptions = {}): Promise<ResetSummary> {
   const say = (step: DemoStep, detail: string) => { try { opts.onProgress?.(step, detail); } catch { /* ignore listener errors */ } };
@@ -159,13 +149,14 @@ export async function resetDemo(opts: ResetOptions = {}): Promise<ResetSummary> 
 
   // 5. refresh
   await run("refresh", async () => {
-    const refresh = await loadRefresh();
-    if (!refresh) return { status: "pending", detail: "lib/tools/demo-refresh not available yet" };
-    const data = await refresh({ dryRun: false, tz: opts.tz, onProgress: (s, d) => say("refresh", `${s}: ${d}`) });
-    return { status: "ok", detail: "Sheet + Calendar refreshed", data };
+    const data = await refreshDemoData({ dryRun: false, tz: opts.tz, onProgress: (s, d) => say("refresh", `${s}: ${d}`) });
+    const r = data as { ok?: boolean; error?: string };
+    return r.ok === false
+      ? { status: "error", detail: `refresh failed: ${r.error ?? "unknown"}`, data }
+      : { status: "ok", detail: "Sheet + Calendar refreshed relative to now", data };
   });
 
-  const ok = (["archive", "odoo", "fiix", "refresh"] as const).every((s) => steps[s]?.status === "ok" || steps[s]?.status === "pending");
+  const ok = (["archive", "odoo", "fiix", "refresh"] as const).every((s) => steps[s]?.status === "ok");
   steps.summary = { status: ok ? "ok" : "error", detail: ok ? "demo reset complete" : "demo reset incomplete" };
   say("summary", steps.summary.detail);
   return { refused: false, live: liveQ, steps, ok };
