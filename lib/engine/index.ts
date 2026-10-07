@@ -21,7 +21,8 @@ import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
 import { beginTurn, endTurn } from "./cost";
 import { checkAckFollowUps, depthEnabled, ensureCheckpoint, scheduleAckFollowUp } from "./depth";
-import { buildTaskText } from "./prompts";
+import { buildTaskText, outputSchemaText } from "./prompts";
+import { deepFixText, fixMojibake } from "./text.pure";
 
 const db = () => supabaseAdmin();
 
@@ -35,7 +36,7 @@ export async function getIncident(id: string): Promise<Incident> {
 }
 
 export async function emit(e: AgentEvent): Promise<void> {
-  const { error } = await db().from("agent_events").insert(e);
+  const { error } = await db().from("agent_events").insert({ ...e, message: fixMojibake(e.message) });
   if (error) console.error("agent_events insert failed:", error.message);
 }
 
@@ -68,18 +69,15 @@ async function teamOutputs(incidentId: string): Promise<Record<string, unknown>>
   return out;
 }
 
-/** Slice 1 roles use the contract parser; wave A roles validate against wave-a-schemas (one repair call). */
-async function parseOutput(role: AgentRole, text: string): Promise<unknown> {
-  if ((OUTPUT_COLUMN as Record<string, string>)[role]) return ai.parseAgentOutput(role as Slice1Role, text);
-  const schema = schemaFor(role);
-  const first = schema.safeParse(extractLastJson(text));
-  if (first.success) return first.data;
-  return ai.chatJSON(`Extract the final ${role} JSON from this agent reply. Use only values present in the reply.
-
-Error: ${first.error.message}
-
-Reply:
-${text}`, schema, { model: "fast" });
+/**
+ * REAL ONLY: the role JSON must come from the agent itself. No model "repair" call (it can invent a
+ * schema-valid object from a reply that has none) — parseRole only extracts + validates.
+ */
+function parseRole(role: AgentRole, text: string): { ok: true; data: unknown } | { ok: false; error: string } {
+  const json = extractLastJson(text);
+  if (json == null) return { ok: false, error: "no JSON object at the end of the reply" };
+  const r = schemaFor(role).safeParse(json);
+  return r.success ? { ok: true, data: deepFixText(r.data) } : { ok: false, error: r.error.message.slice(0, 600) };
 }
 
 async function audit(incidentId: string, actor: string, action: string, system: string, detail: Record<string, unknown>) {
@@ -214,7 +212,27 @@ async function runTaskInner(task: AgentTask): Promise<void> {
       )
       .finally(() => endTurn(incidentId).catch((err) => console.error("cost:", err)));
 
-    const output = await parseOutput(role, turn.outputText);
+    let parsed = parseRole(role, turn.outputText);
+    if (!parsed.ok) {
+      // One retry in the same Agent37 session, asking only for the JSON of the work it already did.
+      await emit({ incident_id: incidentId, agent: role, kind: "log", system: "agent37", message: `${role}: reply had no valid JSON (${parsed.error.slice(0, 120)}) — asking the agent once more` });
+      await beginTurn(incidentId);
+      const again = await agent37
+        .runTurn(
+          {
+            instanceId, role, incidentId, sessionId: turn.sessionId,
+            input: `Your previous reply did not end with a valid ${role} JSON object (${parsed.error}). Reply now with ONLY that JSON object, built from the results of the work you already did above — do not run the tools again. If a step did not happen, say so in the fields (blocked / summary / status) — never invent ids, prices or messages.
+
+JSON Schema:
+${outputSchemaText(role)}`,
+          },
+          () => {},
+        )
+        .finally(() => endTurn(incidentId).catch(() => {}));
+      parsed = parseRole(role, again.outputText);
+      if (!parsed.ok) throw new Error(`no valid ${role} JSON after one retry: ${parsed.error}`);
+    }
+    const output = parsed.data;
     const problem = checkOutput(role as Slice1Role, output, incident);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
     must(
@@ -270,7 +288,8 @@ async function runTaskInner(task: AgentTask): Promise<void> {
     if (t.status !== incident.status) await setStatus(incidentId, t.status, patch);
     else must(await db().from("incidents").update(patch).eq("id", incidentId).select("id"), "update incident");
     if (role === "risk" && t.status === "REJECTED") await emit({ incident_id: incidentId, agent: role, kind: "error", system: "agent37", message: `Risk DENY: ${(output as { summary?: string }).summary ?? ""}` });
-    for (const next of t.next) await enqueue(incidentId, next);
+    // erp → dispatch: dispatch needs the approval and (via incident.erp) the real Fiix WO code.
+    for (const next of t.next) await enqueue(incidentId, next, next === "dispatch" ? { approval: task.input.approval ?? null } : {});
 
     const fresh = await getIncident(incidentId);
     for (const hook of postStepHooks) await hook(fresh, role).catch((err) => console.error("postStepHook:", err));

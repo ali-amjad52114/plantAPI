@@ -71,8 +71,13 @@ describe("wave A full team", () => {
 });
 
 describe("wave A execution", () => {
+  it("dispatch starts only after erp completes", () => {
+    expect(nextSteps("erp", {}, true, ["erp"])).toEqual({ status: "EXECUTING", next: ["dispatch"] });
+    expect(nextSteps("procurement", {}, true, ["procurement"])).toEqual({ status: "EXECUTING", next: [] });
+    expect(nextSteps("erp", {}, true, ["erp", "dispatch"]).next).toEqual([]);
+  });
   it("approval runs erp ∥ procurement ∥ dispatch with the flag, erp alone without", () => {
-    expect(approvalSteps("approve", true)).toEqual({ status: "EXECUTING", next: ["erp", "procurement", "dispatch"] });
+    expect(approvalSteps("approve", true)).toEqual({ status: "EXECUTING", next: ["erp", "procurement"] });
     expect(approvalSteps("approve", false)).toEqual({ status: "EXECUTING", next: ["erp"] });
     expect(approvalSteps("reject", true)).toEqual({ status: "REJECTED", next: [] });
   });
@@ -155,5 +160,15 @@ describe("dispatch on a conditional plan", () => {
     expect(t).toContain("is still an approved plan");
     expect(t).toContain("me@example.com");
     delete process.env.PLANTAPI_NOTICE_EMAIL;
+  });
+});
+
+describe("mojibake repair", () => {
+  it("re-decodes cp1252-mangled UTF-8 and leaves good text alone", async () => {
+    const { fixMojibake, deepFixText } = await import("./text.pure");
+    expect(fixMojibake("18:47â€“19:32")).toBe("18:47–19:32");
+    expect(fixMojibake("Sarah Chen â€” reminder")).toBe("Sarah Chen — reminder");
+    expect(fixMojibake("18:00–19:00 café")).toBe("18:00–19:00 café");
+    expect(deepFixText({ notices: [{ detail: "18:47â€“19:32" }] })).toEqual({ notices: [{ detail: "18:47–19:32" }] });
   });
 });
