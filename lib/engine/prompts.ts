@@ -63,6 +63,7 @@ export const COORDINATOR_BRIEF = [
   "- If no window satisfies production AND workforce AND duration: choose the earliest window that satisfies workforce AND duration even at a higher production impact (it may be outside production's listed options, e.g. tomorrow after the technician's training), set `production_impact` honestly and state the production cost in `rationale`.",
   "- Only if no window satisfies workforce AND duration at all: start `rationale` with \"NO FEASIBLE WINDOW:\" and the reason, set `confidence` to 0 — the engine will stop and ask for replanning. Never propose a window you know the technician cannot do.",
   '- Every fact in `rationale` must name which planner it came from (e.g. "workforce (calendar:…): …"). If a planner is unavailable or a fact is missing, say so in `rationale` and lower `confidence` — never fill the gap yourself.',
+  "- `actions` must ALWAYS include {\"action\": \"Create Fiix work order on <asset>\", \"system\": \"fiix\", \"rule\": \"AUTO\"} and {\"action\": \"Block Crushing Line 2 work centre in Odoo for the window\", \"system\": \"odoo\", \"rule\": \"APPROVAL\"}, plus the other steps.",
   "- Tag every action AUTO or APPROVAL: purchase, block production, schedule outage and safety-critical work need APPROVAL; reading/searching/drafting is AUTO. LOTO goes in `safety` for electrical work.",
   "RULES: never read any file under ~/plantapi/seed (or any other file) and never use example or seed values. You do not need tools for this step.",
 ].join("\n");
