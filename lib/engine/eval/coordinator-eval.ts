@@ -1,4 +1,4 @@
-// Coordinator eval: 7 variants of the seeded disagreement, each run as a REAL Agent37 coordinator turn
+// Coordinator eval: 8 variants of the seeded disagreement, each run as a REAL Agent37 coordinator turn
 // (no DB writes). Pass = plan window starts 18:00 today and the supplier is one Materials found.
 // Run: npx tsx lib/engine/eval/coordinator-eval.ts
 import { loadEnv } from "../../db/env";
@@ -27,7 +27,7 @@ const production = {
 };
 const workforce = { technician: "Sarah Chen", trade: "electrician", qualifications: ["LOTO", "NFPA 70E"], available_from: `${today}T18:00:00-04:00`, conflicts: [`${tomorrow} 07:00–12:00 off-site arc-flash training`], alternatives: [], source: "calendar:eval", summary: "Sarah free today 18:00, busy tomorrow morning" };
 
-const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials; noLeadTime?: boolean; expect?: string }> = [
+const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: typeof materials; noLeadTime?: boolean; expect?: string; afterNoon?: boolean }> = [
   { name: "baseline seeded disagreement", team: { reliability, production, workforce } },
   { name: "production insists on tomorrow 07:00", team: { workforce, production: { ...production, summary: "STRONGLY prefer tomorrow 07:00 — zero production impact" }, reliability } },
   { name: "reliability unavailable", team: { reliability: { unavailable: "Fiix timeout" }, production, workforce } },
@@ -41,6 +41,20 @@ const CASES: Array<{ name: string; team: Record<string, unknown>; materials?: ty
       workforce: { ...workforce, available_from: `${today}T18:00:00-04:00`, conflicts: [] , summary: "Sarah free from today 18:00, no conflicts tomorrow" },
     },
     expect: `${tomorrow}T07:00`,
+  },
+  {
+    name: "no window fits production+workforce+duration → earliest workforce-feasible slot tomorrow after training",
+    team: {
+      reliability,
+      production: { ...production, recommended: { start: `${tomorrow}T07:00:00-04:00`, end: `${tomorrow}T08:00:00-04:00`, impact: "none", note: "planned stop" }, alternatives: [], summary: "Only planned stop is tomorrow 07:00-08:00; any other time stops full production" },
+      workforce: {
+        ...workforce,
+        available_from: `${tomorrow}T12:00:00-04:00`,
+        conflicts: [`${today} 08:00-09:00 Sarah Chen: old booking`, `${today} 15:30-22:00 Sarah Chen: shift covering Line 1`, `${tomorrow} 07:00-12:00 Sarah Chen: Arc-flash training (off site)`],
+        summary: "Sarah busy the rest of today, at training tomorrow 07:00-12:00, free from tomorrow 12:00",
+      },
+    },
+    afterNoon: true,
   },
   { name: "reliability says next window is fine", team: { reliability: { ...reliability, urgency: "next_window", recommendation: "Replace at next planned stop" }, production, workforce } },
 ];
@@ -58,8 +72,10 @@ async function main() {
       const t0 = Date.now();
       const turn = await agent37.runTurn({ instanceId, role: "coordinator", incidentId: incident.id, input: buildTaskText("coordinator", incident, { team: c.team, now: NOW }), reasoningEffort: "medium" }, () => {});
       const plan = await ai.parseAgentOutput("coordinator", turn.outputText);
-      const at18 = plan.window_start.startsWith(c.expect ?? `${today}T18:00`);
-      const problem = checkOutput("coordinator", plan, incident, Date.parse(NOW));
+      const at18 = c.afterNoon
+        ? Date.parse(plan.window_start) >= Date.parse(`${tomorrow}T12:00:00-04:00`) && Date.parse(plan.window_start) < Date.parse(`${tomorrow}T23:59:00-04:00`) && plan.production_impact !== "none"
+        : plan.window_start.startsWith(c.expect ?? `${today}T18:00`);
+      const problem = checkOutput("coordinator", plan, incident, Date.parse(NOW), c.team as never);
       // Unknown lead time: earliest feasible window today (18:00 here), never blank, marked conditional, expedite needs approval.
       const conditionalOk = !c.noLeadTime || (plan.safety.some((x) => /conditional/i.test(x)) && plan.actions.some((a) => /expedite/i.test(a.action) && a.rule === "APPROVAL"));
       return { name: c.name, pass: at18 && !problem && conditionalOk, window: plan.window_start, supplier: `${plan.supplier.supplier} $${plan.supplier.price}`, problem, seconds: ((Date.now() - t0) / 1000).toFixed(0), response: turn.responseId };

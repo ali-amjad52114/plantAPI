@@ -207,3 +207,25 @@ describe("stale plans", () => {
     expect(stalePlanReason(plan, 45, PLAN_RULES_VERSION, at("2026-10-07T21:00:00Z"))).toBeNull();
   });
 });
+
+describe("workforce conflicts are hard limits", () => {
+  const conflicts = [
+    "2026-10-07 18:47-19:32 Sarah Chen: CV-104 KM104 replacement - LOTO", // leftover, ended
+    "2026-10-08 07:00-12:00 Sarah Chen: Arc-flash training (off site)",
+  ];
+  const team = { workforce: { available_from: "2026-10-07T21:05:00-04:00", conflicts } };
+  const materials = { suppliers: [{ supplier: "RS", price: 1, url: "u" }] } as any;
+  const triage = { estimated_repair_minutes: 60 } as any;
+  const sup = { supplier: "RS", price: 1, url: "u" };
+  const now = Date.parse("2026-10-07T20:20:00-04:00");
+  it("rejects f9b6c751's plan (tomorrow 07:00, during training)", () => {
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-08T11:00:00Z", window_end: "2026-10-08T12:00:00Z" }, { materials, triage }, now, team)).toMatch(/Arc-flash training/);
+  });
+  it("accepts tomorrow after training and ignores leftover past bookings", () => {
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-08T12:00:00-04:00", window_end: "2026-10-08T13:00:00-04:00" }, { materials, triage }, now, team)).toBeNull();
+  });
+  it("rejects a window before the technician is available, and NO FEASIBLE WINDOW fails loudly", () => {
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "2026-10-07T20:30:00-04:00", window_end: "2026-10-07T21:30:00-04:00" }, { materials, triage }, now, team)).toMatch(/before the technician is available/);
+    expect(checkOutput("coordinator", { supplier: sup, window_start: "", window_end: "", rationale: "NO FEASIBLE WINDOW: Sarah booked all week" }, { materials, triage }, now, team)).toMatch(/needs replanning/);
+  });
+});

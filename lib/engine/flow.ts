@@ -1,4 +1,5 @@
 // Slice 1 state machine: pure, no I/O (unit-tested).
+import { offsetOf, overlappingConflict } from "./conflicts.pure";
 import type { AgentRole, Incident, IncidentStatus, Slice1Role } from "../contracts/types";
 
 export type Transition = { status: IncidentStatus; next: Slice1Role | null };
@@ -46,9 +47,16 @@ export const OUTPUT_COLUMN: Record<Slice1Role, "triage" | "materials" | "plan" |
 };
 
 /** REAL ONLY guards: reject outputs that claim results the agent did not actually produce. Returns the problem or null. */
-export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<Incident, "materials"> & Partial<Pick<Incident, "triage">>, now: number = Date.now()): string | null {
+export function checkOutput(
+  role: Slice1Role,
+  output: unknown,
+  incident: Pick<Incident, "materials"> & Partial<Pick<Incident, "triage">>,
+  now: number = Date.now(),
+  team?: { workforce?: { available_from?: string; conflicts?: unknown } } | null,
+): string | null {
   const o = output as Record<string, any>;
   if (role === "coordinator") {
+    if (/^s*NO FEASIBLE WINDOW/i.test(String(o.rationale ?? ""))) return `no feasible repair window — needs replanning (${String(o.rationale).slice(0, 300)})`;
     const s = o.supplier ?? {};
     const found = (incident.materials?.suppliers ?? []).some(
       (m) => (m.url && m.url === s.url) || (m.supplier === s.supplier && m.price === s.price),
@@ -59,6 +67,14 @@ export function checkOutput(role: Slice1Role, output: unknown, incident: Pick<In
     const have = Math.round((Date.parse(o.window_end) - Date.parse(o.window_start)) / 60_000);
     if (need && have < need) return `plan window is ${have} min but triage estimates ${need} min of repair`;
     if (Date.parse(o.window_start) < now - 5 * 60_000) return `plan window starts in the past (${o.window_start})`;
+    const wf = team?.workforce;
+    if (wf) {
+      const tz = offsetOf(wf.available_from) ?? offsetOf(o.window_start) ?? process.env.PLANTAPI_TZ_OFFSET ?? "-04:00";
+      const hit = overlappingConflict(wf.conflicts, Date.parse(o.window_start), Date.parse(o.window_end), now, tz);
+      if (hit) return `plan window overlaps the technician's conflict "${hit.label}"`;
+      const from = wf.available_from ? Date.parse(wf.available_from) : NaN;
+      if (!Number.isNaN(from) && Date.parse(o.window_start) < from - 60_000) return `plan window starts before the technician is available (${wf.available_from})`;
+    }
   }
   if (role === "erp" && !String(o.fiix_wo_code ?? "").trim()) return `no Fiix work order created: ${o.summary ?? ""}`;
   // odoo_block_ref is verified against the real Odoo record (window bounds) in odoo-check.ts.

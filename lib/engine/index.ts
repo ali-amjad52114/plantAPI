@@ -257,7 +257,7 @@ ${outputSchemaText(role)}`,
       if (!parsed.ok) throw new Error(`no valid ${role} JSON after one retry: ${parsed.error}`);
     }
     const output = parsed.data;
-    const problem = checkOutput(role as Slice1Role, output, incident);
+    const problem = checkOutput(role as Slice1Role, output, incident, Date.now(), (extra.team as never) ?? null);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
     if (role === "erp" && incident.plan) {
       const o = output as { odoo_block_ref: string | null };
