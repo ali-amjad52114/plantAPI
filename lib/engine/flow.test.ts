@@ -242,3 +242,14 @@ describe("plant time for agents", () => {
     expect(stalePlanReason({ window_start: "2030-10-08T12:00:00-04:00", window_end: "2030-10-08T13:00:00-04:00" }, 60, "2026-10-07.4", Date.now())).toMatch(/older engine rules/);
   });
 });
+
+describe("required plan actions", () => {
+  it("adds the Odoo block and Fiix WO steps when missing (f9b6c751's plan had neither as such)", async () => {
+    const { ensureRequiredActions } = await import("./flow");
+    const r = ensureRequiredActions({ asset_id: "CV-104", actions: [{ action: "Schedule outage", system: "google", rule: "APPROVAL" }, { action: "Inspect/replace contactor", system: "fiix", rule: "AUTO" }] });
+    expect(r.added).toEqual(["Block Crushing Line 2 work centre in Odoo for the window", "Create Fiix work order on CV-104"]);
+    expect(r.plan.actions).toContainEqual({ action: "Block Crushing Line 2 work centre in Odoo for the window", system: "odoo", rule: "APPROVAL" });
+    const ok = ensureRequiredActions({ asset_id: "CV-104", actions: [{ action: "Create Fiix work order on CV-104", system: "fiix", rule: "AUTO" }, { action: "Block Crushing Line 2 in Odoo", system: "odoo", rule: "APPROVAL" }] });
+    expect(ok.added).toEqual([]);
+  });
+});

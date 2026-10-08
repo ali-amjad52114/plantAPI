@@ -16,7 +16,8 @@ import { ai } from "@/lib/ai";
 import { supabaseAdmin } from "@/lib/db";
 import { FLAGS } from "@/lib/contracts/flags";
 import { extractLastJson } from "@/lib/ai";
-import { PLAN_RULES_VERSION, stalePlanReason } from "./flow";
+import { ensureRequiredActions, PLAN_RULES_VERSION, stalePlanReason } from "./flow";
+type RepairPlanLike = { asset_id?: string; actions?: Array<{ action: string; system: string; rule: string }> };
 import { approvalSteps, checkOutput, CAN_APPROVE, CAN_COMPLETE, EXECUTORS, nextSteps, OUTPUT_COLUMN, PLANNERS, plannerFailureIsFatal, runningStatus } from "./flow";
 import { schemaFor, WAVE_A_ROLES } from "./wave-a-schemas";
 import { postStepHooks } from "./hooks";
@@ -257,7 +258,14 @@ ${outputSchemaText(role)}`,
       parsed = parseRole(role, again.outputText);
       if (!parsed.ok) throw new Error(`no valid ${role} JSON after one retry: ${parsed.error}`);
     }
-    const output = role === "coordinator" ? deepPlantTime(parsed.data) : parsed.data;
+    let output = role === "coordinator" ? deepPlantTime(parsed.data) : parsed.data;
+    if (role === "coordinator") {
+      const req = ensureRequiredActions(output as RepairPlanLike);
+      output = req.plan;
+      if (req.added.length) {
+        await emit({ incident_id: incidentId, agent: "system", kind: "log", system: "supabase", message: `Plan was missing required step(s), added by the engine: ${req.added.join("; ")}` });
+      }
+    }
     const problem = checkOutput(role as Slice1Role, output, incident, Date.now(), (extra.team as never) ?? null);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
     if (role === "erp" && incident.plan) {

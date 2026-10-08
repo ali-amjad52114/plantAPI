@@ -140,7 +140,7 @@ export function plannerFailureIsFatal(role: AgentRole, fullTeam: boolean): boole
 }
 
 /** Bump whenever the coordinator rules (COORDINATOR_BRIEF / plan guards) change; plans without it are stale. */
-export const PLAN_RULES_VERSION = "2026-10-08.1"; // .1: technician conflicts hard + plant-time timestamps
+export const PLAN_RULES_VERSION = "2026-10-08.2"; // .2: required Fiix WO + Odoo block actions; .1: technician conflicts hard + plant time
 
 /** Why a plan can no longer be approved as-is (null = still fine). */
 export function stalePlanReason(
@@ -157,4 +157,24 @@ export function stalePlanReason(
   const left = Math.round((we - Math.max(now, ws)) / 60_000);
   if (repairMinutes && left < repairMinutes) return `only ${left} min of the planned window are left, the repair needs ${repairMinutes} min`;
   return null;
+}
+
+/**
+ * Every repair plan must carry the two execution steps the ERP agent performs. Engine policy, not agent
+ * output: if the coordinator left one out, it is added and the caller writes a feed note.
+ */
+export function ensureRequiredActions<P extends { asset_id?: string; actions?: Array<{ action: string; system: string; rule: string }> }>(plan: P): { plan: P; added: string[] } {
+  const actions = [...(plan.actions ?? [])];
+  const added: string[] = [];
+  if (!actions.some((a) => a.system === "odoo" && /block/i.test(a.action))) {
+    const a = { action: "Block Crushing Line 2 work centre in Odoo for the window", system: "odoo", rule: "APPROVAL" };
+    actions.push(a);
+    added.push(a.action);
+  }
+  if (!actions.some((a) => a.system === "fiix" && /work order|WO/i.test(a.action))) {
+    const a = { action: `Create Fiix work order on ${plan.asset_id || "the asset"}`, system: "fiix", rule: "AUTO" };
+    actions.push(a);
+    added.push(a.action);
+  }
+  return { plan: { ...plan, actions }, added };
 }
