@@ -84,21 +84,23 @@ The role instructions live in [`agent/skills/roles/`](agent/skills/roles/), one 
 
 Agent37 isn't one feature in PlantAPI; it is where the product runs. **Every agent turn, tool call, browser session, file, memory, schedule and checkpoint happens on the Agent37 plant instance `pfd5d7eukw`.** Our own backend is only the referee: it stores state in Supabase and asks the human for approval.
 
+**Full detail:** [`docs/AGENT37.md`](docs/AGENT37.md) covers the two Agent37 hosts, every endpoint with request and response shapes, the life of one agent turn, real IDs and costs, and the API quirks we hit.
+
 ### Agent37 features we use
 
 | # | Agent37 feature | Endpoint(s) | What PlantAPI does with it | Code |
 |---|---|---|---|---|
 | 1 | **Agent turns** (Responses API) | `POST https://{id}.agent37.app/v1/responses` | Every one of the 11 agents runs as a real turn on the plant instance | `lib/agent37/index.ts` (`createAgent37Client`), `lib/engine/flow.ts` |
-| 2 | **Sessions** (agent memory) | `GET /v1/sessions`, `GET /v1/sessions/{id}` | Each agent keeps its context in a session; session ids are stored on the incident; the retry turn reuses the same session | `lib/agent37/crons.ts` (`getSession`, `lastAssistantText`) |
+| 2 | **Sessions** (agent memory) | `session_id` on the turn, `GET https://{id}.agent37.app/v1/sessions/{sid}` | Each agent keeps its context in a session; session ids are stored on the incident; the JSON retry turn reuses the same session; a cron's answer is read from its session history | `lib/agent37/crons.ts` (`getSession`, `lastAssistantText`) |
 | 3 | **Skills on the instance** | Files API | 11 role skills plus Fiix, Odoo, Monid, Calendar, Sheets, Gmail and Slack skills live in `~/plantapi/skills/` on the instance | `agent/skills/`, `lib/agent37/sync-instance.ts` |
 | 4 | **Built-in browser** | (inside the agent turn) | Logs into the **Fiix CMMS**, which has no API on our plan; creates, assigns and closes work orders; reads work order history | `agent/skills/fiix/SKILL.md`, `scripts/smoke-fiix.ts` |
 | 5 | **Exec API** | `POST https://api.agent37.com/v1/instances/{id}/exec` | Takes backend-side browser screenshots, inspects the workspace, installs the Monid CLI | `lib/agent37/provision/add-plant.ts` (`execOn`), `lib/agent37/sync-instance.ts` |
 | 6 | **Files API** | `POST /v1/files`, `GET https://{id}.agent37.app/v1/files/content?path=` | Uploads photos, SOPs and seed data; downloads work-order screenshots as evidence (about 0.5 s each) | `lib/agent37/index.ts`, `lib/agent37/provision/add-plant.ts` (`putFile`) |
 | 7 | **Managed app connections (Composio)** | `agent37.com/mcp/composio` | Google Calendar, Google Sheets, Gmail and Slack, with no OAuth app of our own | `agent/skills/{calendar,sheets,gmail,slack}.md` |
-| 8 | **Platform crons** | `POST/GET/DELETE /v1/crons`, `/v1/runs` | One-shot follow-up after Dispatch: wakes the instance, checks Slack for the technician's ack, and triggers a reminder if there is none | `lib/agent37/crons.ts`, `lib/engine/depth.ts` |
+| 8 | **Platform crons** | `POST /v1/instances/{id}/crons`, `POST …/crons/{cid}/run`, `GET …/crons/{cid}/runs`, `DELETE …/crons/{cid}` | One-shot follow-up after Dispatch: wakes the instance, checks Slack for the technician's ack, and triggers a reminder if there is none | `lib/agent37/crons.ts`, `lib/engine/depth.ts` |
 | 9 | **Backups** | `POST/GET /v1/instances/{id}/backups` | Checkpoints the whole plant instance **after approval, before any real system is touched** | `lib/agent37/provision/backup.ts` (`createCheckpoint`), `lib/engine/depth.ts` (`ensureCheckpoint`) |
 | 10 | **Budgets** | `GET/PUT /v1/instances/{id}/budget` | Caps spend per plant ($3/month on the demo plant, $1 on test plants) | `lib/agent37/provision/budget.ts` |
-| 11 | **Usage** | `GET /v1/instances/{id}/usage` | Records cost per incident and spend by integration (LLM, Composio, search) | `lib/engine/cost.ts` |
+| 11 | **Usage** | `GET /v1/instances/{id}/usage` | Cost per incident from the live instance total, read before and after each incident's turns (per-turn token counts miss the agent's inner LLM calls); spend by integration (LLM, Composio, search) | `lib/engine/cost.ts` |
 | 12 | **Custom templates** | `/v1/templates`, `/v1/template-builds/{id}/start`, `/logs` | Built `plantapi-agent@1`: the hermes base plus the Monid CLI and the skills directory | `agent/image/plantapi-agent/Dockerfile`, `lib/agent37/provision/build-templates.ts`, `templates.ts` |
 | 13 | **Instances: "Add plant"** | `POST/GET/DELETE /v1/instances` | Creates a new plant instance from the template, with skills preloaded, auto-sleep and its own budget | `lib/agent37/provision/add-plant.ts` (`addPlant`, `removePlant`) |
 | 14 | **Live view (desktop)** | `GET /v1/instances/{id}/signed-url` → noVNC | Built `hermes-vnc-desktop@1` so a supervisor can watch the agent's browser live | `agent/image/hermes-vnc-desktop/`, `templates.ts` (`getLiveViewUrl`) |
@@ -114,7 +116,7 @@ Agent37 isn't one feature in PlantAPI; it is where the product runs. **Every age
    - **Workforce** reads the live "PlantAPI Technicians" calendar through **Agent37 Composio**.
 3. **Decision.** The Coordinator and Risk agents run as **Agent37 turns** and return a strict-JSON plan with an AUTO / APPROVAL / DENY tag on every action.
 4. **Approval → checkpoint.** The supervisor approves. Before any agent acts, the engine takes an **Agent37 on-demand backup** of the instance. Real run: `Checkpoint saved (backup 0bf72f6cc5ee1c4f538e)`, 262 MB in 15.4 s.
-5. **Execution in parallel.**
+5. **Execution.** ERP and Procurement run in parallel; Dispatch starts when ERP is done, so its notice carries the real Fiix work order number.
    - **ERP** drives the **Agent37 browser** to create the Fiix work order (real WO 9 in the 11-agent run) and blocks Crushing Line 2 in Odoo.
    - **Procurement** sends the supplier email through Monid AgentMail.
    - **Dispatch** books the technician in Google Calendar and posts to Slack through **Agent37 Composio**. Real run: Calendar event `bepdjqub6o699a1rgp8aqr9q54`, Slack message ts `1791413486.440729`.
@@ -125,7 +127,9 @@ Agent37 isn't one feature in PlantAPI; it is where the product runs. **Every age
 ### Reliability built around Agent37
 
 - **Valid output or nothing.** If a turn returns invalid JSON, the engine retries once **in the same Agent37 session**, asking only for the JSON. If that fails too, the task is FAILED. No other model patches the output, and nothing is marked complete without a valid result from Agent37.
-- **Concurrency.** The worker runs three Agent37 turns at once, and the parallel executors share one checkpoint.
+- **Concurrency.** The worker runs up to four Agent37 turns at once, and the executors share one checkpoint.
+- **Instance always current.** The worker pushes skills, seed files and settings to the instance every time it starts.
+- **Referee checks.** The backend re-checks the agents' claims against the real systems. Examples: the Odoo block record must match the plan window, and the plan's supplier must be one Materials actually found.
 - **Idempotent sync.** `npx tsx lib/agent37/sync-instance.ts` pushes the skills, seed files, plant environment and the Monid login to the instance, and never prints a secret value.
 - **Safe provisioning.** `templates.ts` refuses to delete protected instances (`assertNotProtected`). Test plants are created with auto-sleep and a $1 cap, then deleted (evidence: `infra/evidence/add-plant.txt`).
 
