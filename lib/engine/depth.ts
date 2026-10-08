@@ -9,6 +9,7 @@ import type { AgentEvent, AgentTask, Incident } from "@/lib/contracts/types";
 import { supabaseAdmin } from "@/lib/db";
 import { extractLastJson } from "@/lib/ai";
 import { reminderAction } from "./depth.pure";
+import { toPlantIso } from "./time.pure";
 import { createCron, cronRuns, deleteCron, getSession, lastAssistantText, oneShotSchedule } from "@/lib/agent37/crons";
 
 export const depthEnabled = () => FLAGS.agent37Depth || process.env.PLANTAPI_AGENT37_DEPTH === "1";
@@ -71,7 +72,7 @@ export async function scheduleAckFollowUp(incident: Incident, dispatchTask: Pick
   fireAt.setUTCMinutes(fireAt.getUTCMinutes() + 1); // never land in the current minute
   const cron = await createCron(instanceId(), {
     name: `plantapi-ack-${incident.id.slice(0, 8)}`,
-    prompt: ackPrompt(incident, new Date().toISOString()),
+    prompt: ackPrompt(incident, toPlantIso(Date.now())),
     schedule: oneShotSchedule(fireAt),
   });
   const output = { ...(dispatchTask.output ?? {}), follow_up: cron.id };
