@@ -123,3 +123,28 @@ body { margin: 0 }
   .sv .stat.opt { display: none }
 }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important } }
+
+/* "Reset demo": secondary outline button next to Report failure */
+.sv .hbtn.hbtn-sec { background: rgba(255, 255, 255, .7); border: 1px solid var(--edge); border-radius: 8px; box-shadow: none; color: var(--dim); font-size: 11px; min-height: 32px; align-self: center; padding: 0 10px }
+.sv .hbtn.hbtn-sec:hover { color: var(--fg); border-color: var(--amber); background: #fff }
+
+/* header: one row at >= 1024 px; compact sizes until there is room for everything */
+@media (min-width: 1024px) {
+  .sv #top { flex-wrap: nowrap; align-items: center }
+  .sv #top > * { flex-shrink: 0 }
+  .sv #top > .sp { flex: 1 1 0; min-width: 0 }
+}
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .sv .brand { padding: 6px 12px; gap: 8px }
+  .sv .brand small { display: none }
+  .sv .brand b { font-size: 18px }
+  .sv .stat { min-width: 0; padding: 6px 10px }
+  .sv .stat .k { font-size: 9px }
+  .sv .stat .v { font-size: 16px }
+  .sv .hbtn { padding: 0 10px; font-size: 12px; min-height: 36px }
+  .sv .hbtn kbd { display: none }
+}
+@media (min-width: 1024px) and (max-width: 1199px) {
+  .sv .stat.opt { display: none }
+  .sv .brand .eyebrow { display: none }
+}

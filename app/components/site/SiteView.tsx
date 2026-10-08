@@ -96,7 +96,7 @@ export function SiteView({ incidents, mock, embed = false, focus, cfg }: { incid
         <div className="sp" />
         {mock ? <span className="tag">Demo replay · example data</span> : <span className={"chip" + (down ? " alarm" : "")}>{down ? `Live · ${down} down` : "Live · all running"}</span>}
         <button className="glass hbtn" onClick={() => setReport("")}>Report failure</button>
-        {!embed && <ResetDemoButton cfg={cfg ?? { mock }} className="glass hbtn" />}
+        {!embed && <ResetDemoButton cfg={cfg ?? { mock }} className="hbtn hbtn-sec" />}
         <button className="glass hbtn" id="assetsBtn">Assets</button>
         <button className="glass hbtn" id="labelsBtn" aria-pressed="true">Labels<kbd>L</kbd></button>
         <button className="glass hbtn" id="homeBtn">Overview<kbd>Esc</kbd></button>
