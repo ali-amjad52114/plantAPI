@@ -122,11 +122,12 @@ body { margin: 0 }
 .fma .now.wait::after { background: var(--act); animation: pulse 1.4s ease-in-out infinite }
 
 /* annunciator panel: one backlit card per agent */
-.ann { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--r); box-shadow: var(--shadow); padding: var(--s2); display: grid; grid-template-columns: 1fr 4fr 2fr 3fr 1fr; gap: var(--s2); overflow-x: auto }
+.ann { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--r); box-shadow: var(--shadow); padding: var(--s2); display: grid; grid-template-columns: minmax(104px, 1fr) minmax(440px, 4fr) minmax(216px, 2fr) minmax(328px, 3fr) minmax(104px, 1fr); gap: var(--s2); overflow-x: auto }
 .ann-g { display: grid; gap: var(--s1); grid-template-rows: auto 1fr; min-width: 0 }
 .ann-g > span { font: 700 10px/1 var(--fm); letter-spacing: .2em; color: var(--faint); padding-left: 2px }
 .ann-g > span.now { color: var(--act) }
-.ann-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(96px, 1fr); gap: var(--s1) }
+.ann-row { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: var(--s1) }
+.ann-row > .win { min-width: 0 }
 .win { position: relative; text-align: left; border: 1px solid var(--hair); border-radius: 10px; background: var(--unlit); color: var(--unlit-ink); padding: 10px 10px 8px; min-height: 72px; display: grid; align-content: space-between; gap: 6px; transition: background .3s, color .3s, border-color .3s, box-shadow .3s, transform .15s }
 .win:hover { border-color: #C5CDD6; transform: translateY(-1px) }
 .win b { font: 600 13px/1.1 var(--fh); letter-spacing: .08em; text-transform: uppercase; padding-right: 32px }
