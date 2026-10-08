@@ -205,15 +205,15 @@ Code and evidence: [`lib/infra/governance-demo.ts`](lib/infra/governance-demo.ts
 
 ## Screenshots
 
-All of these come from real runs.
+All of these come from real runs. Shots 01–04, 07 and 08 are from the live incident `f9b6c751` (light theme).
 
 | | |
 |---|---|
-| **Control room: four planners in parallel** ![](docs/screenshots/ui/07-2d9b4671-four-planners-parallel.jpg) | **Plan card: disagreement and resolution** ![](docs/screenshots/ui/09-2d9b4671-disagreement-resolution.jpg) |
-| **Agent graph** ![](docs/screenshots/ui/12-agent-graph-2d9b4671.jpg) | **Execution: Fiix WO plus Odoo block** ![](docs/screenshots/ui/05-dd94429f-fiix-wo6-odoo-block-verifying.jpg) |
-| **CLOSED: 11-agent run `ed54ca93`** ![](docs/screenshots/ui/13-ed54ca93-wave-a-closed.jpg) | **/plant: Agent37 instance panels** ![](docs/screenshots/ui/10-plant-panels.jpg) |
-| **/governance: ALLOW / APPROVE / DENY** ![](docs/screenshots/ui/11-governance-allow-approve-deny.jpg) | **/governance: AI lead refused (403)** ![](docs/screenshots/ui/14-governance-lead-ai-refused.jpg) |
-| **Agent37 live view of the plant browser** ![](docs/screenshots/platform/live-view-hj9wbnzkte.jpg) | |
+| **01 Site view: CV-104 down** ![](docs/screenshots/final/01-site-view-cv104-down.jpg) | **02 Control room: four planners in parallel** ![](docs/screenshots/final/02-control-room-four-planners-parallel.jpg) |
+| **03 Plan card: disagreement, resolution and conditional window** ![](docs/screenshots/final/03-plan-card-disagreement-conditional-window.png) | **04 Failure surfaced: ERP refused with no Odoo block** ![](docs/screenshots/final/04-execution-failed-erp-no-odoo-block.jpg) |
+| **07 /plant: Agent37 instance, cost per incident, sessions, files** ![](docs/screenshots/final/07-plant-agent37-instance.jpg) | **08 /governance: ALLOW / APPROVE / DENY** ![](docs/screenshots/final/08-governance-instacloud-policy.jpg) |
+| **Execution: Fiix WO plus Odoo block (`dd94429f`)** ![](docs/screenshots/ui/05-dd94429f-fiix-wo6-odoo-block-verifying.jpg) | **CLOSED: 11-agent run `ed54ca93`** ![](docs/screenshots/ui/13-ed54ca93-wave-a-closed.jpg) |
+| **Agent graph** ![](docs/screenshots/ui/12-agent-graph-2d9b4671.jpg) | **Agent37 live view of the plant browser** ![](docs/screenshots/platform/live-view-hj9wbnzkte.jpg) |
 
 ## Architecture
 
