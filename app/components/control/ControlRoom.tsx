@@ -12,17 +12,16 @@ import { useIncident, type SourceConfig } from "../data/useIncident";
 import { Screen, type SessionScreen } from "./Screen";
 import { ReportFailure } from "../ReportFailure";
 import { ResetDemoButton } from "../ResetDemo";
-import { disagree, positions, wall } from "./proposals";
+import { disagree, positions } from "./proposals";
 import { AgentGraph } from "./AgentGraph";
 import { AssetPip } from "./AssetPip";
 import { FLAGS } from "@/lib/contracts/flags";
+import { plantDay, plantHHMM, plantWhen } from "../data/time";
 
 const STATES: IncidentStatus[] = ["NEW", "TRIAGING", "PLANNING", "WAITING_APPROVAL", "APPROVED", "EXECUTING", "WAITING_REPAIR", "VERIFYING", "CLOSED"];
 type Pri = 0 | 1 | 2 | "a";
-const hhmm = (iso?: string | null) => (iso ? new Date(iso).toTimeString().slice(0, 5) : "—");
-// Plan times are written in the plant's own offset (e.g. -04:00); show that wall-clock time, not the browser's.
-const plantHHMM = (iso?: string | null) => iso?.match(/T(\d\d:\d\d)/)?.[1] ?? hhmm(iso);
-const dayWord = (iso: string, ref: string) => (iso.slice(0, 10) === ref.slice(0, 10) ? "TODAY" : iso.slice(0, 10) > ref.slice(0, 10) ? "TMRW" : iso.slice(0, 10));
+// All times in plant time (data/time.ts), never the browser zone or the raw ISO wall time.
+const hhmm = (iso?: string | null) => plantHHMM(iso);
 const roleState = (t?: AgentTask) => !t ? "idle" : t.status === "RUNNING" ? "run" : t.status === "COMPLETE" ? "done" : t.status === "FAILED" ? "fail" : "queued";
 
 export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig; asset?: string }) {
@@ -107,7 +106,7 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
   const riskDone = !tasks.risk || tasks.risk.status === "COMPLETE";
   // the graph earns its place when the full team runs (more than the 5 slice agents)
   const showGraph = (Object.keys(tasks) as AgentRole[]).some(r => !["triage", "materials", "coordinator", "erp", "verification"].includes(r));
-  const pos = positions(inc, tasks);
+  const pos = positions(inc, tasks, clock);
   // Agent37 depth: backup checkpoint before execution, cron that checks the technician's ack
   const cpEv = [...events].reverse().find(e => e.agent === "system" && /^Checkpoint/.test(e.message));
   const checkpoint = cpEv ? { id: (cpEv.data as { id?: string } | undefined)?.id ?? null, status: String((cpEv.data as { status?: string } | undefined)?.status ?? ""), msg: cpEv.message } : null;
@@ -244,20 +243,20 @@ export function ControlRoom({ id, cfg, asset }: { id: string; cfg: SourceConfig;
               {plan && (status === "PLANNING" || gateApproval) && (
                 <div className="sec"><div className="cap"><span>Coordinator plan</span><span>{riskDone ? "RISK CHECKED" : <span className="blink">RISK CHECK</span>}</span></div>
                   {plan.window_start
-                    ? <div className="bigplan">REPAIR {plantHHMM(plan.window_start)} {dayWord(plan.window_start, inc.created_at)}</div>
+                    ? <div className="bigplan">REPAIR {plantWhen(plan.window_start, clock).toUpperCase()}</div>
                     : <div className="bigplan" style={{ color: "var(--caution-ink)" }}>WINDOW NOT SET</div>}
                   <div className="dim" style={{ fontSize: 12, marginTop: -2 }}>
-                    Planned {tasks.coordinator?.finished_at ? `${hhmm(tasks.coordinator.finished_at)} (${dayWord(tasks.coordinator.finished_at, inc.created_at).toLowerCase()})` : "—"}
+                    Planned {tasks.coordinator?.finished_at ? plantWhen(tasks.coordinator.finished_at, clock) : "—"}
                     {plan.window_end && clock > +new Date(plan.window_end) && <span className="c-warn"> · window has ended</span>}
                     {plan.window_start && clock <= +new Date(plan.window_end) && clock > +new Date(plan.window_start) && <span className="c-caut"> · window in progress</span>}
                   </div>
                   {pos.length > 1 && <div className="resolve">
                     <span className="cap">Resolution</span>
                     {pos.map(p => <div key={p.role} className={"rv" + (p.when && plan.window_start && plan.window_start.slice(0, 16) !== p.when.slice(0, 16) ? " lost" : "")}><b>{ROLE_LABEL[p.role]}</b> {p.want}</div>)}
-                    <div className="rv rv-win"><b>Coordinator</b> {plan.window_start ? `${plantHHMM(plan.window_start)} ${dayWord(plan.window_start, inc.created_at)}` : "no window yet: conditions not all met"}</div>
+                    <div className="rv rv-win"><b>Coordinator</b> {plan.window_start ? plantWhen(plan.window_start, clock) : "no window yet: conditions not all met"}</div>
                   </div>}
                   <div className="plan-meta">
-                    <div><span className="cap">Window</span><b className={plan.window_start ? "" : "c-caut"}>{plan.window_start ? `${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "Pending confirmation"}</b></div>
+                    <div><span className="cap">Window</span><b className={plan.window_start ? "" : "c-caut"}>{plan.window_start ? `${plantDay(plan.window_start, clock)} ${plantHHMM(plan.window_start)}–${plantHHMM(plan.window_end)}` : "Pending confirmation"}</b></div>
                     <div><span className="cap">Technician</span><b>{plan.technician}</b></div>
                   </div>
                   {plan.actions.map((a, i) => <Ln key={i} k={a.action} v={<span className={"rule r-" + a.rule}>{a.rule}</span>} cls="tag" />)}
@@ -409,7 +408,7 @@ function Header({ q, clock, onReport, cfg }: { q: string; clock: number; onRepor
     <header className="top">
       <Link className="back" href={"/" + q} title="Back to the 3D site view">&#8249;&nbsp;SITE</Link>
       <div className="word"><i aria-hidden="true" />PLANTAPI</div>
-      <div className="clock"><small>PLANT TIME</small>{mounted ? new Date(clock).toTimeString().slice(0, 5) : "--:--"}</div>
+      <div className="clock"><small>PLANT TIME</small>{mounted ? plantHHMM(clock) : "--:--"}</div>
       {q && <div className="mock">DEMO REPLAY · EXAMPLE DATA</div>}
       <nav>{cfg && <ResetDemoButton cfg={cfg} className="reset" onDone={() => { location.href = "/"; }} />}<button onClick={onReport} style={{ color: "#fff" }}>REPORT FAILURE</button></nav>
     </header>
@@ -468,7 +467,7 @@ function ExecDetails({ tasks }: { tasks: Partial<Record<AgentRole, AgentTask>> }
       ? <Ln k="Expedite email" v={pr.expedite_email.sent ? `SENT ${pr.expedite_email.message_id ?? ""}` : "NOT SENT"} cls={pr.expedite_email.sent ? "" : "c-caut"} why={pr.expedite_email.to} />
       : tasks.procurement?.status === "COMPLETE" && <Ln k="Expedite email" v="NOT SENT" cls="c-warn" why={(pr as { summary?: string }).summary} />)}
     {pr?.blocked?.map(b => <Ln key={b} k="Procurement" v="BLOCKED" cls="c-caut" why={b} />)}
-    {dp?.booked_start && <Ln k="Booked" v={`${dp.technician ?? ""} ${wall(dp.booked_start) ?? ""}`} />}
+    {dp?.booked_start && <Ln k="Booked" v={`${dp.technician ?? ""} ${plantWhen(dp.booked_start)}`} />}
     {dp?.notices?.map((n, i) => <Ln key={i} k={`${n.channel} → ${n.to}`} v={`${n.status.toUpperCase()}${n.ref ? " · " + n.ref : ""}`} cls={n.status === "failed" ? "c-warn" : n.status === "blocked" ? "c-caut" : ""} />)}
     {dp && <Ln k="Technician ack" v={dp.ack_received ? "RECEIVED" : dp.follow_up ? `FOLLOW-UP ${dp.follow_up}` : "WAITING"} cls={dp.ack_received ? "c-ok" : "c-caut"} />}
   </>);

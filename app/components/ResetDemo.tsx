@@ -8,13 +8,14 @@
 import "./report.css";
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { plantHHMMSS } from "./data/time";
 
 type Step = { at?: string; step?: string; detail?: string };
 type Row = { id: string; status?: string; steps?: Step[] | null; summary?: string | null; error?: string | null };
 export interface ResetConfig { mock: boolean; supabaseUrl?: string; supabaseAnonKey?: string }
 
 const FINAL = new Set(["done", "failed", "refused"]);
-const time = (iso?: string) => (iso ? new Date(iso).toTimeString().slice(0, 8) : "");
+const time = (iso?: string) => plantHHMMSS(iso);
 
 export function ResetDemoButton({ cfg, className, onDone }: { cfg: ResetConfig; className?: string; onDone?: () => void }) {
   const [open, setOpen] = useState(false);

@@ -1,3 +1,4 @@
+import { plantHHMM } from "./time";
 // Site equipment shown in the 3D view. CV-104, MTR-104, MCC-03, P-302 and FV-221 are the Fiix/Odoo seed assets;
 // the rest are example equipment that makes the hall read as a real crushing and grinding plant.
 export type AssetStatus = "ok" | "warn" | "down";
@@ -29,7 +30,7 @@ export function siteAssets(incidents: SiteIncident[]): SiteAsset[] {
   for (const inc of incidents.filter(isOpen)) {
     const a = out.find(x => x.id === inc.asset);
     if (!a) continue;
-    a.status = "down"; a.note = `Down since ${new Date(inc.created_at).toTimeString().slice(0, 5)} · ${inc.status.replace("_", " ").toLowerCase()}`; a.last = inc.title;
+    a.status = "down"; a.note = `Down since ${plantHHMM(inc.created_at)} · ${inc.status.replace("_", " ").toLowerCase()}`; a.last = inc.title;
   }
   return out;
 }

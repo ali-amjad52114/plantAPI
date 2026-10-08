@@ -1,19 +1,16 @@
 // Turns the real wave A agent outputs (agent_tasks.output, shapes in lib/engine/wave-a-schemas.ts) into
 // one line per planner for the plan card: what each one wants, why, and where its data came from.
 import type { AgentRole, AgentTask, Incident } from "@/lib/contracts/types";
+import { plantWhen } from "../data/time";
 
 export interface Position { role: AgentRole; want: string; when: string | null; why: string; source: string | null; seed: boolean }
 
 type O = Record<string, unknown> & { summary?: string };
 const str = (v: unknown) => (typeof v === "string" ? v : "");
-/** wall-clock HH:MM in the offset the timestamp was written with */
-export const wall = (iso?: string | null) => (iso ? iso.match(/T(\d\d:\d\d)/)?.[1] ?? null : null);
-const day = (iso: string | null, ref: string) => (!iso ? "" : iso.slice(0, 10) === ref.slice(0, 10) ? "today" : iso.slice(0, 10) > ref.slice(0, 10) ? "tomorrow" : iso.slice(0, 10));
 const isSeed = (s: string | null) => !!s && /seed/i.test(s);
 
-export function positions(inc: Incident, tasks: Partial<Record<AgentRole, AgentTask>>): Position[] {
+export function positions(inc: Incident, tasks: Partial<Record<AgentRole, AgentTask>>, now: number = Date.now()): Position[] {
   const out: Position[] = [];
-  const ref = inc.created_at;
 
   const rel = tasks.reliability?.output as O | undefined;
   if (rel) {
@@ -31,15 +28,14 @@ export function positions(inc: Incident, tasks: Partial<Record<AgentRole, AgentT
   const pro = tasks.production?.output as O | undefined;
   if (pro) {
     const rec = (pro.recommended ?? {}) as { start?: string; impact?: string };
-    const t = wall(rec.start ?? null);
-    out.push({ role: "production", want: t ? `${t} ${day(rec.start ?? null, ref)}` : "—", when: rec.start ?? null,
+    out.push({ role: "production", want: rec.start ? plantWhen(rec.start, now) : "—", when: rec.start ?? null,
       why: `${rec.impact ? "Impact " + rec.impact + ". " : ""}${str(pro.summary)}`, source: str(pro.source) || null, seed: isSeed(str(pro.source)) });
   }
 
   const wrk = tasks.workforce?.output as O | undefined;
   if (wrk) {
-    const t = wall(str(wrk.available_from) || null);
-    out.push({ role: "workforce", want: `${str(wrk.technician) || "—"}${t ? ` from ${t} ${day(str(wrk.available_from), ref)}` : ""}`, when: str(wrk.available_from) || null,
+    const from = str(wrk.available_from);
+    out.push({ role: "workforce", want: `${str(wrk.technician) || "—"}${from ? ` from ${plantWhen(from, now)}` : ""}`, when: str(wrk.available_from) || null,
       why: [str(wrk.summary), ...(Array.isArray(wrk.conflicts) ? (wrk.conflicts as string[]) : [])].filter(Boolean).join(" "), source: str(wrk.source) || null, seed: isSeed(str(wrk.source)) });
   }
   return out;
