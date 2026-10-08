@@ -36,7 +36,7 @@ body { margin: 0 }
 .sv .hbtn:hover { background: #F6F8FA; border-color: var(--amber) }
 
 /* incident card */
-.sv #alert { position: fixed; z-index: 5; top: calc(74px + env(safe-area-inset-top, 0px)); right: 12px; width: 320px; padding: 16px 18px; border-top: 4px solid var(--crit); display: grid; gap: 10px }
+.sv #alert { position: fixed; z-index: 5; top: calc(16px + var(--top-h, 58px) + 12px + env(safe-area-inset-top, 0px)); right: 12px; width: 320px; padding: 16px 18px; border-top: 4px solid var(--crit); display: grid; gap: 10px }
 .sv #alert .k { font: 600 11px/1 var(--f-display); letter-spacing: .1em; text-transform: uppercase; color: var(--crit); display: flex; align-items: center; gap: 6px }
 .sv #alert .k::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--crit); animation: pulse 1s infinite }
 .sv #alert h2 { margin: 0; font: 700 20px/1.1 var(--f-display) }
@@ -47,7 +47,7 @@ body { margin: 0 }
 @keyframes pulse { 50% { opacity: .3 } }
 
 /* asset list */
-.sv #panel { position: fixed; z-index: 4; top: calc(74px + env(safe-area-inset-top, 0px)); left: 12px; width: 260px; max-height: calc(100% - 140px); overflow: auto; padding: 10px 12px; scrollbar-width: thin }
+.sv #panel { position: fixed; z-index: 4; top: calc(16px + var(--top-h, 58px) + 12px + env(safe-area-inset-top, 0px)); left: 12px; width: 260px; max-height: calc(100% - var(--top-h, 58px) - 110px); overflow: auto; padding: 10px 12px; scrollbar-width: thin }
 .sv #panel h3 { margin: 10px 0 4px; font: 600 11px/1 var(--f-display); letter-spacing: .12em; text-transform: uppercase; color: var(--amber) }
 .sv #panel h3:first-child { margin-top: 2px }
 .sv .asset { width: 100%; border: 0; background: none; display: grid; grid-template-columns: 10px 62px minmax(0, 1fr); gap: 8px; align-items: center; text-align: left; padding: 6px 6px; border-radius: 3px; font-size: 13px }

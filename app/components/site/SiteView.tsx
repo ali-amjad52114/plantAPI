@@ -30,6 +30,15 @@ export function SiteView({ incidents, mock, embed = false, focus, cfg }: { incid
   const route = useRef({ open, q });
   route.current = { open, q };
 
+  // The header wraps to two rows on narrower screens; keep the asset list and incident card below it.
+  useEffect(() => {
+    const top = root.current?.querySelector<HTMLElement>("#top");
+    if (!top || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => root.current?.style.setProperty("--top-h", `${Math.ceil(top.getBoundingClientRect().height)}px`));
+    ro.observe(top);
+    return () => ro.disconnect();
+  }, [embed]);
+
   useEffect(() => {
     let cancelled = false;
     (async () => {
