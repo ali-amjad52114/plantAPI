@@ -7,9 +7,14 @@
 // Calendar PLANTAPI_CALENDAR_ID ("PlantAPI Technicians"): deletes ONLY events we own — description contains
 // "plantapi-demo-refresh" (this module) or starts with "PlantAPI demo technician schedule (" (setup-google.ts).
 // Everything else (e.g. real Dispatch bookings) is left untouched. Then creates tagged events:
-//   Sarah busy now->+1h, Available +1h30->+3h30, arc-flash training tomorrow 07:00-12:00; Mike + David 06:00-14:00 today.
+//   Sarah busy (PM rounds) now-1h->now+30m, Available now+30m->now+2h30, arc-flash training tomorrow 07:00-12:00;
+//   Mike + David 06:00-14:00 today.
 // Sheet PLANTAPI_SCHEDULE_SHEET_ID tab "Schedule": rewritten in place (A1:K30), seed rows shifted so the
-//   Crushing Line 2 low-impact window is +1h30->+3h30 today and the lowest window is tomorrow 07:00-08:00.
+//   Crushing Line 2 low-impact window (Reduced, Downtime YES) is the SAME now+30m->now+2h30; lowest window tomorrow 07:00-08:00.
+// Roster: the INSTANCE copy ~/plantapi/seed/technicians.json is REWRITTEN EVERY RUN (via exec) so Sarah's shift is
+//   now-6h->now+3h ("HH:MM-HH:MM", may cross midnight); Mike/David keep theirs. The repo seed/technicians.json is
+//   static (Sarah 12:00-23:59, wide enough for an evening demo) and is overwritten on the instance by each refresh.
+// Read-back proof: calendar free window AND roster shift AND sheet low-impact window must overlap >= 60 min.
 // Times are ISO with the plant offset (DST via Intl). Never logs secrets. Never calls process.exit.
 
 export const DEMO_REFRESH_TAG = "plantapi-demo-refresh";
@@ -29,6 +34,8 @@ export interface RefreshSummary {
     rowsWritten: number;
   };
   calendar: { deleted: number; created: number; untouched: number; untouchedTitles: string[] };
+  roster: { sarahShift: string; start: string; end: string; instanceLine?: string };
+  overlap?: { free: RefreshWindow; roster: RefreshWindow; sheetLow: RefreshWindow; start: string; end: string; minutes: number };
   readBack?: { events: { summary: string; start: string; end: string }[]; sheetRows: string[][] };
   error?: string;
 }
@@ -119,7 +126,7 @@ export function composio() {
     if (r.error) throw new Error(`${slug}: ${r.error}`);
     return r.response;
   }
-  return { multi, one };
+  return { multi, one, exec };
 }
 
 function findAll(o: any, pred: (x: any) => boolean, acc: any[] = []): any[] {
@@ -143,10 +150,11 @@ export function planDemoRefresh(tz: string, nowMs = Date.now()) {
   const at = (k: number) => new Date(n.getTime() + k * MIN);
   const today = (H: number, M = 0) => c.wall(t.y, t.m, t.d, H, M);
   const tomorrow = (H: number, M = 0) => c.wall(ty, tmo, td, H, M);
-  const L = at(90), E = at(210);
+  const L = at(30), E = at(150); // Sarah free == production low-impact window
+  const shiftStart = at(-360), shiftEnd = at(180); // Sarah roster shift on the instance
 
   const events: Ev[] = [
-    { summary: "Sarah Chen: PM rounds - MCC-01/02", start: n, end: at(60) },
+    { summary: "Sarah Chen: PM rounds - MCC-01/02", start: at(-60), end: L },
     { summary: "Sarah Chen: Available", start: L, end: E, free: true },
     { summary: "Sarah Chen: Arc-flash training (off site)", start: tomorrow(7), end: tomorrow(12) },
     { summary: "Mike Rodriguez: Belt splice - CV-101", start: today(6), end: today(14) },
@@ -157,9 +165,9 @@ export function planDemoRefresh(tz: string, nowMs = Date.now()) {
     [c.day(s), "Crushing Line 2", "CV-104", c.hm(s), c.hm(e), st, String(tph), imp, avail, "NO", note];
   const rows: string[][] = [
     header,
-    cl2(today(6), n, "Running", 220, "High", "NO", "Day shift - customer order SO-4471 in progress"),
-    cl2(n, at(60), "Running", 220, "High", "NO", "Afternoon shift - truck loading"),
-    cl2(at(60), L, "Running", 120, "Medium", "NO", "Shift handover"),
+    cl2(today(6), at(-60), "Running", 220, "High", "NO", "Day shift - customer order SO-4471 in progress"),
+    cl2(at(-60), n, "Running", 220, "High", "NO", "Afternoon shift - truck loading"),
+    cl2(n, L, "Running", 120, "Medium", "NO", "Shift handover"),
     cl2(L, E, "Reduced", 60, "Low", "YES", "Evening reduced rate - stockpile above target"),
     cl2(E, tomorrow(6), "Stopped", 0, "None", "NO", "Night - line down; no electrician on site"),
     cl2(tomorrow(7), tomorrow(8), "Startup", 0, "Lowest", "YES", "Line start-up checks - lowest impact window"),
@@ -168,7 +176,17 @@ export function planDemoRefresh(tz: string, nowMs = Date.now()) {
     [c.day(n), "Water System", "P-302", "00:00", "23:59", "Running", "0", "Medium", "YES", "NO", "Duty/standby pump - can swap"],
   ];
   const padded = [...rows, ...Array.from({ length: 30 - rows.length }, () => Array(11).fill(""))];
-  return { clock: c, now: n, events, rows, padded };
+  return { clock: c, now: n, events, rows, padded, shift: { start: shiftStart, end: shiftEnd, text: `${c.hm(shiftStart)}-${c.hm(shiftEnd)}` } };
+}
+
+/** Date + "HH:MM" start/end -> instants; an end <= start rolls to the next day. */
+function resolveWindow(c: ReturnType<typeof makeClock>, date: string, startHm: string, endHm: string) {
+  const [y, m, d] = date.split("-").map(Number);
+  const [sh, sm] = startHm.split(":").map(Number), [eh, em] = endHm.split(":").map(Number);
+  const start = c.wall(y, m, d, sh, sm);
+  let end = c.wall(y, m, d, eh, em);
+  if (end <= start) { const nd = new Date(Date.UTC(y, m - 1, d + 1)); end = c.wall(nd.getUTCFullYear(), nd.getUTCMonth() + 1, nd.getUTCDate(), eh, em); }
+  return { start, end };
 }
 
 // ---------- main entry ----------
@@ -195,6 +213,7 @@ export async function refreshDemoData(opts: RefreshOptions = {}): Promise<Refres
       rowsWritten: 0,
     },
     calendar: { deleted: 0, created: 0, untouched: 0, untouchedTitles: [] },
+    roster: { sarahShift: p.shift.text, start: iso(p.shift.start), end: iso(p.shift.end) },
   };
   progress("plan", `plant now ${summary.now}; Sarah free ${summary.sarah.free.start} -> ${summary.sarah.free.end}`);
   if (opts.dryRun) {
@@ -206,7 +225,7 @@ export async function refreshDemoData(opts: RefreshOptions = {}): Promise<Refres
     const sheetId = process.env.PLANTAPI_SCHEDULE_SHEET_ID;
     const calId = process.env.PLANTAPI_CALENDAR_ID;
     if (!sheetId || !calId) throw new Error("BLOCKED: PLANTAPI_SCHEDULE_SHEET_ID / PLANTAPI_CALENDAR_ID not set");
-    const { multi, one } = composio();
+    const { multi, one, exec } = composio();
 
     // 1. delete only events we own
     progress("calendar", "listing events");
@@ -248,6 +267,20 @@ export async function refreshDemoData(opts: RefreshOptions = {}): Promise<Refres
     summary.sheet.rowsWritten = p.rows.length;
     progress("sheet", `rewrote Schedule!A1:K30 (${p.rows.length} rows incl. header)`);
 
+    // 3b. roster: rewrite the instance copy of technicians.json (Sarah's shift only; rewritten every run)
+    const TECH = "~/plantapi/seed/technicians.json";
+    const cur = await exec(`cat ${TECH}`);
+    if (cur.exit_code !== 0) throw new Error(`read ${TECH}: ${(cur.stderr || cur.stdout).slice(0, 200)}`);
+    const techs = JSON.parse(cur.stdout) as Array<{ name: string; shift: string }>;
+    const sarah = techs.find((x) => x.name === "Sarah Chen");
+    if (!sarah) throw new Error("Sarah Chen not in instance technicians.json");
+    sarah.shift = p.shift.text;
+    const body = "[\n" + techs.map((x) => "  " + JSON.stringify(x).replace(/,"/g, ', "').replace(/":/g, '": ')).join(",\n") + "\n]\n";
+    const b64 = Buffer.from(body).toString("base64");
+    const w = await exec(`echo '${b64}' | base64 -d > ${TECH}.tmp && mv ${TECH}.tmp ${TECH}`);
+    if (w.exit_code !== 0) throw new Error(`write ${TECH}: ${w.stderr.slice(0, 200)}`);
+    progress("roster", `instance technicians.json: Sarah shift ${p.shift.text}`);
+
     // 4. read back (proof)
     const back = await one("GOOGLECALENDAR_EVENTS_LIST", {
       calendarId: calId, timeMin: new Date(Date.now() - 1440 * MIN).toISOString(),
@@ -260,10 +293,25 @@ export async function refreshDemoData(opts: RefreshOptions = {}): Promise<Refres
       events: evs.map((e) => ({ summary: e.summary, start: e.start.dateTime, end: e.end.dateTime, tagged: isOurs(e) } as any)),
       sheetRows: values,
     };
+    const rb = await exec(`grep '"Sarah Chen"' ~/plantapi/seed/technicians.json`);
+    const instanceLine = rb.stdout.trim();
+    summary.roster.instanceLine = instanceLine;
+    const shiftBack = instanceLine.match(/"shift":\s*"(\d{2}:\d{2})-(\d{2}:\d{2})"/);
+    const freeEv = evs.find((e) => e.summary === "Sarah Chen: Available" && isOurs(e));
+    const lowBack = values.find((r) => r[1] === "Crushing Line 2" && r[5] === "Reduced" && r[8] === "YES");
+    if (!shiftBack || !freeEv || !lowBack) throw new Error(`read-back incomplete: shift=${!!shiftBack} free=${!!freeEv} sheetLow=${!!lowBack}`);
+    const fw = { start: new Date(freeEv.start.dateTime), end: new Date(freeEv.end.dateTime) };
+    const rw = resolveWindow(p.clock, p.clock.day(p.shift.start), shiftBack[1], shiftBack[2]);
+    const sw = resolveWindow(p.clock, lowBack[0], lowBack[3], lowBack[4]);
+    const os = new Date(Math.max(fw.start.getTime(), rw.start.getTime(), sw.start.getTime()));
+    const oe = new Date(Math.min(fw.end.getTime(), rw.end.getTime(), sw.end.getTime()));
+    const w2 = (x: { start: Date; end: Date }) => ({ start: iso(x.start), end: iso(x.end) });
+    summary.overlap = { free: w2(fw), roster: w2(rw), sheetLow: w2(sw), start: iso(os), end: iso(oe), minutes: Math.max(0, (oe.getTime() - os.getTime()) / MIN) };
+    progress("verify", `free/roster/sheet-low overlap ${summary.overlap.start} -> ${summary.overlap.end} (${summary.overlap.minutes} min)`);
     const taggedBack = evs.filter((e) => typeof e.description === "string" && e.description.includes(DEMO_REFRESH_TAG)).length;
     progress("verify", `read back ${taggedBack} tagged events, ${values.length} sheet rows`);
-    summary.ok = taggedBack === p.events.length && values.length === p.rows.length;
-    if (!summary.ok) summary.error = `read-back mismatch: ${taggedBack}/${p.events.length} tagged events, ${values.length}/${p.rows.length} rows`;
+    summary.ok = taggedBack === p.events.length && values.length === p.rows.length && summary.overlap.minutes >= 60;
+    if (!summary.ok) summary.error = `read-back check failed: ${taggedBack}/${p.events.length} tagged events, ${values.length}/${p.rows.length} rows, overlap ${summary.overlap.minutes} min (need >= 60)`;
   } catch (e) {
     summary.ok = false;
     summary.error = (e as Error).message;
