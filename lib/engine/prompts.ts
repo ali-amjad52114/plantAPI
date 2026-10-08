@@ -4,6 +4,7 @@ import path from "node:path";
 import { z } from "zod";
 import type { AgentRole, Incident } from "../contracts/types";
 import { schemaFor } from "./wave-a-schemas";
+import { deepPlantTime, toPlantIso } from "./time.pure";
 
 const ROLE_BRIEF: Partial<Record<AgentRole, string>> = {
   triage:
@@ -95,7 +96,7 @@ export function roleOverrides(role: AgentRole): string {
   if (role === "erp") {
     return (
       head +
-      "Odoo block = ONE mrp.workcenter.productivity record on Crushing Line 2 with date_start/date_end = the plan window (Odoo stores UTC). For a FUTURE window the line still shows \"normal\" until the window starts — that is expected, not a failure. Always report `odoo_block_ref` = \"mrp.workcenter.productivity:<id>\" of the record you created (the backend re-checks it against the window)."
+      "Odoo block = ONE mrp.workcenter.productivity record on Crushing Line 2 with date_start/date_end = the plan window (Odoo stores UTC). For a FUTURE window the line still shows \"normal\" until the window starts — that is expected, not a failure. Always report `odoo_block_ref` = \"mrp.workcenter.productivity:<id>\" of the record you created (the backend re-checks it against the window). The human approval is the authority to execute: a plan marked \"conditional on part arrival\" or with low confidence is still approved — create the Fiix WO AND the Odoo block for `plan.window_start`–`plan.window_end` (plant time, convert to UTC for Odoo). Do not re-judge the plan; if you have a concern, write it in `summary` after doing both."
     );
   }
   if (role === "verification") {
@@ -129,7 +130,7 @@ export function buildTaskText(role: AgentRole, incident: Incident, extra: Record
   // Coordinator sees only triage + materials + the planners' outputs.
   const context =
     role === "coordinator"
-      ? { incident_id: incident.id, now: (extra.now as string | undefined) ?? new Date().toISOString(), alarm_text: incident.alarm_text, triage: incident.triage, materials: incident.materials, team: extra.team ?? null }
+      ? { incident_id: incident.id, now: (extra.now as string | undefined) ?? toPlantIso(Date.now()), alarm_text: incident.alarm_text, triage: incident.triage, materials: incident.materials, team: extra.team ?? null }
       : {
           incident_id: incident.id,
           alarm_text: incident.alarm_text,
@@ -156,7 +157,8 @@ export function buildTaskText(role: AgentRole, incident: Incident, extra: Record
     roleInstructions(role),
     "",
     "## Incident context (JSON)",
-    JSON.stringify(context, null, 2),
+    // Plant time everywhere (no "Z"): agents, Odoo, Calendar and Slack must not mix zones.
+    JSON.stringify(deepPlantTime(context), null, 2),
     "",
     "## Output",
     role === "coordinator"

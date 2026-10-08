@@ -24,6 +24,7 @@ import { beginTurn, endTurn } from "./cost";
 import { checkAckFollowUps, depthEnabled, ensureCheckpoint, scheduleAckFollowUp } from "./depth";
 import { buildTaskText, outputSchemaText } from "./prompts";
 import { deepFixText, fixMojibake } from "./text.pure";
+import { deepPlantTime, toPlantIso } from "./time.pure";
 import { verifyErpBlock, verifyUnblocked } from "./odoo-check";
 
 const db = () => supabaseAdmin();
@@ -256,7 +257,7 @@ ${outputSchemaText(role)}`,
       parsed = parseRole(role, again.outputText);
       if (!parsed.ok) throw new Error(`no valid ${role} JSON after one retry: ${parsed.error}`);
     }
-    const output = parsed.data;
+    const output = role === "coordinator" ? deepPlantTime(parsed.data) : parsed.data;
     const problem = checkOutput(role as Slice1Role, output, incident, Date.now(), (extra.team as never) ?? null);
     if (problem) throw new Error(`${role} output rejected: ${problem}`);
     if (role === "erp" && incident.plan) {
@@ -365,7 +366,7 @@ export const engine: Engine = {
     const t = approvalSteps(decision, fullTeam());
     if (decision === "approve") await setStatus(incidentId, "APPROVED");
     await setStatus(incidentId, t.status);
-    const approval = { decision, decided_by: by, note: note ?? null, decided_at: new Date().toISOString() };
+    const approval = { decision, decided_by: by, note: note ?? null, decided_at: toPlantIso(Date.now()) };
     for (const next of t.next) {
       // Procurement really sends the expedite email only with approved:true and dry_run:false (S2 skill, idempotent by subject).
       const input = next === "procurement" ? { approval, approved: decision === "approve", dry_run: false } : { approval };

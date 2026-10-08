@@ -140,7 +140,7 @@ export function plannerFailureIsFatal(role: AgentRole, fullTeam: boolean): boole
 }
 
 /** Bump whenever the coordinator rules (COORDINATOR_BRIEF / plan guards) change; plans without it are stale. */
-export const PLAN_RULES_VERSION = "2026-10-07.4";
+export const PLAN_RULES_VERSION = "2026-10-08.1"; // .1: technician conflicts hard + plant-time timestamps
 
 /** Why a plan can no longer be approved as-is (null = still fine). */
 export function stalePlanReason(

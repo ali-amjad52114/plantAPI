@@ -229,3 +229,16 @@ describe("workforce conflicts are hard limits", () => {
     expect(checkOutput("coordinator", { supplier: sup, window_start: "", window_end: "", rationale: "NO FEASIBLE WINDOW: Sarah booked all week" }, { materials, triage }, now, team)).toMatch(/needs replanning/);
   });
 });
+
+describe("plant time for agents", () => {
+  it("rewrites Z timestamps to plant time with the DST-correct offset", async () => {
+    const { toPlantIso, deepPlantTime } = await import("./time.pure");
+    expect(toPlantIso("2026-10-08T11:00:00Z")).toBe("2026-10-08T07:00:00-04:00"); // f9b6c751's window
+    expect(toPlantIso("2026-12-08T12:00:00Z")).toBe("2026-12-08T07:00:00-05:00"); // EST in winter
+    expect(deepPlantTime({ plan: { window_start: "2026-10-08T11:00:00Z", note: "18:00 local" }, n: 1 })).toEqual({ plan: { window_start: "2026-10-08T07:00:00-04:00", note: "18:00 local" }, n: 1 });
+  });
+  it("stale-plan check refuses plans from older rules (f9b6c751 was approved on .4)", async () => {
+    const { stalePlanReason } = await import("./flow");
+    expect(stalePlanReason({ window_start: "2030-10-08T12:00:00-04:00", window_end: "2030-10-08T13:00:00-04:00" }, 60, "2026-10-07.4", Date.now())).toMatch(/older engine rules/);
+  });
+});
