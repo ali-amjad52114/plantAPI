@@ -256,3 +256,7 @@ NEXT: "Reset demo" deploy on the lead's go.
 ## S4 — 16:56 · done: drain deploy of Reset demo (main incl. ade08fd, d29cf84)
 DONE: deploy-safe.sh --branch slice-preview (s/platform de363a1, image sha256:bcaac99e…). Dockerfile ships scripts/lib to /worker + ENV PLANTAPI_ROOT=/worker PLANT_TZ=America/New_York (verified via insta compute exec). / · /plant · /governance 200; /api/health 200 (resetting field present).
 NEXT: lead triggers Reset demo; hold for next "deploy now".
+
+## S4 — 17:16 · done: drain deploy (d2afb31, ac4797f, 61a85d8)
+DONE: deploy-safe.sh --branch slice-preview (s/platform a72d739, image sha256:fc697ac0…). / · /plant · /governance 200; /api/health 200.
+NEXT: hold for next "deploy now".
