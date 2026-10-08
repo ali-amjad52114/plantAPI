@@ -2,7 +2,25 @@
 // RUNNING, one at a time) and runs S2's resetDemo() from lib/tools/demo.ts, writing every step into the row.
 import { supabaseAdmin } from "@/lib/db";
 
-type ResetDemo = (opts: { force?: boolean; onProgress?: (step: string, detail: string) => void }) => Promise<{ summary: string }>;
+// S2's real return shape (lib/tools/demo.ts ResetSummary): it RETURNS refused/ok instead of throwing.
+type StepResult = { status: string; detail: string };
+type ResetResult = { refused?: boolean; live?: Array<{ id: string; status: string }>; steps?: Record<string, StepResult | undefined>; ok?: boolean; summary?: string };
+type ResetDemo = (opts: { force?: boolean; onProgress?: (step: string, detail: string) => void }) => Promise<ResetResult>;
+
+/** Maps resetDemo's result to the demo_resets row outcome. Never "done" unless ok; never an "undefined" summary. */
+export function resetOutcome(r: ResetResult): { status: "done" | "failed" | "refused"; summary: string | null; error: string | null } {
+  const steps = r.steps ?? {};
+  if (r.refused) {
+    const live = (r.live ?? []).map((l) => `${l.id.slice(0, 8)} ${l.status}`).join(", ");
+    return { status: "refused", summary: null, error: `refused: ${(r.live ?? []).length} live incident(s): ${live || "unknown"}; use Force reset` };
+  }
+  const summary = steps.summary?.detail ?? (typeof r.summary === "string" ? r.summary : null);
+  if (r.ok === false) {
+    const failing = Object.entries(steps).find(([k, v]) => k !== "summary" && v?.status === "error");
+    return { status: "failed", summary, error: failing ? `${failing[0]}: ${failing[1]!.detail}` : (summary ?? "demo reset incomplete") };
+  }
+  return { status: "done", summary: summary ?? "demo reset complete", error: null };
+}
 // S2 owns lib/tools/demo.ts (landing on main); loaded at runtime so s/core typechecks before that merge.
 const DEMO_MODULE = "@/lib/tools/demo";
 
@@ -33,10 +51,11 @@ export async function runDemoReset(row: ResetRow, load: () => Promise<{ resetDem
   try {
     push("start", row.force ? "reset requested (force)" : "reset requested");
     const { resetDemo } = await load();
-    const { summary } = await resetDemo({ force: row.force, onProgress: push });
-    push("done", summary);
+    const result = await resetDemo({ force: row.force, onProgress: push });
+    const out = resetOutcome(result);
+    push(out.status, out.error ?? out.summary ?? out.status);
     await writing;
-    await db.from("demo_resets").update({ status: "done", summary, steps }).eq("id", row.id);
+    await db.from("demo_resets").update({ status: out.status, summary: out.summary, error: out.error, steps }).eq("id", row.id);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     const refused = /refus/i.test(message) || (err as { name?: string })?.name === "DemoResetRefused";
